@@ -21,7 +21,7 @@ import {
   CFormCheck,
   CFormSelect,
 } from '@coreui/react';
-import { cilUser, cilUserFemale, cilUserPlus, cilSearch } from '@coreui/icons';
+import { cilUser,cilUserPlus, cilSearch, cilTrash, cilPencil } from '@coreui/icons';
 import CIcon from '@coreui/icons-react';
 import './Usermanagement.css';
 
@@ -201,13 +201,15 @@ const Usermanagement = () => {
                   <CTableDataCell>{user.subscriptionStatus ? 'Active' : 'Pending'}</CTableDataCell>
                   <CTableDataCell>
                     <CButton color="info" size="sm" onClick={() => handleView(user)}>
-                      View
+                      <CIcon icon={cilSearch} />
                     </CButton>
+
                     <CButton color="primary" size="sm" className="ms-2" onClick={() => handleEdit(user)}>
-                      Edit
+                      <CIcon icon={cilPencil} />
                     </CButton>
+
                     <CButton color="danger" size="sm" className="ms-2" onClick={() => deleteUser(user._id)}>
-                      Delete
+                      <CIcon icon={cilTrash} />
                     </CButton>
                   </CTableDataCell>
                 </CTableRow>
@@ -239,101 +241,101 @@ const Usermanagement = () => {
       </CCard>
 
       {/* Modal for View/Edit */}
-{selectedUser && (
-  <CModal visible={showModal} onClose={() => setShowModal(false)} className="c-modal">
-    <CModalHeader className="c-modal-header">{isEditing ? 'Edit User' : 'View User'}</CModalHeader>
-    <CModalBody className="c-modal-body">
-      {isEditing ? (
-        <>
-          <CFormLabel className="c-form-label">Name</CFormLabel>
-          <CFormInput
-            name="name"
-            value={selectedUser.name}
-            onChange={handleInputChange}
-            className="c-form-input"
-          />
+      {selectedUser && (
+        <CModal visible={showModal} onClose={() => setShowModal(false)} className="c-modal">
+          <CModalHeader className="c-modal-header">{isEditing ? 'Edit User' : 'View User'}</CModalHeader>
+          <CModalBody className="c-modal-body">
+            {isEditing ? (
+              <>
+                <CFormLabel className="c-form-label">Name</CFormLabel>
+                <CFormInput
+                  name="name"
+                  value={selectedUser.name}
+                  onChange={handleInputChange}
+                  className="c-form-input"
+                />
 
-          <CFormLabel className="c-form-label">Email</CFormLabel>
-          <CFormInput
-            name="email"
-            value={selectedUser.email}
-            onChange={handleInputChange}
-            className="c-form-input"
-          />
+                <CFormLabel className="c-form-label">Email</CFormLabel>
+                <CFormInput
+                  name="email"
+                  value={selectedUser.email}
+                  onChange={handleInputChange}
+                  className="c-form-input"
+                />
 
-          <CFormLabel className="c-form-label">Phone No</CFormLabel>
-          <CFormInput
-            name="phoneNo"
-            value={selectedUser.phoneNo}
-            onChange={handleInputChange}
-            className="c-form-input"
-          />
+                <CFormLabel className="c-form-label">Phone No</CFormLabel>
+                <CFormInput
+                  name="phoneNo"
+                  value={selectedUser.phoneNo}
+                  onChange={handleInputChange}
+                  className="c-form-input"
+                />
 
-          <CFormLabel className="c-form-label">Document Status</CFormLabel>
-          <CFormCheck
-            name="documentStatus"
-            label="Approved"
-            checked={selectedUser.documentStatus}
-            onChange={handleInputChange}
-            className="c-form-check"
-          />
+                <CFormLabel className="c-form-label">Document Status</CFormLabel>
+                <CFormCheck
+                  name="documentStatus"
+                  label="Approved"
+                  checked={selectedUser.documentStatus}
+                  onChange={handleInputChange}
+                  className="c-form-check"
+                />
 
-          <CFormLabel className="c-form-label">Business Type</CFormLabel>
-          <CFormInput
-            name="businessType"
-            value={selectedUser.businessType}
-            onChange={handleInputChange}
-            className="c-form-input"
-          />
-        </>
-      ) : (
-        <>
-          <div className="modal-text"><strong>Name:</strong> {selectedUser.name}</div>
-          <div className="modal-text"><strong>Email:</strong> {selectedUser.email}</div>
-          <div className="modal-text"><strong>Phone No:</strong> {selectedUser.phoneNo}</div>
-          <div className="modal-text"><strong>Address:</strong> {selectedUser.address}</div>
-          <div className="modal-text"><strong>ABN Number:</strong> {selectedUser.ABN_Number}</div>
-          <div className="modal-text"><strong>Business Type:</strong> {selectedUser.businessType}</div>
-          <div className="modal-text"><strong>Service Type:</strong> {selectedUser.serviceType.join(', ')}</div>
-          <div className="modal-text"><strong>User Type:</strong> {selectedUser.userType}</div>
-          <div className="modal-text"><strong>User Status:</strong> {selectedUser.userStatus ? 'Active' : 'Inactive'}</div>
-          <div className="modal-text"><strong>Email Verified:</strong> {selectedUser.emailVerified ? 'Verified' : 'Not Verified'}</div>
-          <div className="modal-text"><strong>Document Status:</strong> {selectedUser.documentStatus ? 'Approved' : 'Pending'}</div>
-          <div className="modal-text"><strong>Subscription Status:</strong> {selectedUser.subscriptionStatus ? 'Active' : 'Pending'}</div>
-          <div className="modal-text"><strong>Terms and Conditions Accepted:</strong> {selectedUser.termsAndCondition ? 'Yes' : 'No'}</div>
-          <div className="modal-text"><strong>Ins Ip:</strong> {selectedUser.insIp}</div>
-          <div className="modal-text"><strong>Updated At:</strong> {new Date(selectedUser.updatedAt).toLocaleString()}</div>
+                <CFormLabel className="c-form-label">Business Type</CFormLabel>
+                <CFormInput
+                  name="businessType"
+                  value={selectedUser.businessType}
+                  onChange={handleInputChange}
+                  className="c-form-input"
+                />
+              </>
+            ) : (
+              <>
+                <div className="modal-text"><strong>Name:</strong> {selectedUser.name}</div>
+                <div className="modal-text"><strong>Email:</strong> {selectedUser.email}</div>
+                <div className="modal-text"><strong>Phone No:</strong> {selectedUser.phoneNo}</div>
+                <div className="modal-text"><strong>Address:</strong> {selectedUser.address}</div>
+                <div className="modal-text"><strong>ABN Number:</strong> {selectedUser.ABN_Number}</div>
+                <div className="modal-text"><strong>Business Type:</strong> {selectedUser.businessType}</div>
+                <div className="modal-text"><strong>Service Type:</strong> {selectedUser.serviceType.join(', ')}</div>
+                <div className="modal-text"><strong>User Type:</strong> {selectedUser.userType}</div>
+                <div className="modal-text"><strong>User Status:</strong> {selectedUser.userStatus ? 'Active' : 'Inactive'}</div>
+                <div className="modal-text"><strong>Email Verified:</strong> {selectedUser.emailVerified ? 'Verified' : 'Not Verified'}</div>
+                <div className="modal-text"><strong>Document Status:</strong> {selectedUser.documentStatus ? 'Approved' : 'Pending'}</div>
+                <div className="modal-text"><strong>Subscription Status:</strong> {selectedUser.subscriptionStatus ? 'Active' : 'Pending'}</div>
+                <div className="modal-text"><strong>Terms and Conditions Accepted:</strong> {selectedUser.termsAndCondition ? 'Yes' : 'No'}</div>
+                <div className="modal-text"><strong>Ins Ip:</strong> {selectedUser.insIp}</div>
+                <div className="modal-text"><strong>Updated At:</strong> {new Date(selectedUser.updatedAt).toLocaleString()}</div>
 
-          {/* Display files if available */}
-          <div className="modal-text">
-            <strong>Files:</strong>
-            <div className="file-preview-container">
-              {selectedUser.files.length > 0 ? (
-                selectedUser.files.map((file, index) => (
-                  <div key={index}>
-                    {renderFilePreview(file)}
+                {/* Display files if available */}
+                <div className="modal-text">
+                  <strong>Files:</strong>
+                  <div className="file-preview-container">
+                    {selectedUser.files.length > 0 ? (
+                      selectedUser.files.map((file, index) => (
+                        <div key={index}>
+                          {renderFilePreview(file)}
+                        </div>
+                      ))
+                    ) : (
+                      <p>No files available</p>
+                    )}
                   </div>
-                ))
-              ) : (
-                <p>No files available</p>
-              )}
-            </div>
-          </div>
-        </>
+                </div>
+              </>
+            )}
+          </CModalBody>
+          <CModalFooter className="c-modal-footer">
+            {isEditing && (
+              <CButton color="success" onClick={handleSave} className="btn btn-success">
+                Save
+              </CButton>
+            )}
+            <CButton color="secondary" onClick={() => setShowModal(false)} className="btn btn-secondary">
+              Close
+            </CButton>
+          </CModalFooter>
+        </CModal>
       )}
-    </CModalBody>
-    <CModalFooter className="c-modal-footer">
-      {isEditing && (
-        <CButton color="success" onClick={handleSave} className="btn btn-success">
-          Save
-        </CButton>
-      )}
-      <CButton color="secondary" onClick={() => setShowModal(false)} className="btn btn-secondary">
-        Close
-      </CButton>
-    </CModalFooter>
-  </CModal>
-)}
 
 
 
