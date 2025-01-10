@@ -19,14 +19,22 @@ import {
   CFormInput,
   CFormLabel,
   CFormCheck,
+  CFormSelect,
 } from '@coreui/react';
+import { cilUser, cilUserFemale, cilUserPlus, cilSearch } from '@coreui/icons';
+import CIcon from '@coreui/icons-react';
 import './Usermanagement.css';
 
 const Usermanagement = () => {
   const [users, setUsers] = useState([]);
+  const [filteredUsers, setFilteredUsers] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [userTypeFilter, setUserTypeFilter] = useState('all'); // 'all', 'hunter', 'provider'
+  const [currentPage, setCurrentPage] = useState(1);
+  const usersPerPage = 5;
 
   useEffect(() => {
     fetchUsers();
@@ -36,6 +44,7 @@ const Usermanagement = () => {
     try {
       const response = await axios.get('http://44.196.64.110:7777/api/users');
       setUsers(response.data);
+      setFilteredUsers(response.data);
     } catch (error) {
       console.error('Error fetching users:', error);
     }
@@ -46,6 +55,7 @@ const Usermanagement = () => {
       try {
         await axios.delete(`http://44.196.64.110:7777/api/users/${id}`);
         setUsers(users.filter((user) => user._id !== id));
+        setFilteredUsers(filteredUsers.filter((user) => user._id !== id));
       } catch (error) {
         console.error('Error deleting user:', error);
       }
@@ -79,11 +89,83 @@ const Usermanagement = () => {
     setSelectedUser({ ...selectedUser, [name]: type === 'checkbox' ? checked : value });
   };
 
+  const handleSearch = (e) => {
+    setSearchTerm(e.target.value);
+    const lowercasedSearchTerm = e.target.value.toLowerCase();
+    const filtered = users.filter(
+      (user) =>
+        user.name.toLowerCase().includes(lowercasedSearchTerm) ||
+        user.email.toLowerCase().includes(lowercasedSearchTerm)
+    );
+    setFilteredUsers(filtered);
+    setCurrentPage(1); // Reset to the first page
+  };
+
+  const handleUserTypeFilter = (e) => {
+    const filter = e.target.value;
+    setUserTypeFilter(filter);
+
+    let filtered = users;
+    if (filter === 'hunter') {
+      filtered = users.filter((user) => user.userType === 'hunter');
+    } else if (filter === 'provider') {
+      filtered = users.filter((user) => user.userType === 'provider');
+    }
+    setFilteredUsers(filtered);
+    setCurrentPage(1); // Reset to the first page
+  };
+
+  const renderFilePreview = (file) => {
+    const fileExtension = file.split('.').pop().toLowerCase();
+    if (['jpg', 'png', 'jpeg'].includes(fileExtension)) {
+      return <img src={`http://44.196.64.110:7777/uploads/${file}`} alt={file} style={{ width: '100px', height: 'auto' }} />;
+    }
+    if (fileExtension === 'pdf') {
+      return <embed src={`http://44.196.64.110:7777/uploads/${file}`} type="application/pdf" width="100px" height="100px" />;
+    }
+    return <a href={`http://44.196.64.110:7777/uploads/${file}`} target="_blank" rel="noopener noreferrer">Download {file}</a>;
+  };
+
+  const indexOfLastUser = currentPage * usersPerPage;
+  const indexOfFirstUser = indexOfLastUser - usersPerPage;
+  const currentUsers = filteredUsers.slice(indexOfFirstUser, indexOfLastUser);
+
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
   return (
     <CContainer>
       <CCard>
         <CCardHeader>User Management</CCardHeader>
         <CCardBody>
+          {/* Search Bar and Filter */}
+          <div className="mb-4 d-flex justify-content-between align-items-center">
+            <div className="d-flex align-items-center">
+              {/* Search Input */}
+              <CFormInput
+                type="text"
+                placeholder="Search by name or email..."
+                value={searchTerm}
+                onChange={handleSearch}
+                className="w-50 me-3"
+              />
+              <CButton color="primary" onClick={() => fetchUsers()}>Reset</CButton>
+            </div>
+
+            {/* User Type Filter */}
+            <CFormSelect value={userTypeFilter} onChange={handleUserTypeFilter} className="w-25">
+              <option value="all">All</option>
+              <option value="hunter">
+                <CIcon icon={cilUser} className="me-2" />
+                Hunter
+              </option>
+              <option value="provider">
+                <CIcon icon={cilUserPlus} className="me-2" />
+                Provider
+              </option>
+            </CFormSelect>
+          </div>
+
+          {/* User Table */}
           <CTable hover responsive>
             <CTableHead>
               <CTableRow>
@@ -100,13 +182,19 @@ const Usermanagement = () => {
               </CTableRow>
             </CTableHead>
             <CTableBody>
-              {users.map((user, index) => (
+              {currentUsers.map((user, index) => (
                 <CTableRow key={user._id}>
                   <CTableDataCell>{index + 1}</CTableDataCell>
                   <CTableDataCell>{user.name}</CTableDataCell>
                   <CTableDataCell>{user.email}</CTableDataCell>
                   <CTableDataCell>{user.phoneNo}</CTableDataCell>
-                  <CTableDataCell>{user.userType}</CTableDataCell>
+                  <CTableDataCell>
+                    <CIcon
+                      icon={user.userType === 'hunter' ? cilUser : cilUserPlus}
+                      className="me-2"
+                    />
+                    {user.userType}
+                  </CTableDataCell>
                   <CTableDataCell>{user.userStatus ? 'Active' : 'Inactive'}</CTableDataCell>
                   <CTableDataCell>{user.emailVerified ? 'Verified' : 'Not Verified'}</CTableDataCell>
                   <CTableDataCell>{user.documentStatus ? 'Approved' : 'Pending'}</CTableDataCell>
@@ -126,64 +214,129 @@ const Usermanagement = () => {
               ))}
             </CTableBody>
           </CTable>
+
+          {/* Pagination */}
+          <div className="d-flex justify-content-center mt-4">
+            <CButton
+              color="secondary"
+              onClick={() => paginate(currentPage - 1)}
+              disabled={currentPage === 1}
+            >
+              Prev
+            </CButton>
+            <CButton color="secondary" className="mx-2">
+              Page {currentPage}
+            </CButton>
+            <CButton
+              color="secondary"
+              onClick={() => paginate(currentPage + 1)}
+              disabled={currentPage * usersPerPage >= filteredUsers.length}
+            >
+              Next
+            </CButton>
+          </div>
         </CCardBody>
       </CCard>
 
       {/* Modal for View/Edit */}
-      {selectedUser && (
-        <CModal visible={showModal} onClose={() => setShowModal(false)}>
-          <CModalHeader>{isEditing ? 'Edit User' : 'View User'}</CModalHeader>
-          <CModalBody>
-            {isEditing ? (
-              <>
-                <CFormLabel>Name</CFormLabel>
-                <CFormInput
-                  name="name"
-                  value={selectedUser.name}
-                  onChange={handleInputChange}
-                />
-                <CFormLabel>Email</CFormLabel>
-                <CFormInput
-                  name="email"
-                  value={selectedUser.email}
-                  onChange={handleInputChange}
-                />
-                <CFormLabel>Phone Number</CFormLabel>
-                <CFormInput
-                  name="phoneNo"
-                  value={selectedUser.phoneNo}
-                  onChange={handleInputChange}
-                />
-                <CFormLabel>User Status</CFormLabel>
-                <CFormCheck
-                  name="userStatus"
-                  label="Active"
-                  checked={selectedUser.userStatus}
-                  onChange={handleInputChange}
-                />
-              </>
-            ) : (
-              <>
-                <p><strong>Name:</strong> {selectedUser.name}</p>
-                <p><strong>Email:</strong> {selectedUser.email}</p>
-                <p><strong>Contact:</strong> {selectedUser.phoneNo}</p>
-                <p><strong>User Type:</strong> {selectedUser.userType}</p>
-                <p><strong>User Status:</strong> {selectedUser.userStatus ? 'Active' : 'Inactive'}</p>
-              </>
-            )}
-          </CModalBody>
-          <CModalFooter>
-            {isEditing && (
-              <CButton color="success" onClick={handleSave}>
-                Save
-              </CButton>
-            )}
-            <CButton color="secondary" onClick={() => setShowModal(false)}>
-              Close
-            </CButton>
-          </CModalFooter>
-        </CModal>
+{selectedUser && (
+  <CModal visible={showModal} onClose={() => setShowModal(false)} className="c-modal">
+    <CModalHeader className="c-modal-header">{isEditing ? 'Edit User' : 'View User'}</CModalHeader>
+    <CModalBody className="c-modal-body">
+      {isEditing ? (
+        <>
+          <CFormLabel className="c-form-label">Name</CFormLabel>
+          <CFormInput
+            name="name"
+            value={selectedUser.name}
+            onChange={handleInputChange}
+            className="c-form-input"
+          />
+
+          <CFormLabel className="c-form-label">Email</CFormLabel>
+          <CFormInput
+            name="email"
+            value={selectedUser.email}
+            onChange={handleInputChange}
+            className="c-form-input"
+          />
+
+          <CFormLabel className="c-form-label">Phone No</CFormLabel>
+          <CFormInput
+            name="phoneNo"
+            value={selectedUser.phoneNo}
+            onChange={handleInputChange}
+            className="c-form-input"
+          />
+
+          <CFormLabel className="c-form-label">Document Status</CFormLabel>
+          <CFormCheck
+            name="documentStatus"
+            label="Approved"
+            checked={selectedUser.documentStatus}
+            onChange={handleInputChange}
+            className="c-form-check"
+          />
+
+          <CFormLabel className="c-form-label">Business Type</CFormLabel>
+          <CFormInput
+            name="businessType"
+            value={selectedUser.businessType}
+            onChange={handleInputChange}
+            className="c-form-input"
+          />
+        </>
+      ) : (
+        <>
+          <div className="modal-text"><strong>Name:</strong> {selectedUser.name}</div>
+          <div className="modal-text"><strong>Email:</strong> {selectedUser.email}</div>
+          <div className="modal-text"><strong>Phone No:</strong> {selectedUser.phoneNo}</div>
+          <div className="modal-text"><strong>Address:</strong> {selectedUser.address}</div>
+          <div className="modal-text"><strong>ABN Number:</strong> {selectedUser.ABN_Number}</div>
+          <div className="modal-text"><strong>Business Type:</strong> {selectedUser.businessType}</div>
+          <div className="modal-text"><strong>Service Type:</strong> {selectedUser.serviceType.join(', ')}</div>
+          <div className="modal-text"><strong>User Type:</strong> {selectedUser.userType}</div>
+          <div className="modal-text"><strong>User Status:</strong> {selectedUser.userStatus ? 'Active' : 'Inactive'}</div>
+          <div className="modal-text"><strong>Email Verified:</strong> {selectedUser.emailVerified ? 'Verified' : 'Not Verified'}</div>
+          <div className="modal-text"><strong>Document Status:</strong> {selectedUser.documentStatus ? 'Approved' : 'Pending'}</div>
+          <div className="modal-text"><strong>Subscription Status:</strong> {selectedUser.subscriptionStatus ? 'Active' : 'Pending'}</div>
+          <div className="modal-text"><strong>Terms and Conditions Accepted:</strong> {selectedUser.termsAndCondition ? 'Yes' : 'No'}</div>
+          <div className="modal-text"><strong>Ins Ip:</strong> {selectedUser.insIp}</div>
+          <div className="modal-text"><strong>Updated At:</strong> {new Date(selectedUser.updatedAt).toLocaleString()}</div>
+
+          {/* Display files if available */}
+          <div className="modal-text">
+            <strong>Files:</strong>
+            <div className="file-preview-container">
+              {selectedUser.files.length > 0 ? (
+                selectedUser.files.map((file, index) => (
+                  <div key={index}>
+                    {renderFilePreview(file)}
+                  </div>
+                ))
+              ) : (
+                <p>No files available</p>
+              )}
+            </div>
+          </div>
+        </>
       )}
+    </CModalBody>
+    <CModalFooter className="c-modal-footer">
+      {isEditing && (
+        <CButton color="success" onClick={handleSave} className="btn btn-success">
+          Save
+        </CButton>
+      )}
+      <CButton color="secondary" onClick={() => setShowModal(false)} className="btn btn-secondary">
+        Close
+      </CButton>
+    </CModalFooter>
+  </CModal>
+)}
+
+
+
     </CContainer>
   );
 };

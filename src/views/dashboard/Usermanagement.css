@@ -41,4 +41,191 @@
     border-radius: 8px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   }
-  
+ 
+
+/* Center the modal in the viewport */
+.c-modal {
+  max-width: 39%;
+  max-height: 88%;
+  width: 885px;
+  margin: 0 auto;
+  border-radius: 8px;
+  background-color: #9fc3e9;
+  position: fixed;
+  top: 56%;
+  left: 55%;
+  transform: translate(-50%, -50%);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  padding-bottom: 20px;
+}
+
+/* Center the modal header and add a background color */
+.c-modal-header {
+  background-color: #007bff;
+  color: #fff;
+  font-size: 1.25rem;
+  padding: 16px;
+  text-align: center;
+  font-weight: bold;
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
+}
+
+/* Modal body with padding for content */
+.c-modal-body {
+  padding: 20px;
+  font-size: 1rem;
+  color: #333;
+  max-height: 60vh; /* Limit height for better scrolling */
+  overflow-y: auto; /* Add scrolling if content overflows */
+}
+
+/* Footer with action buttons aligned to the right */
+.c-modal-footer {
+  padding: 10px 20px;
+  border-bottom-left-radius: 8px;
+  border-bottom-right-radius: 8px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.c-modal-footer .btn {
+  border-radius: 5px;
+  padding: 8px 16px; /* Add padding for larger buttons */
+  font-size: 1rem;
+  transition: background-color 0.3s ease; /* Smooth button hover effect */
+}
+
+.c-modal-footer .btn-success {
+  background-color: #28a745;
+  color: white;
+}
+
+.c-modal-footer .btn-secondary {
+  background-color: #6c757d;
+  color: white;
+  margin-left: 10px;
+}
+
+.c-modal-footer .btn:hover {
+  opacity: 0.9;
+}
+
+.c-modal-footer .btn-success:hover {
+  background-color: #218838;
+}
+
+.c-modal-footer .btn-secondary:hover {
+  background-color: #5a6268;
+}
+
+/* Form label styles */
+.c-form-label {
+  font-size: 1rem;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 8px;
+}
+
+/* Form input and checkboxes */
+.c-form-input,
+.c-form-check {
+  width: 100%;
+  padding: 10px;
+  font-size: 1rem;
+  margin-bottom: 15px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.c-form-input:focus,
+.c-form-check:focus {
+  border-color: #007bff;
+  outline: none;
+}
+
+/* Text area styling */
+.c-form-textarea {
+  width: 100%;
+  padding: 10px;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  min-height: 100px;
+  resize: vertical; /* Allow user to resize vertically */
+}
+
+/* File preview styling */
+.file-preview-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.file-preview-container img,
+.file-preview-container embed {
+  max-width: 120px;
+  max-height: 120px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+}
+
+.file-preview-container a {
+  color: #007bff;
+  font-size: 1rem;
+  text-decoration: none;
+  margin-top: 5px;
+}
+
+.file-preview-container a:hover {
+  text-decoration: underline;
+}
+
+/* Modal text styling */
+.modal-text {
+  margin-bottom: 10px;
+  font-size: 1rem;
+  color: #555;
+}
+
+.modal-text strong {
+  color: #007bff;
+}
+
+/* Button styling */
+button {
+  padding: 10px 15px;
+  border-radius: 5px;
+  font-size: 1rem;
+  cursor: pointer;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  transition: opacity 0.2s ease, background-color 0.3s ease;
+}
+
+button:hover {
+  opacity: 0.9;
+  background-color: #0056b3;
+}
+
+/* Ensure the modal content is responsive on small screens */
+@media (max-width: 768px) {
+  .c-modal {
+    width: 90%; /* Increase modal width on smaller screens */
+    max-width: 100%; /* Allow full width on smaller devices */
+  }
+
+  .c-modal-header,
+  .c-modal-footer {
+    font-size: 1.1rem;
+  }
+
+  .c-form-label,
+  .c-form-input,
+  .c-form-check,
+  .c-form-textarea {
+    font-size: 0.9rem; /* Smaller font for mobile */
+  }
+}
