@@ -12,6 +12,7 @@ import {
   cilPencil,
   cilPuzzle,
   cilSpeedometer,
+  cilUser,  
   cilStar,
 } from '@coreui/icons'
 import { CNavGroup, CNavItem, CNavTitle } from '@coreui/react'
@@ -19,12 +20,20 @@ import { CNavGroup, CNavItem, CNavTitle } from '@coreui/react'
 const _nav = [
 
   // Dashboard
-
   {
     component: CNavItem,
     name: 'User management',
     to: '/Usermanagement',
-    icon: <CIcon icon={cilSpeedometer} customClassName="nav-icon" style={{ color: 'blue' }} />,
+    icon: <CIcon icon={cilUser} customClassName="nav-icon" style={{ color: 'blue' }} />,  // Added cilUser here
+    badge: {
+      color: 'info',
+    },
+  },
+  {
+    component: CNavItem,
+    name: 'Jobs Management',
+    to: '/JobsManagement',  // Fixed typo in the route name
+    icon: <CIcon icon={cilPuzzle} customClassName="nav-icon" style={{ color: 'blue' }} />,  // Added cilPuzzle or another icon here
     badge: {
       color: 'info',
     },
