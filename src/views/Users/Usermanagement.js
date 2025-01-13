@@ -199,18 +199,18 @@ const Usermanagement = () => {
         <CTableDataCell>{user.emailVerified ? 'Verified' : 'Not Verified'}</CTableDataCell>
         <CTableDataCell>{user.documentStatus ? 'Approved' : 'Pending'}</CTableDataCell>
         <CTableDataCell>{user.subscriptionStatus ? 'Active' : 'Pending'}</CTableDataCell>
-        <CTableDataCell>
-          <CButton color="info" size="sm" onClick={() => handleView(user)}>
-            <CIcon icon={cilSearch} />
-          </CButton>
+        <CTableDataCell style={{display:"flex", alignItems:"center"}}>
+          {/* <CButton color="info" size="sm" onClick={() => handleView(user)}> */}
+            <CIcon className='fw-bold text-success me-2' onClick={() => handleView(user)} icon={cilSearch} />
+          {/* </CButton> */}
 
-          <CButton color="primary" size="sm" className="ms-2" onClick={() => handleEdit(user)}>
-            <CIcon icon={cilPencil} />
-          </CButton>
+          {/* <CButton color="primary" size="sm" className="ms-2" onClick={() => handleEdit(user)}> */}
+            <CIcon className='fw-bold text-success me-2' onClick={() => handleEdit(user)} icon={cilPencil} />
+          {/* </CButton> */}
 
-          <CButton color="danger" size="sm" className="ms-2" onClick={() => deleteUser(user._id)}>
-            <CIcon icon={cilTrash} />
-          </CButton>
+          {/* <CButton color="danger" size="sm" className="ms-2" onClick={() => deleteUser(user._id)}> */}
+            <CIcon className='fw-bold text-danger' onClick={() => deleteUser(user?._id)} icon={cilTrash} />
+          {/* </CButton> */}
         </CTableDataCell>
       </CTableRow>
     ))}

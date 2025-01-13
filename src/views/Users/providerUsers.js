@@ -26,7 +26,7 @@ const Hunter = () => {
   const fetchUsers = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:7777/api/users/type/provider/pagelimit/10?page=${page}&search=${search}`
+        `http://44.196.64.110:7777/api/users/type/provider/pagelimit/10?page=${page}&search=${search}`
       );
       setUsers(response.data.users);
     } catch (error) {
@@ -72,7 +72,7 @@ const Hunter = () => {
                 <CTableHeaderCell>Name</CTableHeaderCell>
                 <CTableHeaderCell>Email</CTableHeaderCell>
                 <CTableHeaderCell>Contact</CTableHeaderCell>
-                <CTableHeaderCell>User Type</CTableHeaderCell>
+                {/* <CTableHeaderCell>User Type</CTableHeaderCell> */}
                 <CTableHeaderCell>User Status</CTableHeaderCell>
                 <CTableHeaderCell>Email Verified</CTableHeaderCell>
                 <CTableHeaderCell>Document Status</CTableHeaderCell>
@@ -87,12 +87,12 @@ const Hunter = () => {
                   <CTableDataCell>{user.name}</CTableDataCell>
                   <CTableDataCell>{user.email}</CTableDataCell>
                   <CTableDataCell>{user.phoneNo}</CTableDataCell>
-                  <CTableDataCell>{user.userType}</CTableDataCell>
+                  {/* <CTableDataCell>{user.userType}</CTableDataCell> */}
                   <CTableDataCell>{user.userStatus ? 'Active' : 'Inactive'}</CTableDataCell>
                   <CTableDataCell>{user.emailVerified ? 'Yes' : 'No'}</CTableDataCell>
                   <CTableDataCell>{user.documentStatus ? 'Approved' : 'Pending'}</CTableDataCell>
                   <CTableDataCell>{user.subscriptionStatus ? 'Active' : 'Inactive'}</CTableDataCell>
-                  <CTableDataCell>
+                  <CTableDataCell style={{display:"flex", alignItems:"center"}}>
                     <CButton color="warning" size="sm" className="me-1 btn">
                       <CIcon icon={cilPencil} /> Edit
                     </CButton>
