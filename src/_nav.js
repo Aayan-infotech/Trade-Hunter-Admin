@@ -18,17 +18,31 @@ import {
 import { CNavGroup, CNavItem, CNavTitle } from '@coreui/react'
 
 const _nav = [
-
-  // Dashboard
   {
-    component: CNavItem,
+    component: CNavGroup,
     name: 'User management',
     to: '/Usermanagement',
     icon: <CIcon icon={cilUser} customClassName="nav-icon" style={{ color: 'blue' }} />,  // Added cilUser here
-    badge: {
-      color: 'info',
-    },
+    items: [
+      {
+        component: CNavItem,
+        name: 'All Users ',
+        to: '/Usermanagement',
+      },
+      {
+        component: CNavItem,
+        name: 'Hunter',
+        to: '/hunterUsers',
+      },
+      {
+        component: CNavItem,
+        name: 'Provider',
+        to: '/providerUsers',
+      },      
+      
+    ],
   },
+
   {
     component: CNavItem,
     name: 'Jobs Management',
