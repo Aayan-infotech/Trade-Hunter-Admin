@@ -166,56 +166,57 @@ const Usermanagement = () => {
           </div>
 
           {/* User Table */}
-          <CTable hover responsive>
-            <CTableHead>
-              <CTableRow>
-                <CTableHeaderCell>Sr. No</CTableHeaderCell>
-                <CTableHeaderCell>Name</CTableHeaderCell>
-                <CTableHeaderCell>Email</CTableHeaderCell>
-                <CTableHeaderCell>Contact</CTableHeaderCell>
-                <CTableHeaderCell>User Type</CTableHeaderCell>
-                <CTableHeaderCell>User Status</CTableHeaderCell>
-                <CTableHeaderCell>Email Verified</CTableHeaderCell>
-                <CTableHeaderCell>Document Status</CTableHeaderCell>
-                <CTableHeaderCell>Subscription Status</CTableHeaderCell>
-                <CTableHeaderCell>Actions</CTableHeaderCell>
-              </CTableRow>
-            </CTableHead>
-            <CTableBody>
-              {currentUsers.map((user, index) => (
-                <CTableRow key={user._id}>
-                  <CTableDataCell>{index + 1}</CTableDataCell>
-                  <CTableDataCell>{user.name}</CTableDataCell>
-                  <CTableDataCell>{user.email}</CTableDataCell>
-                  <CTableDataCell>{user.phoneNo}</CTableDataCell>
-                  <CTableDataCell>
-                    <CIcon
-                      icon={user.userType === 'hunter' ? cilUser : cilUserPlus}
-                      className="me-2"
-                    />
-                    {user.userType}
-                  </CTableDataCell>
-                  <CTableDataCell>{user.userStatus ? 'Active' : 'Inactive'}</CTableDataCell>
-                  <CTableDataCell>{user.emailVerified ? 'Verified' : 'Not Verified'}</CTableDataCell>
-                  <CTableDataCell>{user.documentStatus ? 'Approved' : 'Pending'}</CTableDataCell>
-                  <CTableDataCell>{user.subscriptionStatus ? 'Active' : 'Pending'}</CTableDataCell>
-                  <CTableDataCell>
-                    <CButton color="info" size="sm" onClick={() => handleView(user)}>
-                      <CIcon icon={cilSearch} />
-                    </CButton>
+          <CTable hover responsive className="ctable">
+  <CTableHead>
+    <CTableRow>
+      <CTableHeaderCell>Sr. No</CTableHeaderCell>
+      <CTableHeaderCell>Name</CTableHeaderCell>
+      <CTableHeaderCell>Email</CTableHeaderCell>
+      <CTableHeaderCell>Contact</CTableHeaderCell>
+      <CTableHeaderCell>User Type</CTableHeaderCell>
+      <CTableHeaderCell>User Status</CTableHeaderCell>
+      <CTableHeaderCell>Email Verified</CTableHeaderCell>
+      <CTableHeaderCell>Document Status</CTableHeaderCell>
+      <CTableHeaderCell>Subscription Status</CTableHeaderCell>
+      <CTableHeaderCell>Actions</CTableHeaderCell>
+    </CTableRow>
+  </CTableHead>
+  <CTableBody>
+    {currentUsers.map((user, index) => (
+      <CTableRow key={user._id}>
+        <CTableDataCell>{index + 1}</CTableDataCell>
+        <CTableDataCell>{user.name}</CTableDataCell>
+        <CTableDataCell>{user.email}</CTableDataCell>
+        <CTableDataCell>{user.phoneNo}</CTableDataCell>
+        <CTableDataCell>
+          <CIcon
+            icon={user.userType === 'hunter' ? cilUser : cilUserPlus}
+            className="me-2"
+          />
+          {user.userType}
+        </CTableDataCell>
+        <CTableDataCell>{user.userStatus ? 'Active' : 'Inactive'}</CTableDataCell>
+        <CTableDataCell>{user.emailVerified ? 'Verified' : 'Not Verified'}</CTableDataCell>
+        <CTableDataCell>{user.documentStatus ? 'Approved' : 'Pending'}</CTableDataCell>
+        <CTableDataCell>{user.subscriptionStatus ? 'Active' : 'Pending'}</CTableDataCell>
+        <CTableDataCell>
+          <CButton color="info" size="sm" onClick={() => handleView(user)}>
+            <CIcon icon={cilSearch} />
+          </CButton>
 
-                    <CButton color="primary" size="sm" className="ms-2" onClick={() => handleEdit(user)}>
-                      <CIcon icon={cilPencil} />
-                    </CButton>
+          <CButton color="primary" size="sm" className="ms-2" onClick={() => handleEdit(user)}>
+            <CIcon icon={cilPencil} />
+          </CButton>
 
-                    <CButton color="danger" size="sm" className="ms-2" onClick={() => deleteUser(user._id)}>
-                      <CIcon icon={cilTrash} />
-                    </CButton>
-                  </CTableDataCell>
-                </CTableRow>
-              ))}
-            </CTableBody>
-          </CTable>
+          <CButton color="danger" size="sm" className="ms-2" onClick={() => deleteUser(user._id)}>
+            <CIcon icon={cilTrash} />
+          </CButton>
+        </CTableDataCell>
+      </CTableRow>
+    ))}
+  </CTableBody>
+</CTable>
+
 
           {/* Pagination */}
           <div className="d-flex justify-content-center mt-4">

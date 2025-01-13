@@ -1,3 +1,4 @@
+
 /* Usermanagement.css */
 
 /* Style for the card */
@@ -228,4 +229,102 @@ button:hover {
   .c-form-textarea {
     font-size: 0.9rem; /* Smaller font for mobile */
   }
+}
+
+
+/* Table Styling */
+.ctable {
+  font-size: 0.875rem; /* Reduce font size for compactness */
+  border-collapse: collapse;
+  width: 100%;
+}
+
+.ctable th,
+.ctable td {
+  padding: 0.5rem; /* Reduce padding for smaller rows */
+  text-align: center;
+}
+
+.ctable th {
+  background-color: #f8f9fa;
+  color: #495057;
+  font-weight: 600;
+}
+
+.ctable td {
+  background-color: #ffffff;
+  color: #495057;
+  border-bottom: 1px solid #dee2e6;
+}
+
+/* Action Buttons in Table */
+.ctable .btn {
+  font-size: 0.75rem; /* Smaller button size */
+  padding: 0.25rem 0.5rem;
+}
+
+.ctable .btn-info,
+.ctable .btn-primary,
+.ctable .btn-danger {
+  border-radius: 0.25rem;
+  transition: background-color 0.3s ease;
+}
+
+/* Hover effects on table rows */
+.ctable tr:hover {
+  background-color: #f1f1f1;
+}
+
+/* Modal body */
+.c-modal-body {
+  font-size: 0.9rem; /* Slightly smaller font size for modal */
+  max-height: 60vh;
+  overflow-y: auto;
+}
+
+.modal-text {
+  font-size: 0.9rem; /* Slightly smaller font for modal details */
+  margin-bottom: 8px;
+}
+
+.modal-text strong {
+  font-weight: 600;
+  color: #007bff;
+}
+
+/* Modal footer */
+.c-modal-footer {
+  padding: 0.5rem 1rem;
+}
+
+/* Pagination */
+.pagination .btn {
+  font-size: 0.875rem;
+  padding: 0.25rem 0.5rem;
+  margin: 0 5px;
+}
+
+/* File Preview Container */
+.file-preview-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.file-preview-container img,
+.file-preview-container embed {
+  max-width: 100px;
+  max-height: 100px;
+  border: 1px solid #0c0909;
+  border-radius: 5px;
+}
+
+.file-preview-container a {
+  font-size: 0.875rem;
+  color: #007bff;
+  text-decoration: none;
+}
+
+.file-preview-container a:hover {
+  text-decoration: underline;
 }
