@@ -1,6 +1,6 @@
 import React from 'react'
 
-const Usermanagement = React.lazy(() => import('./views/dashboard/Usermanagement'))
+const Usermanagement = React.lazy(() => import('./views/Users/Usermanagement.js'))
 const JobsManagement = React.lazy(() => import('./views/JobsManagemen/JobsManagemen.js'))
 
 
