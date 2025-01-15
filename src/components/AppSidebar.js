@@ -30,6 +30,7 @@ const AppSidebar = () => {
   return (
     <CSidebar
       className="border-end"
+      style={{ background: "#000000e3" }}
       colorScheme="dark"
       position="fixed"
       unfoldable={unfoldable}
@@ -39,17 +40,17 @@ const AppSidebar = () => {
       }}
     >
       <CSidebarHeader className="border-bottom">
-        <CSidebarBrand to="/">
+        <CSidebarBrand to="/" className='text-decoration-none'>
 
-        <div className="d-flex justify-content-center align-items-center">
-  <img 
-    src={Logo} 
-    alt="Discount Doors and Windows" 
-    className="me-2" 
-    style={{ maxHeight: "128px", maxWidth: "100%" }}
-  />
-  <span className="trade-hunter-name">Trade Hunter</span>
-</div>
+          <div className="d-flex justify-content-center align-items-center w-100">
+            <img
+              src={Logo}
+              alt="Discount Doors and Windows"
+              className="me-2"
+              style={{ maxHeight: "80px", maxWidth: "100%" }}
+            />
+            <span className="trade-hunter-name fs-4 text-decoration-none">Trade Hunter</span>
+          </div>
 
 
 
