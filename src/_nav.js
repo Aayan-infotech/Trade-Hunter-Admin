@@ -21,14 +21,14 @@ const _nav = [
   {
     component: CNavGroup,
     name: 'User management',
-    to: '/Usermanagement',
+    // to: '/Usermanagement',
     icon: <CIcon icon={cilUser} customClassName="nav-icon" style={{ color: 'blue' }} />,  // Added cilUser here
     items: [
-      {
-        component: CNavItem,
-        name: 'All Users ',
-        to: '/Usermanagement',
-      },
+      // {
+      //   component: CNavItem,
+      //   name: 'All Users ',
+      //   to: '/Usermanagement',
+      // },
       {
         component: CNavItem,
         name: 'Hunter',
