@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import React, { useEffect, useState } from 'react'
+import axios from 'axios'
 import {
   CContainer,
   CCard,
@@ -19,89 +19,85 @@ import {
   CModalTitle,
   CModalBody,
   CModalFooter,
-} from '@coreui/react';
-import CIcon from '@coreui/icons-react';
-import { cilSearch, cilTrash, cilPencil } from '@coreui/icons';
-import './Usermanagement.css';
+} from '@coreui/react'
+import CIcon from '@coreui/icons-react'
+import { cilSearch, cilTrash, cilPencil } from '@coreui/icons'
+import './Usermanagement.css'
 
 const Provider = () => {
-  const [users, setUsers] = useState([]);
-  const [page, setPage] = useState(1);
-  const [search, setSearch] = useState('');
-  const [loading, setLoading] = useState(false);
-  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-  const [editUser, setEditUser] = useState(null);
-  const [hasMoreData, setHasMoreData] = useState(true);
+  const [users, setUsers] = useState([])
+  const [page, setPage] = useState(1)
+  const [search, setSearch] = useState('')
+  const [loading, setLoading] = useState(false)
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false)
+  const [editUser, setEditUser] = useState(null)
+  const [hasMoreData, setHasMoreData] = useState(true)
 
   const fetchUsers = async () => {
     try {
-      setLoading(true);
+      setLoading(true)
       const response = await axios.get(
-        `http://44.196.64.110:7777/api/users/type/provider/pagelimit/10?page=${page}&search=${search}`
-      );
-      setUsers(response.data.users);
-
-      setHasMoreData(response.data.users.length === 10);
+        `http://44.196.64.110:7777/api/Prvdr?page=${page}&limit=10&search=${search}`,
+      )
+      setUsers(response.data.data) // Adjusted to match the API response structure
+      setHasMoreData(response.data.data.length === 10)
     } catch (error) {
-      console.error('Error fetching users:', error);
+      console.error('Error fetching users:', error)
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
-  };
+  }
 
   useEffect(() => {
-    fetchUsers();
-  }, [page, search]);
+    fetchUsers()
+  }, [page, search])
 
   const handleSearch = (e) => {
-    setSearch(e.target.value);
-    setPage(1);
-  };
+    setSearch(e.target.value)
+    setPage(1)
+  }
 
   const nextPage = () => {
     if (hasMoreData) {
-      setPage((prevPage) => prevPage + 1);
+      setPage((prevPage) => prevPage + 1)
     }
-  };
+  }
 
-  const prevPage = () => setPage((prevPage) => Math.max(prevPage - 1, 1));
+  const prevPage = () => setPage((prevPage) => Math.max(prevPage - 1, 1))
 
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`http://44.196.64.110:7777/api/users/${id}`);
-      fetchUsers();
+      await axios.delete(`http://44.196.64.110:7777/api/Prvdr/${id}`)
+      fetchUsers()
     } catch (error) {
-      console.error('Error deleting user:', error);
+      console.error('Error deleting user:', error)
     }
-  };
+  }
 
   const handleEdit = (user) => {
-    setEditUser(user);
-    setIsEditModalOpen(true);
-  };
+    setEditUser(user)
+    setIsEditModalOpen(true)
+  }
 
   const handleSaveEdit = async () => {
     try {
-      await axios.put(
-        `http://44.196.64.110:7777/api/users/${editUser._id}`,
-        editUser
-      );
-      fetchUsers();
-      setIsEditModalOpen(false);
+      await axios.put(`http://44.196.64.110:7777/api/Prvdr/${editUser._id}`, editUser)
+      fetchUsers()
+      setIsEditModalOpen(false)
     } catch (error) {
-      console.error('Error editing user:', error);
+      console.error('Error editing user:', error)
     }
-  };
+  }
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
-    const updatedValue = value === 'true' ? true : value === 'false' ? false : value;
+    const { name, value } = e.target
+    const updatedValue = value === 'true' ? true : value === 'false' ? false : value
 
     setEditUser({
       ...editUser,
       [name]: updatedValue,
-    });
-  };
+    })
+  }
 
   return (
     <CContainer className="container">
@@ -143,32 +139,26 @@ const Provider = () => {
                 {users.map((user, index) => (
                   <CTableRow key={user._id}>
                     <CTableDataCell>{index + 1 + (page - 1) * 10}</CTableDataCell>
-                    <CTableDataCell>{user.name}</CTableDataCell>
+                    <CTableDataCell>{user.contactName}</CTableDataCell>
                     <CTableDataCell>{user.email}</CTableDataCell>
                     <CTableDataCell>{user.phoneNo}</CTableDataCell>
                     <CTableDataCell>{user.userStatus ? 'Active' : 'Inactive'}</CTableDataCell>
                     <CTableDataCell>{user.emailVerified ? 'Yes' : 'No'}</CTableDataCell>
                     <CTableDataCell>{user.documentStatus ? 'Approved' : 'Pending'}</CTableDataCell>
-                    <CTableDataCell>{user.subscriptionStatus ? 'Active' : 'Inactive'}</CTableDataCell>
+                    <CTableDataCell>
+                      {user.subscriptionStatus ? 'Active' : 'Inactive'}
+                    </CTableDataCell>
                     <CTableDataCell className="d-flex justify-content-start">
-                      {/* <CButton
-                        color="warning"
-                        size="sm"
-                        className="me-1 d-flex align-items-center"
+                      <CIcon
+                        className="fw-bold text-success me-2"
                         onClick={() => handleEdit(user)}
-                      >
-                        <CIcon icon={cilPencil} className="me-1" /> Edit
-                      </CButton>
-                      <CButton
-                        color="danger"
-                        size="sm"
-                        className="d-flex align-items-center"
+                        icon={cilPencil}
+                      />
+                      <CIcon
+                        className="fw-bold text-success me-2"
                         onClick={() => handleDelete(user._id)}
-                      >
-                        <CIcon icon={cilTrash} className="me-1" /> Delete
-                      </CButton> */}
-                       <CIcon className='fw-bold text-success me-2' onClick={() => handleEdit(user)} icon={cilPencil} />
-                         <CIcon className='fw-bold text-success me-2' onClick={() => handleDelete(user._id)} icon={cilTrash} />
+                        icon={cilTrash}
+                      />
                     </CTableDataCell>
                   </CTableRow>
                 ))}
@@ -176,21 +166,11 @@ const Provider = () => {
             </CTable>
           )}
           <div className="d-flex justify-content-between mt-3">
-            <CButton
-              color="secondary"
-              onClick={prevPage}
-              disabled={page === 1}
-              className="btn"
-            >
+            <CButton color="secondary" onClick={prevPage} disabled={page === 1} className="btn">
               Previous
             </CButton>
             <span>Page: {page}</span>
-            <CButton
-              color="secondary"
-              onClick={nextPage}
-              disabled={!hasMoreData}
-              className="btn"
-            >
+            <CButton color="secondary" onClick={nextPage} disabled={!hasMoreData} className="btn">
               Next
             </CButton>
           </div>
@@ -205,9 +185,9 @@ const Provider = () => {
         <CModalBody>
           <CFormInput
             type="text"
-            name="name"
+            name="contactName"
             label="Name"
-            value={editUser?.name || ''}
+            value={editUser?.contactName || ''}
             onChange={handleChange}
           />
           <CFormInput
@@ -218,13 +198,15 @@ const Provider = () => {
             onChange={handleChange}
           />
           <CFormInput
-            type="text" name="phoneNo"
+            type="text"
+            name="phoneNo"
             label="Phone Number"
             value={editUser?.phoneNo || ''}
             onChange={handleChange}
           />
           <CFormSelect
-            name="userStatus" label="User Status"
+            name="userStatus"
+            label="User Status"
             value={editUser?.userStatus !== undefined ? editUser?.userStatus.toString() : ''}
             onChange={handleChange}
           >
@@ -232,7 +214,8 @@ const Provider = () => {
             <option value="false">Inactive</option>
           </CFormSelect>
           <CFormSelect
-            name="emailVerified" label="Email Verified"
+            name="emailVerified"
+            label="Email Verified"
             value={editUser?.emailVerified !== undefined ? editUser?.emailVerified.toString() : ''}
             onChange={handleChange}
           >
@@ -240,16 +223,24 @@ const Provider = () => {
             <option value="false">No</option>
           </CFormSelect>
           <CFormSelect
-            name="documentStatus" label="Document Status"
-            value={editUser?.documentStatus !== undefined ? editUser?.documentStatus.toString() : ''}
+            name="documentStatus"
+            label="Document Status"
+            value={
+              editUser?.documentStatus !== undefined ? editUser?.documentStatus.toString() : ''
+            }
             onChange={handleChange}
           >
             <option value="true">Approved</option>
             <option value="false">Pending</option>
           </CFormSelect>
           <CFormSelect
-            name="subscriptionStatus" label="Subscription Status"
-            value={editUser?.subscriptionStatus !== undefined ? editUser?.subscriptionStatus.toString() : ''}
+            name="subscriptionStatus"
+            label="Subscription Status"
+            value={
+              editUser?.subscriptionStatus !== undefined
+                ? editUser?.subscriptionStatus.toString()
+                : ''
+            }
             onChange={handleChange}
           >
             <option value="true">Active</option>
@@ -266,7 +257,7 @@ const Provider = () => {
         </CModalFooter>
       </CModal>
     </CContainer>
-  );
-};
+  )
+}
 
-export default Provider;
+export default Provider
