@@ -24,12 +24,31 @@ const JobsManagemen = () => {
     }
   }, [state]);
 
+  const getStatusBadge = (status) => {
+    let badgeClass = '';
+    switch (status) {
+      case 'pending':
+        badgeClass = 'bg-success';
+        break;
+      case 'In Progress':
+        badgeClass = 'bg-warning';
+        break;
+      case 'Closed':
+        badgeClass = 'bg-danger';
+        break;
+      default:
+        badgeClass = 'bg-secondary';
+        break;
+    }
+    return <span className={`badge ${badgeClass} text-white`}>{status}</span>;
+  };
+
   if (loading) {
     return <div className="text-center mt-5">Loading...</div>;
   }
 
   if (jobData.length === 0) {
-    return <div className="text-center mt-5">No data found for the provided ID.</div>;
+    return <div className="text-center mt-5">No job listings from Hunter at the moment.</div>;
   }
 
   return (
@@ -64,9 +83,17 @@ const JobsManagemen = () => {
                   <p className="text-muted">{job.service}</p>
                 </div>
               </div>
-              <div className="mb-2">
-                <p className="mb-1"><strong>Requirements:</strong></p>
-                <p className="text-muted">{job.requirements}</p>
+
+              <div className='row gy-2'>
+                <div className="col-lg-6">
+                  <p className="mb-1"><strong>Requirements:</strong></p>
+                  <p className="text-muted">{job.requirements}</p>
+                </div>
+                <div className="col-lg-6">
+                  <p className="mb-1"><strong>Job Status:</strong></p>
+                  <span className="fs-5">{getStatusBadge(job.jobStatus)}</span>
+
+                </div>
               </div>
               <div>
                 <p className="mb-1"><strong>Timeframe:</strong></p>
@@ -74,6 +101,7 @@ const JobsManagemen = () => {
                   {new Date(job.timeframe.from).toLocaleString()} to {new Date(job.timeframe.to).toLocaleString()}
                 </p>
               </div>
+
             </div>
           </div>
         ))}
