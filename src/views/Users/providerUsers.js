@@ -216,27 +216,31 @@ const Provider = () => {
           <CFormSelect
             name="emailVerified"
             label="Email Verified"
-            value={editUser?.emailVerified === 1 ? 'true' : 'false'}
+            value={editUser?.emailVerified !== undefined ? editUser?.emailVerified.toString() : ''}
             onChange={handleChange}
           >
             <option value="true">Yes</option>
             <option value="false">No</option>
           </CFormSelect>
-
           <CFormSelect
             name="documentStatus"
             label="Document Status"
-            value={editUser?.documentStatus === 1 ? 'true' : 'false'}
+            value={
+              editUser?.documentStatus !== undefined ? editUser?.documentStatus.toString() : ''
+            }
             onChange={handleChange}
           >
             <option value="true">Approved</option>
             <option value="false">Pending</option>
           </CFormSelect>
-
           <CFormSelect
             name="subscriptionStatus"
             label="Subscription Status"
-            value={editUser?.subscriptionStatus === 1 ? 'true' : 'false'}
+            value={
+              editUser?.subscriptionStatus !== undefined
+                ? editUser?.subscriptionStatus.toString()
+                : ''
+            }
             onChange={handleChange}
           >
             <option value="true">Active</option>
