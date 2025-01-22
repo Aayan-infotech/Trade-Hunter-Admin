@@ -91,8 +91,8 @@ const Provider = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target
-    const updatedValue = value === 'true' ? true : value === 'false' ? false : value
-
+    // const updatedValue = value === 'true' ? true : value === 'false' ? false : value
+    const updatedValue = value === 'true' ? 1 : value === 'false' ? 0 : value;
     setEditUser({
       ...editUser,
       [name]: updatedValue,
@@ -213,7 +213,8 @@ const Provider = () => {
             <option value="true">Active</option>
             <option value="false">Inactive</option>
           </CFormSelect>
-          <CFormSelect
+
+          {/* <CFormSelect
             name="emailVerified"
             label="Email Verified"
             value={editUser?.emailVerified !== undefined ? editUser?.emailVerified.toString() : ''}
@@ -245,7 +246,37 @@ const Provider = () => {
           >
             <option value="true">Active</option>
             <option value="false">Inactive</option>
+          </CFormSelect> */}
+          <CFormSelect
+            name="emailVerified"
+            label="Email Verified"
+            value={editUser?.emailVerified === 1 ? 'true' : 'false'}
+            onChange={handleChange}
+          >
+            <option value="true">Yes</option>
+            <option value="false">No</option>
           </CFormSelect>
+
+          <CFormSelect
+            name="documentStatus"
+            label="Document Status"
+            value={editUser?.documentStatus === 1 ? 'true' : 'false'}
+            onChange={handleChange}
+          >
+            <option value="true">Approved</option>
+            <option value="false">Pending</option>
+          </CFormSelect>
+
+          <CFormSelect
+            name="subscriptionStatus"
+            label="Subscription Status"
+            value={editUser?.subscriptionStatus === 1 ? 'true' : 'false'}
+            onChange={handleChange}
+          >
+            <option value="true">Active</option>
+            <option value="false">Inactive</option>
+          </CFormSelect>
+
         </CModalBody>
         <CModalFooter>
           <CButton color="secondary" onClick={() => setIsEditModalOpen(false)}>
