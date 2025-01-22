@@ -110,9 +110,9 @@ const Provider = () => {
               placeholder="Search by name or email"
               value={search}
               onChange={handleSearch}
-              className="me-2 c-form-input"
+              className="me-2 mb-0 c-form-input"
             />
-            <CButton color="primary" onClick={fetchUsers} className="btn">
+            <CButton color="primary" onClick={fetchUsers} className="btn d-flex flex-row gap-2 align-items-center">
               <CIcon icon={cilSearch} /> Search
             </CButton>
           </div>
