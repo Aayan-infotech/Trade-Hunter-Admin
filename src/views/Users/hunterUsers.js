@@ -21,8 +21,9 @@ import {
   CModalFooter,
 } from '@coreui/react';
 import CIcon from '@coreui/icons-react';
-import { cilSearch, cilTrash, cilPencil } from '@coreui/icons';
+import { cilSearch, cilTrash, cilPencil, cilBraille  } from '@coreui/icons';
 import './Usermanagement.css';
+import { useNavigate } from 'react-router-dom';
 
 const Hunter = () => {
   const [users, setUsers] = useState([]);
@@ -32,6 +33,12 @@ const Hunter = () => {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [editUser, setEditUser] = useState(null);
   const [hasMoreData, setHasMoreData] = useState(true);
+
+  const navigate = useNavigate(); // Initialize navigate
+
+  const JobsManagemen = (_id) => {
+    navigate('/JobsManagemen', { state: { _id } }); // Updated navigate usage
+  };
 
   const fetchUsers = async () => {
     setLoading(true);
@@ -136,8 +143,8 @@ const Hunter = () => {
                   <CTableHeaderCell>Contact</CTableHeaderCell>
                   <CTableHeaderCell>User Status</CTableHeaderCell>
                   <CTableHeaderCell>Email Verified</CTableHeaderCell>
-                  <CTableHeaderCell>Document Status</CTableHeaderCell>
-                  <CTableHeaderCell>Subscription Status</CTableHeaderCell>
+                  {/* <CTableHeaderCell>Document Status</CTableHeaderCell> */}
+                  {/* <CTableHeaderCell>Subscription Status</CTableHeaderCell> */}
                   <CTableHeaderCell>Actions</CTableHeaderCell>
                 </CTableRow>
               </CTableHead>
@@ -150,8 +157,8 @@ const Hunter = () => {
                     <CTableDataCell>{user.phoneNo}</CTableDataCell>
                     <CTableDataCell>{user.userStatus ? 'Active' : 'Inactive'}</CTableDataCell>
                     <CTableDataCell>{user.emailVerified ? 'Yes' : 'No'}</CTableDataCell>
-                    <CTableDataCell>{user.documentStatus ? 'Approved' : 'Pending'}</CTableDataCell>
-                    <CTableDataCell>{user.subscriptionStatus ? 'Active' : 'Inactive'}</CTableDataCell>
+                    {/* <CTableDataCell>{user.documentStatus ? 'Approved' : 'Pending'}</CTableDataCell> */}
+                    {/* <CTableDataCell>{user.subscriptionStatus ? 'Active' : 'Inactive'}</CTableDataCell> */}
                     <CTableDataCell style={{ display: 'flex', alignItems: 'center' }}>
                       {/* <CButton
                         color="warning"
@@ -171,7 +178,17 @@ const Hunter = () => {
                         <CIcon icon={cilTrash} /> Delete
                       </CButton> */}
                         <CIcon className='fw-bold text-success me-2' onClick={() => handleDelete(user._id)} icon={cilTrash} />
-
+                        {/* <CButton
+                          color="secondary"
+                          onClick={() => JobsManagemen(_id)}
+                        >
+                          Add Dimensions
+                        </CButton> */}
+                        <CIcon 
+  className="fw-bold text-success me-2" 
+  onClick={() => JobsManagemen(user._id)} 
+  icon={cilBraille} 
+/>
                     </CTableDataCell>
                   </CTableRow>
                 ))}
@@ -236,22 +253,22 @@ const Hunter = () => {
             <option value="true">Yes</option>
             <option value="false">No</option>
           </CFormSelect>
-          <CFormSelect
+          {/* <CFormSelect
             name="documentStatus" label="Document Status"
             value={editUser?.documentStatus !== undefined ? editUser?.documentStatus : ''}
             onChange={handleChange}
           >
             <option value="true">Approved</option>
             <option value="false">Pending</option>
-          </CFormSelect>
-          <CFormSelect
+          </CFormSelect> */}
+          {/* <CFormSelect
             name="subscriptionStatus" label="Subscription Status"
             value={editUser?.subscriptionStatus !== undefined ? editUser?.subscriptionStatus : ''}
             onChange={handleChange}
           >
             <option value="true">Active</option>
             <option value="false">Inactive</option>
-          </CFormSelect>
+          </CFormSelect> */}
         </CModalBody>
         <CModalFooter>
           <CButton color="secondary" onClick={() => setIsEditModalOpen(false)}>
