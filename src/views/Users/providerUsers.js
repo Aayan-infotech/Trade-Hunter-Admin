@@ -66,13 +66,16 @@ const Provider = () => {
   const prevPage = () => setPage((prevPage) => Math.max(prevPage - 1, 1))
 
   const handleDelete = async (id) => {
-    try {
-      await axios.delete(`http://44.196.64.110:7777/api/Prvdr/${id}`)
-      fetchUsers()
-    } catch (error) {
-      console.error('Error deleting user:', error)
+    const confirmDelete = window.confirm("Are you sure you want to delete this user?");
+    if (confirmDelete) {
+      try {
+        await axios.delete(`http://44.196.64.110:7777/api/Prvdr/${id}`)
+        fetchUsers()
+      } catch (error) {
+        console.error('Error deleting user:', error)
+      }
     }
-  }
+  };
 
   const handleEdit = (user) => {
     setEditUser(user)

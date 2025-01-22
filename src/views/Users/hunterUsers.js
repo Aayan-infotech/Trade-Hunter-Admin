@@ -21,7 +21,7 @@ import {
   CModalFooter,
 } from '@coreui/react';
 import CIcon from '@coreui/icons-react';
-import { cilSearch, cilTrash, cilPencil, cilBraille  } from '@coreui/icons';
+import { cilSearch, cilTrash, cilPencil, cilBraille } from '@coreui/icons';
 import './Usermanagement.css';
 import { useNavigate } from 'react-router-dom';
 
@@ -73,12 +73,15 @@ const Hunter = () => {
   const prevPage = () => setPage((prevPage) => Math.max(prevPage - 1, 1));
 
   const handleDelete = async (id) => {
-    try {
-      const del = await axios.delete(`http://44.196.64.110:7777/api/users/${id}`);
-      console.log(del);
-      fetchUsers();
-    } catch (error) {
-      console.error('Error deleting user:', error);
+    const confirmDelete = window.confirm("Are you sure you want to delete this user?");
+    if (confirmDelete) {
+      try {
+        const del = await axios.delete(`http://44.196.64.110:7777/api/users/${id}`);
+        console.log(del);
+        fetchUsers();
+      } catch (error) {
+        console.error('Error deleting user:', error);
+      }
     }
   };
 
@@ -167,7 +170,7 @@ const Hunter = () => {
                         onClick={() => handleEdit(user)}
                       >
                         <CIcon icon={cilPencil} /> Edit */}
-                        <CIcon className='fw-bold text-success me-2' onClick={() => handleEdit(user)} icon={cilPencil} />
+                      <CIcon className='fw-bold text-success me-2' onClick={() => handleEdit(user)} icon={cilPencil} />
                       {/* </CButton> */}
                       {/* <CButton
                         color="danger"
@@ -177,18 +180,18 @@ const Hunter = () => {
                       >
                         <CIcon icon={cilTrash} /> Delete
                       </CButton> */}
-                        <CIcon className='fw-bold text-success me-2' onClick={() => handleDelete(user._id)} icon={cilTrash} />
-                        {/* <CButton
+                      <CIcon className='fw-bold text-success me-2' onClick={() => handleDelete(user._id)} icon={cilTrash} />
+                      {/* <CButton
                           color="secondary"
                           onClick={() => JobsManagemen(_id)}
                         >
                           Add Dimensions
                         </CButton> */}
-                        <CIcon 
-  className="fw-bold text-success me-2" 
-  onClick={() => JobsManagemen(user._id)} 
-  icon={cilBraille} 
-/>
+                      <CIcon
+                        className="fw-bold text-success me-2"
+                        onClick={() => JobsManagemen(user._id)}
+                        icon={cilBraille}
+                      />
                     </CTableDataCell>
                   </CTableRow>
                 ))}
