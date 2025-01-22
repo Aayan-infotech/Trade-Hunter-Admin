@@ -21,7 +21,7 @@ import {
   CModalFooter,
 } from '@coreui/react';
 import CIcon from '@coreui/icons-react';
-import { cilSearch, cilTrash, cilPencil, cilBraille } from '@coreui/icons';
+import { cilSearch, cilTrash, cilPencil, cilBraille  } from '@coreui/icons';
 import './Usermanagement.css';
 import { useNavigate } from 'react-router-dom';
 
