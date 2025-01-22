@@ -10,7 +10,7 @@ const JobsManagemen = () => {
   useEffect(() => {
     const fetchJobData = async () => {
       try {
-        const response = await axios.get(`http://localhost:7777/api/users/jobposts/${state._id}`);
+        const response = await axios.get(`http://44.196.64.110:7777/api/users/jobposts/${state._id}`);
         setJobData(response.data?.data || []); // Set jobData to the array of jobs
       } catch (error) {
         console.error('Error fetching job data:', error);
