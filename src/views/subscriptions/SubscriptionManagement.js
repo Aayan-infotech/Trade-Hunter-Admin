@@ -24,6 +24,8 @@ import {
 } from '@coreui/react';
 import CIcon from '@coreui/icons-react';
 import { cilPlus, cilPencil, cilTrash, cilViewColumn } from '@coreui/icons';
+import '../Users/Usermanagement.css';
+
 
 
 const SubscriptionManagement = () => {

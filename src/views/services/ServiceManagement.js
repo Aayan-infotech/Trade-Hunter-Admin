@@ -24,6 +24,7 @@ import {
 } from '@coreui/react';
 import CIcon from '@coreui/icons-react';
 import { cilTrash, cilPencil, cilViewColumn, cilPlus } from '@coreui/icons';
+import '../Users/Usermanagement.css';
 
 const API_URL = 'http://localhost:7777/api/service/getAllServices';
 
