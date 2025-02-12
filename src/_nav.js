@@ -42,6 +42,18 @@ const _nav = [
       
     ],
   },
+  {
+    component: CNavItem,
+    name: 'Services',
+    to: '/serviceManagement',
+    icon: <CIcon icon={cilPuzzle} customClassName="nav-icon" style={{ color: 'blue' }} />,
+  },
+  {
+    component: CNavItem,
+    name: 'Subscription plans',
+    to: '/subscriptions',
+    icon: <CIcon icon={cilPuzzle} customClassName="nav-icon" style={{ color: 'blue' }} />,
+  },
 
   // {
   //   component: CNavItem,
