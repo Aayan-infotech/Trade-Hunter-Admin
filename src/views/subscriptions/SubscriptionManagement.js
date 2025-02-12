@@ -47,7 +47,7 @@ const SubscriptionManagement = () => {
   const fetchSubscriptions = async () => {
     setLoading(true);
     try {
-      const response = await axios.get('http://localhost:7777/api/subscription/getAllSubscription');
+      const response = await axios.get('http://44.196.64.110/api/subscription/getAllSubscription');
       setSubscriptions(response.data.data || []);
     } catch (error) {
       console.error('Error fetching subscriptions:', error);
@@ -68,7 +68,7 @@ const SubscriptionManagement = () => {
       type: newType,
     };
     try {
-      await axios.post('http://localhost:7777/api/subscription/addSubscription', payload);
+      await axios.post('http://44.196.64.110/api/subscription/addSubscription', payload);
       fetchSubscriptions();
       setShowAddModal(false);
       setNewTitle('');
