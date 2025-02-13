@@ -192,7 +192,7 @@ const Hunter = () => {
                         onClick={() => JobsManagemen(user._id)}
                         icon={cilBraille}
                       />
-                    </CTableDataCell>
+                    </CTableDataCell>  
                   </CTableRow>
                 ))}
               </CTableBody>
