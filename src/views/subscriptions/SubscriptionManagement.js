@@ -88,7 +88,7 @@ const SubscriptionManagement = () => {
   const handleSaveEditSubscription = async () => {
     try {
       await axios.put(
-        `/${editSubscription._id}`,
+        `http://44.196.64.110:7777/api/subscription/update/${editSubscription._id}`,
         editSubscription
       );
       fetchSubscriptions();
@@ -103,7 +103,7 @@ const SubscriptionManagement = () => {
   const handleDeleteSubscription = async (subscriptionId) => {
     if (window.confirm('Delete Subscription?')) {
       try {
-        await axios.delete(`/${subscriptionId}`);
+        await axios.delete(`http://44.196.64.110:7777/api/subscription/delete/${subscriptionId}`);
         fetchSubscriptions();
       } catch (error) {
         console.error('Error deleting subscription:', error);
