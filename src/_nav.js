@@ -12,7 +12,9 @@ import {
   cilPencil,
   cilPuzzle,
   cilSpeedometer,
-  cilUser,  
+  cilUser, 
+  cilBriefcase, 
+  cilMoney,
   cilStar,
 } from '@coreui/icons'
 import { CNavGroup, CNavItem, CNavTitle } from '@coreui/react'
@@ -44,6 +46,15 @@ const _nav = [
   },
   {
     component: CNavItem,
+    name: 'Jobs Management',
+    to: '/JobsManagement', 
+    icon: <CIcon icon={cilBriefcase} customClassName="nav-icon" style={{ color: 'blue' }} />, 
+    badge: {
+      color: 'info',
+    },
+  },
+  {
+    component: CNavItem,
     name: 'Services',
     to: '/serviceManagement',
     icon: <CIcon icon={cilPuzzle} customClassName="nav-icon" style={{ color: 'blue' }} />,
@@ -52,18 +63,17 @@ const _nav = [
     component: CNavItem,
     name: 'Subscription plans',
     to: '/subscriptions',
-    icon: <CIcon icon={cilPuzzle} customClassName="nav-icon" style={{ color: 'blue' }} />,
+    icon: <CIcon icon={cilDescription} customClassName="nav-icon" style={{ color: 'blue' }} />,
   },
-
   // {
   //   component: CNavItem,
-  //   name: 'Jobs Management',
-  //   to: '/JobsManagement',  // Fixed typo in the route name
-  //   icon: <CIcon icon={cilPuzzle} customClassName="nav-icon" style={{ color: 'blue' }} />,  // Added cilPuzzle or another icon here
-  //   badge: {
-  //     color: 'info',
-  //   },
+  //   name: 'Payments',
+  //   to: '/payments',
+  //   icon: <CIcon icon={cilMoney} customClassName="nav-icon" style={{ color: 'blue' }} />,
   // },
+
+  
 ]
 
 export default _nav
+
