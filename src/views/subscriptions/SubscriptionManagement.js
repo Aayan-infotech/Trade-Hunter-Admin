@@ -209,7 +209,7 @@ const SubscriptionManagement = () => {
             className="mb-2"
           >
             <option value="advertising">Advertising</option>
-            <option value="pay per load">Pay Per Lead</option>
+            <option value="pay per lead">Pay Per Lead</option>
             <option value="subscription">Subscription</option>
           </CFormSelect>
         </CModalBody>
@@ -247,7 +247,7 @@ const SubscriptionManagement = () => {
                 }
                 className="mb-2"
               />
-              <label>Description (HTML supported)</label>
+              <label>Description</label>
               <ReactQuill
                 value={editSubscription.description}
                 onChange={(value) =>
@@ -264,7 +264,7 @@ const SubscriptionManagement = () => {
                 className="mb-2"
               >
                 <option value="advertising">Advertising</option>
-                <option value="pay per load">Pay Per Lead</option>
+                <option value="pay per lead">Pay Per Lead</option>
                 <option value="subscription">Subscription</option>
               </CFormSelect>
             </>
