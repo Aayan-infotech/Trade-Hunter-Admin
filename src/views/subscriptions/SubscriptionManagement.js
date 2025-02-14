@@ -26,7 +26,8 @@ import CIcon from '@coreui/icons-react';
 import { cilPlus, cilPencil, cilTrash, cilViewColumn } from '@coreui/icons';
 import '../Users/Usermanagement.css';
 
-
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
 
 const SubscriptionManagement = () => {
   const [subscriptions, setSubscriptions] = useState([]);
@@ -35,7 +36,7 @@ const SubscriptionManagement = () => {
   const [showAddModal, setShowAddModal] = useState(false);
   const [newTitle, setNewTitle] = useState('');
   const [newAmount, setNewAmount] = useState('');
-  const [newDescription, setNewDescription] = useState('');
+  const [newDescription, setNewDescription] = useState(''); // Will store HTML
   const [newType, setNewType] = useState('advertising');
 
   const [showEditModal, setShowEditModal] = useState(false);
@@ -64,7 +65,7 @@ const SubscriptionManagement = () => {
     const payload = {
       title: newTitle,
       amount: Number(newAmount),
-      description: newDescription,
+      description: newDescription, 
       type: newType,
     };
     try {
@@ -94,7 +95,6 @@ const SubscriptionManagement = () => {
       fetchSubscriptions();
       setShowEditModal(false);
       setEditSubscription(null);
-
     } catch (error) {
       console.error('Error editing subscription:', error);
     }
@@ -144,7 +144,11 @@ const SubscriptionManagement = () => {
                   <CTableRow key={subscription._id || index}>
                     <CTableDataCell>{subscription.title}</CTableDataCell>
                     <CTableDataCell>{subscription.amount}</CTableDataCell>
-                    <CTableDataCell>{subscription.description}</CTableDataCell>
+                    <CTableDataCell>
+                      <div
+                        dangerouslySetInnerHTML={{ __html: subscription.description }}
+                      />
+                    </CTableDataCell>
                     <CTableDataCell>{subscription.type}</CTableDataCell>
                     <CTableDataCell style={{ display: 'flex', alignItems: 'center' }}>
                       <CIcon
@@ -183,29 +187,33 @@ const SubscriptionManagement = () => {
             label="Plan Name"
             value={newTitle}
             onChange={(e) => setNewTitle(e.target.value)}
+            className="mb-2"
           />
           <CFormInput
             label="Amount"
             type="number"
             value={newAmount}
             onChange={(e) => setNewAmount(e.target.value)}
+            className="mb-2"
           />
-          <CFormInput
-            label="Description"
+          <label>Description</label>
+          <ReactQuill
             value={newDescription}
-            onChange={(e) => setNewDescription(e.target.value)}
+            onChange={(value) => setNewDescription(value)}
+            className="mb-2"
           />
           <CFormSelect
             label="Type"
             value={newType}
             onChange={(e) => setNewType(e.target.value)}
+            className="mb-2"
           >
             <option value="advertising">Advertising</option>
             <option value="pay per load">Pay Per Load</option>
             <option value="subscription">Subscription</option>
           </CFormSelect>
         </CModalBody>
-        <CModalFooter className='mt-3'>
+        <CModalFooter>
           <CButton color="secondary" onClick={() => setShowAddModal(false)}>
             Cancel
           </CButton>
@@ -228,6 +236,7 @@ const SubscriptionManagement = () => {
                 onChange={(e) =>
                   setEditSubscription({ ...editSubscription, title: e.target.value })
                 }
+                className="mb-2"
               />
               <CFormInput
                 label="Amount"
@@ -236,13 +245,15 @@ const SubscriptionManagement = () => {
                 onChange={(e) =>
                   setEditSubscription({ ...editSubscription, amount: Number(e.target.value) })
                 }
+                className="mb-2"
               />
-              <CFormInput
-                label="Description"
+              <label>Description (HTML supported)</label>
+              <ReactQuill
                 value={editSubscription.description}
-                onChange={(e) =>
-                  setEditSubscription({ ...editSubscription, description: e.target.value })
+                onChange={(value) =>
+                  setEditSubscription({ ...editSubscription, description: value })
                 }
+                className="mb-2"
               />
               <CFormSelect
                 label="Type"
@@ -250,6 +261,7 @@ const SubscriptionManagement = () => {
                 onChange={(e) =>
                   setEditSubscription({ ...editSubscription, type: e.target.value })
                 }
+                className="mb-2"
               >
                 <option value="advertising">Advertising</option>
                 <option value="pay per load">Pay Per Load</option>
@@ -282,7 +294,10 @@ const SubscriptionManagement = () => {
                 <strong>Amount: </strong>{viewSubscription.amount}
               </CListGroupItem>
               <CListGroupItem>
-                <strong>Description: </strong>{viewSubscription.description}
+                <strong>Description: </strong>
+                <div
+                  dangerouslySetInnerHTML={{ __html: viewSubscription.description }}
+                />
               </CListGroupItem>
               <CListGroupItem>
                 <strong>Type: </strong>{viewSubscription.type}

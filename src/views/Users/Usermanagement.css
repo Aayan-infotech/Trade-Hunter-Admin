@@ -328,3 +328,10 @@ button:hover {
 .file-preview-container a:hover {
   text-decoration: underline;
 }
+
+.custom-modal .modal-content {
+     background-color: #ffffff;
+}
+.custom-modal .modal-header {
+  background-color: #9dc6f0; /* Match the modal content background */
+}

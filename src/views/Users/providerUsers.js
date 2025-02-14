@@ -106,7 +106,7 @@ const Provider = () => {
     <CContainer className="container">
       <CCard>
         <CCardHeader className="card-header">
-          <h4>Hunter List</h4>
+          <h4>Providers List</h4>
           <div className="d-flex align-items-center">
             <CFormInput
               type="text"
