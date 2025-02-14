@@ -18,44 +18,70 @@ import {
     CModalBody,
     CModalFooter,
     CPagination,
+    CFormInput,
     CPaginationItem,
 } from "@coreui/react";
 import CIcon from "@coreui/icons-react";
-import { cilTrash, cilPencil, cilViewColumn } from "@coreui/icons";
+import { cilTrash, cilPencil, cilViewColumn, cilArrowBottom, cilArrowTop, cilSearch } from "@coreui/icons";
 import '../Users/Usermanagement.css';
-
-
 const JobsManagement = () => {
     const [jobs, setJobs] = useState([]);
+    const [sortedJobs, setSortedJobs] = useState([]);
     const [loading, setLoading] = useState(false);
     const [page, setPage] = useState(1);
+    const [search, setSearch] = useState('')
     const [totalPages, setTotalPages] = useState(1);
     const [error, setError] = useState(null);
-
+    const [sortOrder, setSortOrder] = useState("asc");
     const [viewJob, setViewJob] = useState(null);
     const [showViewModal, setShowViewModal] = useState(false);
-
     const [editJob, setEditJob] = useState(null);
     const [showEditModal, setShowEditModal] = useState(false);
-
-    useEffect(() => {
-        fetchJobs();
-    }, [page]);
 
     const fetchJobs = async () => {
         setLoading(true);
         setError(null);
         try {
-            const response = await axios.get(`http://44.196.64.110:7777/api/jobs/?page=${page}&limit=5`);
-            setJobs(response.data.data.jobPosts || []); 
+            const response = await axios.get(`http://44.196.64.110:7777/api/jobs/?page=${page}&limit=10&search=${search}`);
+            setJobs(response.data.data.jobPosts || []);
             setTotalPages(response.data.data.pagination.totalPages || 1);
-
         } catch (error) {
             console.error("Error fetching jobs:", error);
             setError("Failed to load jobs. Please try again.");
         } finally {
             setLoading(false);
         }
+    };
+
+
+    useEffect(() => {
+        fetchJobs();
+    }, [page, search]);
+
+    const handleSearch = (e) => {
+        setSearch(e.target.value)
+        setPage(1)
+    }
+
+    useEffect(() => {
+        setSortedJobs(jobs);
+    }, [jobs]);
+
+    const toggleSortOrder = () => {
+        const newOrder = sortOrder === "asc" ? "desc" : "asc";
+        setSortOrder(newOrder);
+        sortJobs(newOrder);
+    };
+
+    const sortJobs = (order) => {
+        const sorted = [...jobs].sort((a, b) => {
+            if (order === "asc") {
+                return a.businessType.localeCompare(b.businessType);
+            } else {
+                return b.businessType.localeCompare(a.businessType);
+            }
+        });
+        setSortedJobs(sorted);
     };
 
     const handleDeleteJob = async (jobId) => {
@@ -93,12 +119,24 @@ const JobsManagement = () => {
     };
 
     return (
-        <CContainer>
+        <CContainer style={{ maxHeight: '85vh', overflowY: 'auto' }}>
             <CCard>
-                <CCardHeader>
+                <CCardHeader className="card-header">
                     <h4>Job Management</h4>
+                    <div className="d-flex align-items-center">
+                        <CFormInput
+                            type="text"
+                            placeholder="Search by Title"
+                            value={search}
+                            onChange={handleSearch}
+                            className="me-2 mb-0 c-form-input"
+                        />
+                        <CButton color="primary" onClick={fetchJobs} className="btn d-flex flex-row gap-2 align-items-center">
+                            <CIcon icon={cilSearch} /> Search
+                        </CButton>
+                    </div>
                 </CCardHeader>
-                <CCardBody>
+                <CCardBody style={{ maxHeight: '65vh', overflowY: 'auto' }}>
                     {error && <p className="text-danger">{error}</p>}
                     {loading ? (
                         <div>Loading...</div>
@@ -108,43 +146,55 @@ const JobsManagement = () => {
                                 <CTableRow>
                                     <CTableHeaderCell>Title</CTableHeaderCell>
                                     <CTableHeaderCell>Location</CTableHeaderCell>
-                                    <CTableHeaderCell>Budget</CTableHeaderCell>
-                                    <CTableHeaderCell>Business Type</CTableHeaderCell>
+                                    <CTableHeaderCell>Hunter Name</CTableHeaderCell>
+                                    <CTableHeaderCell
+                                        onClick={toggleSortOrder}
+                                        style={{ cursor: "pointer" }}
+                                    >
+                                        Business Type
+                                        <CIcon
+                                            icon={sortOrder === "asc" ? cilArrowBottom : cilArrowTop}
+                                            className="ms-2"
+                                        />
+                                    </CTableHeaderCell>
+
                                     <CTableHeaderCell>Status</CTableHeaderCell>
                                     <CTableHeaderCell>Actions</CTableHeaderCell>
                                 </CTableRow>
                             </CTableHead>
                             <CTableBody>
-                                {jobs.length > 0 ? (
-                                    jobs.map((job) => (
+                                {sortedJobs.length > 0 ? (
+                                    sortedJobs.map((job) => (
                                         <CTableRow key={job._id}>
                                             <CTableDataCell>{job.title}</CTableDataCell>
                                             <CTableDataCell>
                                                 {job.jobLocation?.jobAddressLine
-                                                    ? job.jobLocation.jobAddressLine.length > 30
-                                                        ? job.jobLocation.jobAddressLine.slice(0, 30) + "..."
+                                                    ? job.jobLocation.jobAddressLine.length > 25
+                                                        ? job.jobLocation.jobAddressLine.slice(0, 25) + "..."
                                                         : job.jobLocation.jobAddressLine
                                                     : "N/A"}
                                             </CTableDataCell>
-
-                                            <CTableDataCell>${job.estimatedBudget}</CTableDataCell>
+                                            <CTableDataCell>{job.user?.name}</CTableDataCell>
                                             <CTableDataCell>{job.businessType}</CTableDataCell>
                                             <CTableDataCell>{job.jobStatus}</CTableDataCell>
                                             <CTableDataCell>
                                                 <CIcon
                                                     className="me-2 text-primary"
+                                                    style={{ cursor: 'pointer' }}
                                                     onClick={() => handleViewJob(job)}
                                                     icon={cilViewColumn}
                                                     size="lg"
                                                 />
                                                 <CIcon
                                                     className="me-2 text-success"
+                                                    style={{ cursor: 'pointer' }}
                                                     onClick={() => handleEditJob(job)}
                                                     icon={cilPencil}
                                                     size="lg"
                                                 />
                                                 <CIcon
                                                     className="text-danger"
+                                                    style={{ cursor: 'pointer' }}
                                                     onClick={() => handleDeleteJob(job._id)}
                                                     icon={cilTrash}
                                                     size="lg"
@@ -165,6 +215,7 @@ const JobsManagement = () => {
 
                     <CPagination align="center" className="mt-3">
                         <CPaginationItem
+                            style={{ cursor: 'pointer' }}
                             disabled={page === 1}
                             onClick={() => setPage(page - 1)}
                         >
@@ -172,6 +223,7 @@ const JobsManagement = () => {
                         </CPaginationItem>
                         {[...Array(totalPages)].map((_, i) => (
                             <CPaginationItem
+                                style={{ cursor: 'pointer' }}
                                 key={i + 1}
                                 active={i + 1 === page}
                                 onClick={() => setPage(i + 1)}
@@ -180,6 +232,7 @@ const JobsManagement = () => {
                             </CPaginationItem>
                         ))}
                         <CPaginationItem
+                            style={{ cursor: 'pointer' }}
                             disabled={page === totalPages}
                             onClick={() => setPage(page + 1)}
                         >
@@ -189,21 +242,28 @@ const JobsManagement = () => {
                 </CCardBody>
             </CCard>
 
-            <CModal visible={showViewModal} onClose={() => setShowViewModal(false)}>
+            <CModal
+                scrollable
+                visible={showViewModal}
+                onClose={() => setShowViewModal(false)}
+                className="custom-modal"
+            >
                 <CModalHeader>
                     <CModalTitle>Job Details</CModalTitle>
                 </CModalHeader>
-                <CModalBody>
+                <CModalBody style={{ maxHeight: '60vh', overflowY: 'auto' }}>
                     {viewJob && (
                         <div>
                             <p><strong>Title:</strong> {viewJob.title}</p>
                             <p><strong>Location:</strong> {viewJob.jobLocation?.jobAddressLine || "N/A"}</p>
-                            <p><strong>Coordinates:</strong> {viewJob.jobLocation?.location?.coordinates?.join(", ") || "N/A"}</p>
                             <p><strong>Job Radius:</strong> {viewJob.jobLocation?.jobRadius} meters</p>
                             <p><strong>Estimated Budget:</strong> ${viewJob.estimatedBudget}</p>
                             <p><strong>Business Type:</strong> {viewJob.businessType}</p>
                             <p><strong>Services:</strong> {viewJob.services}</p>
                             <p><strong>Requirements:</strong> {viewJob.requirements}</p>
+                            <p><strong>Hunter id:</strong>{viewJob.user?._id}</p>
+                            <p><strong>Hunter Name:</strong>{viewJob.user?.name}</p>
+                            <p><strong>Hunter email</strong>{viewJob.user?.email}</p>
                             <p><strong>Job Status:</strong> {viewJob.jobStatus}</p>
                             <p><strong>Timeframe:</strong></p>
                             <ul>
@@ -215,7 +275,11 @@ const JobsManagement = () => {
                                     <p><strong>Documents:</strong></p>
                                     <ul>
                                         {viewJob.documents.map((doc, index) => (
-                                            <li key={index}><a href={doc} target="_blank" rel="noopener noreferrer">Document {index + 1}</a></li>
+                                            <li key={index}>
+                                                <a href={doc} target="_blank" rel="noopener noreferrer">
+                                                    Document {index + 1}
+                                                </a>
+                                            </li>
                                         ))}
                                     </ul>
                                 </div>
@@ -226,16 +290,22 @@ const JobsManagement = () => {
                     )}
                 </CModalBody>
                 <CModalFooter>
-                    <CButton color="secondary" onClick={() => setShowViewModal(false)}>Close</CButton>
+                    <CButton style={{ cursor: 'pointer' }} color="secondary" onClick={() => setShowViewModal(false)}>
+                        Close
+                    </CButton>
                 </CModalFooter>
             </CModal>
 
-
-            <CModal visible={showEditModal} onClose={() => setShowEditModal(false)}>
+            <CModal
+                scrollable
+                visible={showEditModal}
+                onClose={() => setShowEditModal(false)}
+                className="custom-modal"
+            >
                 <CModalHeader>
                     <CModalTitle>Edit Job</CModalTitle>
                 </CModalHeader>
-                <CModalBody>
+                <CModalBody style={{ maxHeight: '60vh', overflowY: 'auto' }}>
                     {editJob && (
                         <div>
                             <label>Title</label>
@@ -251,7 +321,10 @@ const JobsManagement = () => {
                                 value={editJob.jobLocation?.jobAddressLine || ""}
                                 onChange={(e) => setEditJob({
                                     ...editJob,
-                                    jobLocation: { ...editJob.jobLocation, jobAddressLine: e.target.value }
+                                    jobLocation: {
+                                        ...editJob.jobLocation,
+                                        jobAddressLine: e.target.value
+                                    }
                                 })}
                                 className="form-control mb-2"
                             />
@@ -283,11 +356,14 @@ const JobsManagement = () => {
                     )}
                 </CModalBody>
                 <CModalFooter>
-                    <CButton color="secondary" onClick={() => setShowEditModal(false)}>Cancel</CButton>
-                    <CButton color="primary" onClick={handleSaveEditJob}>Save Changes</CButton>
+                    <CButton style={{ cursor: 'pointer' }} color="secondary" onClick={() => setShowEditModal(false)}>
+                        Cancel
+                    </CButton>
+                    <CButton style={{ cursor: 'pointer' }} color="primary" onClick={handleSaveEditJob}>
+                        Save Changes
+                    </CButton>
                 </CModalFooter>
             </CModal>
-
         </CContainer>
     );
 };

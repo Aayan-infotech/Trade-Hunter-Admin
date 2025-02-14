@@ -37,7 +37,7 @@ const Hunter = () => {
   const navigate = useNavigate(); // Initialize navigate
 
   const JobsManagemen = (_id) => {
-    navigate('/JobsManagemen', { state: { _id } }); // Updated navigate usage
+    navigate('/JobsHunter', { state: { _id } }); // Updated navigate usage
   };
 
   const fetchUsers = async () => {
@@ -119,7 +119,7 @@ const Hunter = () => {
     <CContainer className="container">
       <CCard>
         <CCardHeader className="card-header">
-          <h4>Hunter List</h4>
+          <h4>Hunters List</h4>
           <div className="d-flex align-items-center">
             <CFormInput
               type="text"

@@ -33,12 +33,12 @@ const _nav = [
       // },
       {
         component: CNavItem,
-        name: 'Hunter',
+        name: "Hunters",
         to: '/hunterUsers',
       },
       {
         component: CNavItem,
-        name: 'Provider',
+        name: "Providers",
         to: '/providerUsers',
       },      
       
