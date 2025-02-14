@@ -132,16 +132,17 @@ const SubscriptionManagement = () => {
             <CTable hover responsive>
               <CTableHead>
                 <CTableRow>
+                <CTableHeaderCell>Type</CTableHeaderCell>
                   <CTableHeaderCell>Plan Name</CTableHeaderCell>
                   <CTableHeaderCell>Amount</CTableHeaderCell>
                   <CTableHeaderCell>Description</CTableHeaderCell>
-                  <CTableHeaderCell>Type</CTableHeaderCell>
                   <CTableHeaderCell>Actions</CTableHeaderCell>
                 </CTableRow>
               </CTableHead>
               <CTableBody>
                 {subscriptions.map((subscription, index) => (
                   <CTableRow key={subscription._id || index}>
+                    <CTableDataCell>{subscription.type}</CTableDataCell>
                     <CTableDataCell>{subscription.title}</CTableDataCell>
                     <CTableDataCell>{subscription.amount}</CTableDataCell>
                     <CTableDataCell>
@@ -149,7 +150,6 @@ const SubscriptionManagement = () => {
                         dangerouslySetInnerHTML={{ __html: subscription.description }}
                       />
                     </CTableDataCell>
-                    <CTableDataCell>{subscription.type}</CTableDataCell>
                     <CTableDataCell style={{ display: 'flex', alignItems: 'center' }}>
                       <CIcon
                         className="fw-bold text-success me-2"
@@ -209,7 +209,7 @@ const SubscriptionManagement = () => {
             className="mb-2"
           >
             <option value="advertising">Advertising</option>
-            <option value="pay per load">Pay Per Load</option>
+            <option value="pay per load">Pay Per Lead</option>
             <option value="subscription">Subscription</option>
           </CFormSelect>
         </CModalBody>
@@ -264,7 +264,7 @@ const SubscriptionManagement = () => {
                 className="mb-2"
               >
                 <option value="advertising">Advertising</option>
-                <option value="pay per load">Pay Per Load</option>
+                <option value="pay per load">Pay Per Lead</option>
                 <option value="subscription">Subscription</option>
               </CFormSelect>
             </>
