@@ -343,9 +343,9 @@ const JobsManagement = () => {
                 onChange={(e) => setEditJob({ ...editJob, jobStatus: e.target.value })}
                 className="form-control mb-2"
               >
-                <option value="Open">Open</option>
+                <option value="Pending">Pending</option>
                 <option value="In Progress">In Progress</option>
-                <option value="Closed">Closed</option>
+                <option value="Completed">Completed</option>
               </select>
             </div>
           )}
