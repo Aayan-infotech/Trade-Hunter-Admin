@@ -344,7 +344,7 @@ const JobsManagement = () => {
                 className="form-control mb-2"
               >
                 <option value="Pending">Pending</option>
-                <option value="In Progress">In Progress</option>
+                <option value="Accepted">Accepted</option>
                 <option value="Completed">Completed</option>
               </select>
             </div>
