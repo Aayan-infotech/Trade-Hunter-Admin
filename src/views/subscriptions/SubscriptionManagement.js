@@ -36,7 +36,7 @@ const SubscriptionManagement = () => {
   const [showAddModal, setShowAddModal] = useState(false);
   const [newTitle, setNewTitle] = useState('');
   const [newAmount, setNewAmount] = useState('');
-  const [newDescription, setNewDescription] = useState(''); // Will store HTML
+  const [newDescription, setNewDescription] = useState(''); // HTML
   const [newType, setNewType] = useState('advertising');
 
   const [showEditModal, setShowEditModal] = useState(false);
@@ -65,7 +65,7 @@ const SubscriptionManagement = () => {
     const payload = {
       title: newTitle,
       amount: Number(newAmount),
-      description: newDescription, 
+      description: newDescription,
       type: newType,
     };
     try {
@@ -116,8 +116,17 @@ const SubscriptionManagement = () => {
     setShowViewModal(true);
   };
 
+  const groupedSubscriptions = subscriptions.reduce((groups, subscription) => {
+    const { type } = subscription;
+    if (!groups[type]) {
+      groups[type] = [];
+    }
+    groups[type].push(subscription);
+    return groups;
+  }, {});
+
   return (
-    <CContainer>
+    <CContainer style={{ maxHeight: '100vh', overflowY: 'auto' }}>
       <CCard>
         <CCardHeader className="d-flex justify-content-between align-items-center">
           <h4>Subscription Management</h4>
@@ -125,14 +134,14 @@ const SubscriptionManagement = () => {
             <CIcon icon={cilPlus} /> Add Subscription
           </CButton>
         </CCardHeader>
-        <CCardBody>
+        <CCardBody style={{ maxHeight: '65vh', overflowY: 'auto' }}>
           {loading ? (
             <div>Loading subscriptions...</div>
           ) : (
             <CTable hover responsive>
               <CTableHead>
                 <CTableRow>
-                <CTableHeaderCell>Type</CTableHeaderCell>
+                  <CTableHeaderCell>Type</CTableHeaderCell>
                   <CTableHeaderCell>Plan Name</CTableHeaderCell>
                   <CTableHeaderCell>Amount</CTableHeaderCell>
                   <CTableHeaderCell>Description</CTableHeaderCell>
@@ -140,45 +149,50 @@ const SubscriptionManagement = () => {
                 </CTableRow>
               </CTableHead>
               <CTableBody>
-                {subscriptions.map((subscription, index) => (
-                  <CTableRow key={subscription._id || index}>
-                    <CTableDataCell>{subscription.type}</CTableDataCell>
-                    <CTableDataCell>{subscription.title}</CTableDataCell>
-                    <CTableDataCell>{subscription.amount}</CTableDataCell>
-                    <CTableDataCell>
-                      <div
-                        dangerouslySetInnerHTML={{ __html: subscription.description }}
-                      />
-                    </CTableDataCell>
-                    <CTableDataCell style={{ display: 'flex', alignItems: 'center' }}>
-                      <CIcon
-                        className="fw-bold text-success me-2"
-                        onClick={() => handleViewSubscription(subscription)}
-                        icon={cilViewColumn}
-                        size="lg"
-                      />
-                      <CIcon
-                        className="fw-bold text-success me-2"
-                        onClick={() => handleEditSubscription(subscription)}
-                        icon={cilPencil}
-                        size="lg"
-                      />
-                      <CIcon
-                        className="fw-bold text-danger me-2"
-                        onClick={() => handleDeleteSubscription(subscription._id)}
-                        icon={cilTrash}
-                        size="lg"
-                      />
-                    </CTableDataCell>
-                  </CTableRow>
-                ))}
+                {Object.keys(groupedSubscriptions).map((type) => {
+                  const group = groupedSubscriptions[type];
+                  return group.map((subscription, index) => (
+                    <CTableRow key={subscription._id || index}>
+                      {index === 0 && (
+                        <CTableDataCell rowSpan={group.length}>
+                          {type}
+                        </CTableDataCell>
+                      )}
+                      <CTableDataCell>{subscription.title}</CTableDataCell>
+                      <CTableDataCell>{subscription.amount}</CTableDataCell>
+                      <CTableDataCell>
+                        <div dangerouslySetInnerHTML={{ __html: subscription.description }} />
+                      </CTableDataCell>
+                      <CTableDataCell style={{ display: 'flex', alignItems: 'center' }}>
+                        <CIcon
+                          className="fw-bold text-success me-2"
+                          onClick={() => handleViewSubscription(subscription)}
+                          icon={cilViewColumn}
+                          size="lg"
+                        />
+                        <CIcon
+                          className="fw-bold text-success me-2"
+                          onClick={() => handleEditSubscription(subscription)}
+                          icon={cilPencil}
+                          size="lg"
+                        />
+                        <CIcon
+                          className="fw-bold text-danger me-2"
+                          onClick={() => handleDeleteSubscription(subscription._id)}
+                          icon={cilTrash}
+                          size="lg"
+                        />
+                      </CTableDataCell>
+                    </CTableRow>
+                  ));
+                })}
               </CTableBody>
             </CTable>
           )}
         </CCardBody>
       </CCard>
 
-      <CModal visible={showAddModal} onClose={() => setShowAddModal(false)}>
+      <CModal scrollable visible={showAddModal} onClose={() => setShowAddModal(false)}>
         <CModalHeader>
           <CModalTitle>Add Subscription</CModalTitle>
         </CModalHeader>
@@ -209,7 +223,7 @@ const SubscriptionManagement = () => {
             className="mb-2"
           >
             <option value="advertising">Advertising</option>
-            <option value="pay per lead">Pay Per Lead</option>
+            <option value="pay per load">Pay Per Lead</option>
             <option value="subscription">Subscription</option>
           </CFormSelect>
         </CModalBody>
@@ -223,7 +237,7 @@ const SubscriptionManagement = () => {
         </CModalFooter>
       </CModal>
 
-      <CModal visible={showEditModal} onClose={() => setShowEditModal(false)}>
+      <CModal scrollable visible={showEditModal} onClose={() => setShowEditModal(false)}>
         <CModalHeader>
           <CModalTitle>Edit Subscription</CModalTitle>
         </CModalHeader>
@@ -264,7 +278,7 @@ const SubscriptionManagement = () => {
                 className="mb-2"
               >
                 <option value="advertising">Advertising</option>
-                <option value="pay per lead">Pay Per Lead</option>
+                <option value="pay per load">Pay Per Lead</option>
                 <option value="subscription">Subscription</option>
               </CFormSelect>
             </>
@@ -280,7 +294,7 @@ const SubscriptionManagement = () => {
         </CModalFooter>
       </CModal>
 
-      <CModal visible={showViewModal} onClose={() => setShowViewModal(false)}>
+      <CModal scrollable visible={showViewModal} onClose={() => setShowViewModal(false)}>
         <CModalHeader>
           <CModalTitle>Subscription Details</CModalTitle>
         </CModalHeader>
@@ -295,9 +309,7 @@ const SubscriptionManagement = () => {
               </CListGroupItem>
               <CListGroupItem>
                 <strong>Description: </strong>
-                <div
-                  dangerouslySetInnerHTML={{ __html: viewSubscription.description }}
-                />
+                <div dangerouslySetInnerHTML={{ __html: viewSubscription.description }} />
               </CListGroupItem>
               <CListGroupItem>
                 <strong>Type: </strong>{viewSubscription.type}
