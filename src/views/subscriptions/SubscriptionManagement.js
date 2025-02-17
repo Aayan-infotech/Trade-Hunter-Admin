@@ -25,23 +25,19 @@ import {
 import CIcon from '@coreui/icons-react';
 import { cilPlus, cilPencil, cilTrash, cilViewColumn } from '@coreui/icons';
 import '../Users/Usermanagement.css';
-
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 
 const SubscriptionManagement = () => {
   const [subscriptions, setSubscriptions] = useState([]);
   const [loading, setLoading] = useState(false);
-
   const [showAddModal, setShowAddModal] = useState(false);
   const [newTitle, setNewTitle] = useState('');
   const [newAmount, setNewAmount] = useState('');
-  const [newDescription, setNewDescription] = useState(''); // HTML
+  const [newDescription, setNewDescription] = useState('');
   const [newType, setNewType] = useState('advertising');
-
   const [showEditModal, setShowEditModal] = useState(false);
   const [editSubscription, setEditSubscription] = useState(null);
-
   const [showViewModal, setShowViewModal] = useState(false);
   const [viewSubscription, setViewSubscription] = useState(null);
 
@@ -88,10 +84,7 @@ const SubscriptionManagement = () => {
 
   const handleSaveEditSubscription = async () => {
     try {
-      await axios.put(
-        `http://44.196.64.110:7777/api/subscription/update/${editSubscription._id}`,
-        editSubscription
-      );
+      await axios.put(`http://44.196.64.110:7777/api/subscription/update/${editSubscription._id}`, editSubscription);
       fetchSubscriptions();
       setShowEditModal(false);
       setEditSubscription(null);
@@ -141,10 +134,10 @@ const SubscriptionManagement = () => {
             <CTable hover responsive>
               <CTableHead>
                 <CTableRow>
-                  <CTableHeaderCell>Type</CTableHeaderCell>
-                  <CTableHeaderCell>Plan Name</CTableHeaderCell>
+                  <CTableHeaderCell>Types</CTableHeaderCell>
+                  <CTableHeaderCell>Plan Names</CTableHeaderCell>
                   <CTableHeaderCell>Amount</CTableHeaderCell>
-                  <CTableHeaderCell>Description</CTableHeaderCell>
+                  <CTableHeaderCell>Descriptions</CTableHeaderCell>
                   <CTableHeaderCell>Actions</CTableHeaderCell>
                 </CTableRow>
               </CTableHead>
@@ -154,34 +147,25 @@ const SubscriptionManagement = () => {
                   return group.map((subscription, index) => (
                     <CTableRow key={subscription._id || index}>
                       {index === 0 && (
-                        <CTableDataCell rowSpan={group.length}>
+                        <CTableDataCell rowSpan={group.length} style={{ textAlign: 'left' }}>
                           {type}
                         </CTableDataCell>
                       )}
-                      <CTableDataCell>{subscription.title}</CTableDataCell>
-                      <CTableDataCell>{subscription.amount}</CTableDataCell>
-                      <CTableDataCell>
-                        <div dangerouslySetInnerHTML={{ __html: subscription.description }} />
+                      <CTableDataCell style={{ textAlign: 'left' }}>{subscription.title}</CTableDataCell>
+                      <CTableDataCell style={{ textAlign: 'left' }}>{subscription.amount}</CTableDataCell>
+                      <CTableDataCell style={{ textAlign: 'left' }}>
+                        <div style={{ textAlign: 'left' }} dangerouslySetInnerHTML={{ __html: subscription.description }} />
                       </CTableDataCell>
-                      <CTableDataCell style={{ display: 'flex', alignItems: 'center' }}>
-                        <CIcon
-                          className="fw-bold text-success me-2"
+                      <CTableDataCell style={{ textAlign: 'left', display: 'flex', alignItems: 'center' }}>
+                        <CIcon className="fw-bold text-success me-2"
                           onClick={() => handleViewSubscription(subscription)}
-                          icon={cilViewColumn}
-                          size="lg"
-                        />
-                        <CIcon
-                          className="fw-bold text-success me-2"
+                          icon={cilViewColumn} size="lg" />
+                        <CIcon className="fw-bold text-success me-2"
                           onClick={() => handleEditSubscription(subscription)}
-                          icon={cilPencil}
-                          size="lg"
-                        />
-                        <CIcon
-                          className="fw-bold text-danger me-2"
+                          icon={cilPencil} size="lg" />
+                        <CIcon className="fw-bold text-danger me-2"
                           onClick={() => handleDeleteSubscription(subscription._id)}
-                          icon={cilTrash}
-                          size="lg"
-                        />
+                          icon={cilTrash} size="lg" />
                       </CTableDataCell>
                     </CTableRow>
                   ));
@@ -197,43 +181,19 @@ const SubscriptionManagement = () => {
           <CModalTitle>Add Subscription</CModalTitle>
         </CModalHeader>
         <CModalBody>
-          <CFormInput
-            label="Plan Name"
-            value={newTitle}
-            onChange={(e) => setNewTitle(e.target.value)}
-            className="mb-2"
-          />
-          <CFormInput
-            label="Amount"
-            type="number"
-            value={newAmount}
-            onChange={(e) => setNewAmount(e.target.value)}
-            className="mb-2"
-          />
+          <CFormInput label="Plan Name" value={newTitle} onChange={(e) => setNewTitle(e.target.value)} className="mb-2" />
+          <CFormInput label="Amount" type="number" value={newAmount} onChange={(e) => setNewAmount(e.target.value)} className="mb-2" />
           <label>Description</label>
-          <ReactQuill
-            value={newDescription}
-            onChange={(value) => setNewDescription(value)}
-            className="mb-2"
-          />
-          <CFormSelect
-            label="Type"
-            value={newType}
-            onChange={(e) => setNewType(e.target.value)}
-            className="mb-2"
-          >
+          <ReactQuill value={newDescription} onChange={(value) => setNewDescription(value)} className="mb-2" />
+          <CFormSelect label="Type" value={newType} onChange={(e) => setNewType(e.target.value)} className="mb-2">
             <option value="advertising">Advertising</option>
-            <option value="pay per load">Pay Per Lead</option>
+            <option value="pay per lead">Pay Per Lead</option>
             <option value="subscription">Subscription</option>
           </CFormSelect>
         </CModalBody>
         <CModalFooter>
-          <CButton color="secondary" onClick={() => setShowAddModal(false)}>
-            Cancel
-          </CButton>
-          <CButton color="primary" onClick={handleAddSubscription}>
-            Add Subscription
-          </CButton>
+          <CButton color="secondary" onClick={() => setShowAddModal(false)}>Cancel</CButton>
+          <CButton color="primary" onClick={handleAddSubscription}>Add Subscription</CButton>
         </CModalFooter>
       </CModal>
 
@@ -244,53 +204,21 @@ const SubscriptionManagement = () => {
         <CModalBody>
           {editSubscription && (
             <>
-              <CFormInput
-                label="Title"
-                value={editSubscription.title}
-                onChange={(e) =>
-                  setEditSubscription({ ...editSubscription, title: e.target.value })
-                }
-                className="mb-2"
-              />
-              <CFormInput
-                label="Amount"
-                type="number"
-                value={editSubscription.amount}
-                onChange={(e) =>
-                  setEditSubscription({ ...editSubscription, amount: Number(e.target.value) })
-                }
-                className="mb-2"
-              />
+              <CFormInput label="Title" value={editSubscription.title} onChange={(e) => setEditSubscription({ ...editSubscription, title: e.target.value })} className="mb-2" />
+              <CFormInput label="Amount" type="number" value={editSubscription.amount} onChange={(e) => setEditSubscription({ ...editSubscription, amount: Number(e.target.value) })} className="mb-2" />
               <label>Description</label>
-              <ReactQuill
-                value={editSubscription.description}
-                onChange={(value) =>
-                  setEditSubscription({ ...editSubscription, description: value })
-                }
-                className="mb-2"
-              />
-              <CFormSelect
-                label="Type"
-                value={editSubscription.type}
-                onChange={(e) =>
-                  setEditSubscription({ ...editSubscription, type: e.target.value })
-                }
-                className="mb-2"
-              >
+              <ReactQuill value={editSubscription.description} onChange={(value) => setEditSubscription({ ...editSubscription, description: value })} className="mb-2" />
+              <CFormSelect label="Type" value={editSubscription.type} onChange={(e) => setEditSubscription({ ...editSubscription, type: e.target.value })} className="mb-2">
                 <option value="advertising">Advertising</option>
-                <option value="pay per load">Pay Per Lead</option>
+                <option value="pay per lead">Pay Per Lead</option>
                 <option value="subscription">Subscription</option>
               </CFormSelect>
             </>
           )}
         </CModalBody>
         <CModalFooter>
-          <CButton color="secondary" onClick={() => setShowEditModal(false)}>
-            Cancel
-          </CButton>
-          <CButton color="primary" onClick={handleSaveEditSubscription}>
-            Save Changes
-          </CButton>
+          <CButton color="secondary" onClick={() => setShowEditModal(false)}>Cancel</CButton>
+          <CButton color="primary" onClick={handleSaveEditSubscription}>Save Changes</CButton>
         </CModalFooter>
       </CModal>
 
@@ -301,26 +229,24 @@ const SubscriptionManagement = () => {
         <CModalBody>
           {viewSubscription && (
             <CListGroup>
-              <CListGroupItem>
+              <CListGroupItem style={{ textAlign: 'left' }}>
                 <strong>Title: </strong>{viewSubscription.title}
               </CListGroupItem>
-              <CListGroupItem>
+              <CListGroupItem style={{ textAlign: 'left' }}>
                 <strong>Amount: </strong>{viewSubscription.amount}
               </CListGroupItem>
-              <CListGroupItem>
+              <CListGroupItem style={{ textAlign: 'left' }}>
                 <strong>Description: </strong>
-                <div dangerouslySetInnerHTML={{ __html: viewSubscription.description }} />
+                <div style={{ textAlign: 'left' }} dangerouslySetInnerHTML={{ __html: viewSubscription.description }} />
               </CListGroupItem>
-              <CListGroupItem>
+              <CListGroupItem style={{ textAlign: 'left' }}>
                 <strong>Type: </strong>{viewSubscription.type}
               </CListGroupItem>
             </CListGroup>
           )}
         </CModalBody>
         <CModalFooter>
-          <CButton color="secondary" onClick={() => setShowViewModal(false)}>
-            Close
-          </CButton>
+          <CButton color="secondary" onClick={() => setShowViewModal(false)}>Close</CButton>
         </CModalFooter>
       </CModal>
     </CContainer>

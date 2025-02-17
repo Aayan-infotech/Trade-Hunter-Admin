@@ -139,8 +139,8 @@ const ServiceManagement = () => {
               <CTableBody>
                 {services.map((service, index) => (
                   <CTableRow key={service._id || index}>
-                    <CTableDataCell>{service.name}</CTableDataCell>
-                    <CTableDataCell>
+                    <CTableDataCell style={{ textAlign: 'left' }}>{service.name}</CTableDataCell>
+                    <CTableDataCell style={{ textAlign: 'left' }}>
                       {service.services.length > 3
                         ? `${service.services.slice(0, 3).join(', ')}...`
                         : service.services.join(', ')}
@@ -237,7 +237,6 @@ const ServiceManagement = () => {
         </CModalFooter>
       </CModal>
 
-
       <CModal visible={showEditModal} onClose={() => setShowEditModal(false)}>
         <CModalHeader>
           <CModalTitle>Edit Service</CModalTitle>
@@ -272,7 +271,7 @@ const ServiceManagement = () => {
                       className="text-danger"
                       icon={cilTrash}
                       size="lg"
-                      style={{ cursor: "pointer" }}
+                      style={{ cursor: 'pointer' }}
                       onClick={() =>
                         setEditService({
                           ...editService,
@@ -289,7 +288,7 @@ const ServiceManagement = () => {
                 onClick={() =>
                   setEditService({
                     ...editService,
-                    services: [...editService.services, ""], 
+                    services: [...editService.services, ""],
                   })
                 }
               >
@@ -298,7 +297,6 @@ const ServiceManagement = () => {
             </CForm>
           )}
         </CModalBody>
-
         <CModalFooter>
           <CButton color="secondary" onClick={() => setShowEditModal(false)}>
             Cancel
@@ -308,8 +306,6 @@ const ServiceManagement = () => {
           </CButton>
         </CModalFooter>
       </CModal>
-
-
     </CContainer>
   );
 };
