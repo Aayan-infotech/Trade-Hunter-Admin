@@ -37,9 +37,9 @@ const Provider = () => {
     try {
       setLoading(true)
       const response = await axios.get(
-        `http://44.196.64.110:7777/api/Prvdr?page=${page}&limit=10&search=${search}`,
+        `http://44.196.64.110:7777/api/Prvdr?page=${page}&limit=10&search=${search}`
       )
-      setUsers(response.data.data) // Adjusted to match the API response structure
+      setUsers(response.data.data)
       setHasMoreData(response.data.data.length === 10)
     } catch (error) {
       console.error('Error fetching users:', error)
@@ -66,7 +66,7 @@ const Provider = () => {
   const prevPage = () => setPage((prevPage) => Math.max(prevPage - 1, 1))
 
   const handleDelete = async (id) => {
-    const confirmDelete = window.confirm("Are you sure you want to delete this user?");
+    const confirmDelete = window.confirm("Are you sure you want to delete this user?")
     if (confirmDelete) {
       try {
         await axios.delete(`http://44.196.64.110:7777/api/Prvdr/${id}`)
@@ -75,7 +75,7 @@ const Provider = () => {
         console.error('Error deleting user:', error)
       }
     }
-  };
+  }
 
   const handleEdit = (user) => {
     setEditUser(user)
@@ -94,8 +94,7 @@ const Provider = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target
-    // const updatedValue = value === 'true' ? true : value === 'false' ? false : value
-    const updatedValue = value === 'true' ? 1 : value === 'false' ? 0 : value;
+    const updatedValue = value === 'true' ? 1 : value === 'false' ? 0 : value
     setEditUser({
       ...editUser,
       [name]: updatedValue,
@@ -124,68 +123,59 @@ const Provider = () => {
           {loading ? (
             <div>Loading...</div>
           ) : (
-            <CTable hover responsive className="ctable">
-              <CTableHead>
-                <CTableRow>
-                  <CTableHeaderCell>Sr. No</CTableHeaderCell>
-                  <CTableHeaderCell>Name</CTableHeaderCell>
-                  <CTableHeaderCell>Email</CTableHeaderCell>
-                  <CTableHeaderCell>Contact</CTableHeaderCell>
-                  <CTableHeaderCell>User Status</CTableHeaderCell>
-                  <CTableHeaderCell>Email Verified</CTableHeaderCell>
-                  <CTableHeaderCell>Document Status</CTableHeaderCell>
-                  <CTableHeaderCell>Subscription Status</CTableHeaderCell>
-                  <CTableHeaderCell>Actions</CTableHeaderCell>
-                </CTableRow>
-              </CTableHead>
-              <CTableBody>
-                {users.map((user, index) => (
-                  <CTableRow key={user._id}>
-                    <CTableDataCell>{index + 1 + (page - 1) * 10}</CTableDataCell>
-                    <CTableDataCell>{user.contactName}</CTableDataCell>
-                    <CTableDataCell>{user.email}</CTableDataCell>
-                    <CTableDataCell>{user.phoneNo}</CTableDataCell>
-                    <CTableDataCell>{user.userStatus ? 'Active' : 'Inactive'}</CTableDataCell>
-                    <CTableDataCell>{user.emailVerified ? 'Yes' : 'No'}</CTableDataCell>
-                    <CTableDataCell>{user.documentStatus ? 'Approved' : 'Pending'}</CTableDataCell>
-                    <CTableDataCell>
-                      {user.subscriptionStatus ? 'Active' : 'Inactive'}
-                    </CTableDataCell>
-                    <CTableDataCell className="d-flex justify-content-start">
-                      <CIcon
-                        className="fw-bold text-success me-2"
-                        onClick={() => handleEdit(user)}
-                        icon={cilPencil}
-                      />
-                      <CIcon
-                        className="fw-bold text-success me-2"
-                        onClick={() => handleDelete(user._id)}
-                        icon={cilTrash}
-                      />
-                    </CTableDataCell>
+            <div style={{ maxHeight: '400px', overflowY: 'auto' }}>
+              <CTable hover responsive className="ctable">
+                <CTableHead>
+                  <CTableRow>
+                    <CTableHeaderCell>Sr. No</CTableHeaderCell>
+                    <CTableHeaderCell>Name</CTableHeaderCell>
+                    <CTableHeaderCell>Email</CTableHeaderCell>
+                    <CTableHeaderCell>Contact</CTableHeaderCell>
+                    <CTableHeaderCell>User Status</CTableHeaderCell>
+                    <CTableHeaderCell>Email Verified</CTableHeaderCell>
+                    <CTableHeaderCell>Document Status</CTableHeaderCell>
+                    <CTableHeaderCell>Subscription Status</CTableHeaderCell>
+                    <CTableHeaderCell>Actions</CTableHeaderCell>
                   </CTableRow>
-                ))}
-              </CTableBody>
-            </CTable>
+                </CTableHead>
+                <CTableBody>
+                  {users.map((user, index) => (
+                    <CTableRow key={user._id}>
+                      <CTableDataCell>{index + 1 + (page - 1) * 10}</CTableDataCell>
+                      <CTableDataCell>{user.contactName}</CTableDataCell>
+                      <CTableDataCell>{user.email}</CTableDataCell>
+                      <CTableDataCell>{user.phoneNo}</CTableDataCell>
+                      <CTableDataCell>{user.userStatus ? 'Active' : 'Inactive'}</CTableDataCell>
+                      <CTableDataCell>{user.emailVerified ? 'Yes' : 'No'}</CTableDataCell>
+                      <CTableDataCell>{user.documentStatus ? 'Approved' : 'Pending'}</CTableDataCell>
+                      <CTableDataCell>{user.subscriptionStatus ? 'Active' : 'Inactive'}</CTableDataCell>
+                      <CTableDataCell className="d-flex justify-content-start">
+                        <CIcon className="fw-bold text-success me-2" onClick={() => handleEdit(user)} icon={cilPencil} />
+                        <CIcon className="fw-bold text-success me-2" onClick={() => handleDelete(user._id)} icon={cilTrash} />
+                      </CTableDataCell>
+                    </CTableRow>
+                  ))}
+                </CTableBody>
+              </CTable>
+            </div>
           )}
           <div className="d-flex justify-content-between mt-3">
             <CButton color="secondary" onClick={prevPage} disabled={page === 1} className="btn">
               Previous
             </CButton>
             <span>Page: {page}</span>
-            <CButton color="secondary" onClick={nextPage} disabled={!hasMoreData} className="btn">
+            <CButton color="secondary" onClick={() => setPage(page + 1)} disabled={!hasMoreData} className="btn">
               Next
             </CButton>
           </div>
         </CCardBody>
       </CCard>
 
-      {/* Edit User Modal */}
-      <CModal visible={isEditModalOpen} onClose={() => setIsEditModalOpen(false)}>
+      <CModal scrollable visible={isEditModalOpen} onClose={() => setIsEditModalOpen(false)}>
         <CModalHeader>
           <CModalTitle>Edit User</CModalTitle>
         </CModalHeader>
-        <CModalBody>
+        <CModalBody style={{ maxHeight: '60vh', overflowY: 'auto' }}>
           <CFormInput
             type="text"
             name="contactName"
@@ -216,8 +206,7 @@ const Provider = () => {
             <option value="true">Active</option>
             <option value="false">Inactive</option>
           </CFormSelect>
-
-          {/* <CFormSelect
+          <CFormSelect
             name="emailVerified"
             label="Email Verified"
             value={editUser?.emailVerified !== undefined ? editUser?.emailVerified.toString() : ''}
@@ -229,47 +218,12 @@ const Provider = () => {
           <CFormSelect
             name="documentStatus"
             label="Document Status"
-            value={
-              editUser?.documentStatus !== undefined ? editUser?.documentStatus.toString() : ''
-            }
-            onChange={handleChange}
-          >
-            <option value="true">Approved</option>
-            <option value="false">Pending</option>
-          </CFormSelect>
-          <CFormSelect
-            name="subscriptionStatus"
-            label="Subscription Status"
-            value={
-              editUser?.subscriptionStatus !== undefined
-                ? editUser?.subscriptionStatus.toString()
-                : ''
-            }
-            onChange={handleChange}
-          >
-            <option value="true">Active</option>
-            <option value="false">Inactive</option>
-          </CFormSelect> */}
-          <CFormSelect
-            name="emailVerified"
-            label="Email Verified"
-            value={editUser?.emailVerified === 1 ? 'true' : 'false'}
-            onChange={handleChange}
-          >
-            <option value="true">Yes</option>
-            <option value="false">No</option>
-          </CFormSelect>
-
-          <CFormSelect
-            name="documentStatus"
-            label="Document Status"
             value={editUser?.documentStatus === 1 ? 'true' : 'false'}
             onChange={handleChange}
           >
             <option value="true">Approved</option>
             <option value="false">Pending</option>
           </CFormSelect>
-
           <CFormSelect
             name="subscriptionStatus"
             label="Subscription Status"
@@ -279,7 +233,6 @@ const Provider = () => {
             <option value="true">Active</option>
             <option value="false">Inactive</option>
           </CFormSelect>
-
         </CModalBody>
         <CModalFooter>
           <CButton color="secondary" onClick={() => setIsEditModalOpen(false)}>
