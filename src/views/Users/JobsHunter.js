@@ -74,12 +74,12 @@ const JobsHuunter = () => {
               </div>
               <div className="row">
                 <div className="col-md-6 mb-2">
-                  <p className="mb-1"><strong>Service Type:</strong></p>
-                  <p className="text-muted">{job.serviceType}</p>
+                  <p className="mb-1"><strong>Business Type:</strong></p>
+                  <p className="text-muted">{job.businessType}</p>
                 </div>
                 <div className="col-md-6 mb-2">
-                  <p className="mb-1"><strong>Service:</strong></p>
-                  <p className="text-muted">{job.service}</p>
+                  <p className="mb-1"><strong>Services:</strong></p>
+                  <p className="text-muted">{job.services}</p>
                 </div>
               </div>
               <div className="mb-2">

@@ -31,15 +31,12 @@ const API_URL = 'http://44.196.64.110:7777/api/service/getAllServices';
 const ServiceManagement = () => {
   const [services, setServices] = useState([]);
   const [loading, setLoading] = useState(false);
-
   const [showAddModal, setShowAddModal] = useState(false);
   const [newServiceName, setNewServiceName] = useState('');
   const [newServiceItem, setNewServiceItem] = useState('');
   const [newServiceItems, setNewServiceItems] = useState([]);
-
   const [showEditModal, setShowEditModal] = useState(false);
   const [editService, setEditService] = useState(null);
-
   const [showViewModal, setShowViewModal] = useState(false);
   const [viewService, setViewService] = useState(null);
 
@@ -173,11 +170,11 @@ const ServiceManagement = () => {
         </CCardBody>
       </CCard>
 
-      <CModal visible={showAddModal} onClose={() => setShowAddModal(false)}>
+      <CModal scrollable visible={showAddModal} onClose={() => setShowAddModal(false)}>
         <CModalHeader>
           <CModalTitle>Add Service</CModalTitle>
         </CModalHeader>
-        <CModalBody>
+        <CModalBody style={{ maxHeight: '60vh', overflowY: 'auto' }}>
           <CForm>
             <CFormInput
               placeholder="Business Type"
@@ -220,11 +217,11 @@ const ServiceManagement = () => {
         </CModalFooter>
       </CModal>
 
-      <CModal visible={showViewModal} onClose={() => setShowViewModal(false)}>
+      <CModal scrollable visible={showViewModal} onClose={() => setShowViewModal(false)}>
         <CModalHeader>
           <CModalTitle>Service Details</CModalTitle>
         </CModalHeader>
-        <CModalBody>
+        <CModalBody style={{ maxHeight: '60vh', overflowY: 'auto' }}>
           <h5>{viewService?.name}</h5>
           <CListGroup className="mt-2">
             {viewService?.services.map((item, index) => (
@@ -233,31 +230,28 @@ const ServiceManagement = () => {
           </CListGroup>
         </CModalBody>
         <CModalFooter>
-          <CButton color="secondary" onClick={() => setShowViewModal(false)}>Close</CButton>
+          <CButton color="secondary" onClick={() => setShowViewModal(false)}>
+            Close
+          </CButton>
         </CModalFooter>
       </CModal>
 
-      <CModal visible={showEditModal} onClose={() => setShowEditModal(false)}>
+      <CModal scrollable visible={showEditModal} onClose={() => setShowEditModal(false)}>
         <CModalHeader>
           <CModalTitle>Edit Service</CModalTitle>
         </CModalHeader>
-        <CModalBody>
+        <CModalBody style={{ maxHeight: '60vh', overflowY: 'auto' }}>
           {editService && (
             <CForm>
               <CFormInput
                 placeholder="Service Group Name"
                 value={editService.name}
-                onChange={(e) =>
-                  setEditService({ ...editService, name: e.target.value })
-                }
+                onChange={(e) => setEditService({ ...editService, name: e.target.value })}
                 className="mb-2"
               />
               <CListGroup>
                 {editService.services.map((item, index) => (
-                  <CListGroupItem
-                    key={index}
-                    className="d-flex justify-content-between align-items-center"
-                  >
+                  <CListGroupItem key={index} className="d-flex justify-content-between align-items-center">
                     <CFormInput
                       value={item}
                       onChange={(e) => {
