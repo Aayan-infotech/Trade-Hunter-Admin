@@ -21,7 +21,7 @@ import {
   CModalFooter,
 } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
-import { cilSearch, cilTrash, cilPencil } from '@coreui/icons'
+import { cilSearch, cilTrash, cilPencil ,cilEnvelopeOpen} from '@coreui/icons'
 import './Usermanagement.css'
 
 const Provider = () => {
@@ -30,8 +30,15 @@ const Provider = () => {
   const [search, setSearch] = useState('')
   const [loading, setLoading] = useState(false)
   const [isEditModalOpen, setIsEditModalOpen] = useState(false)
+  const [isNotifModalOpen, setIsNotifModalOpen] = useState(false);
   const [editUser, setEditUser] = useState(null)
+  const [notifUser, setNotifUser] = useState(null);
+  const [notifications, setNotifications] = useState([]);
+  const [notifType, setNotifType] = useState('alert');
+  const [notifText, setNotifText] = useState('');
   const [hasMoreData, setHasMoreData] = useState(true)
+  const [statusFilter, setStatusFilter] = useState('');
+  const [showUserStatusDropdown, setShowUserStatusDropdown] = useState(false);
 
   const fetchUsers = async () => {
     try {
@@ -101,6 +108,53 @@ const Provider = () => {
     })
   }
 
+
+  const handleNotification = (user) => {
+    setNotifUser(user);
+    setIsNotifModalOpen(true);
+    fetchNotifications(user._id);
+  };
+
+  const fetchNotifications = async (userId) => {
+    try {
+      const response = await axios.get(`http://localhost:7777/api/notification/getAll/hunter/${userId}`);
+      setNotifications(response.data.data || []);
+    } catch (error) {
+      console.error('Error fetching notifications:', error);
+    }
+  };
+
+  const handleSendNotification = async () => {
+    if (!notifText) {
+      alert("Please enter notification text.");
+      return;
+    }
+    try {
+      await axios.post(`http://localhost:7777/api/notification/send/hunter/${notifUser._id}`, {
+        type: notifType,
+        text: notifText,
+      });
+      setNotifText('');
+      fetchNotifications(notifUser._id);
+      alert("Notification sent successfully!");
+    } catch (error) {
+      console.error("Error sending notification:", error);
+      alert("Failed to send notification. Please try again.");
+    }
+  };
+
+  const handleDeleteNotification = async (notifId) => {
+    if (window.confirm("Are you sure you want to delete this notification?")) {
+      try {
+        await axios.delete(`http://localhost:7777/api/notification/delete/hunter/${notifUser._id}/${notifId}`);
+        fetchNotifications(notifUser._id);
+      } catch (error) {
+        console.error("Error deleting notification:", error);
+        alert("Failed to delete notification. Please try again.");
+      }
+    }
+  };
+
   return (
     <CContainer className="container">
       <CCard>
@@ -131,7 +185,32 @@ const Provider = () => {
                     <CTableHeaderCell>Name</CTableHeaderCell>
                     <CTableHeaderCell>Email</CTableHeaderCell>
                     <CTableHeaderCell>Contact</CTableHeaderCell>
-                    <CTableHeaderCell>User Status</CTableHeaderCell>
+                    <CTableHeaderCell style={{ position: 'relative' }}>
+                                          {showUserStatusDropdown ? (
+                                            <CFormSelect
+                                              size="sm"
+                                              value={statusFilter}
+                                              onChange={(e) => {
+                                                setStatusFilter(e.target.value);
+                                                setPage(1);
+                                                setShowUserStatusDropdown(false);
+                                              }}
+                                              onBlur={() => setShowUserStatusDropdown(false)}
+                                              style={{ width: '100%' }}
+                                              autoFocus
+                                            >
+                                              <option value="">All</option>
+                                              <option value="Active">Active</option>
+                                              <option value="Suspended">Suspended</option>
+                                              <option value="Pending">Pending</option>
+                                            </CFormSelect>
+                                          ) : (
+                                            <span onClick={() => setShowUserStatusDropdown(true)} style={{ cursor: 'pointer', display: 'block' }}>
+                                              {statusFilter ? `User Status: ${statusFilter}` : 'User Status'}
+                                            </span>
+                                          )}
+                                        </CTableHeaderCell>
+                    <CTableHeaderCell>Admin Verified</CTableHeaderCell>
                     <CTableHeaderCell>Email Verified</CTableHeaderCell>
                     <CTableHeaderCell>Document Status</CTableHeaderCell>
                     <CTableHeaderCell>Subscription Status</CTableHeaderCell>
@@ -145,13 +224,15 @@ const Provider = () => {
                       <CTableDataCell>{user.contactName}</CTableDataCell>
                       <CTableDataCell>{user.email}</CTableDataCell>
                       <CTableDataCell>{user.phoneNo}</CTableDataCell>
-                      <CTableDataCell>{user.userStatus ? 'Active' : 'Inactive'}</CTableDataCell>
+                      <CTableDataCell>{user.userStatus}</CTableDataCell>
+                      <CTableDataCell>{user.adminVerified}</CTableDataCell>
                       <CTableDataCell>{user.emailVerified ? 'Yes' : 'No'}</CTableDataCell>
                       <CTableDataCell>{user.documentStatus ? 'Approved' : 'Pending'}</CTableDataCell>
                       <CTableDataCell>{user.subscriptionStatus ? 'Active' : 'Inactive'}</CTableDataCell>
                       <CTableDataCell className="d-flex justify-content-start">
                         <CIcon className="fw-bold text-success me-2" onClick={() => handleEdit(user)} icon={cilPencil} />
                         <CIcon className="fw-bold text-success me-2" onClick={() => handleDelete(user._id)} icon={cilTrash} />
+                          <CIcon className ="fw-bold text-success me-2" onClick={() => handleNotification(user)} icon={cilEnvelopeOpen}   />
                       </CTableDataCell>
                     </CTableRow>
                   ))}
@@ -200,11 +281,31 @@ const Provider = () => {
           <CFormSelect
             name="userStatus"
             label="User Status"
-            value={editUser?.userStatus !== undefined ? editUser?.userStatus.toString() : ''}
+            value={editUser?.userStatus || ''}
             onChange={handleChange}
           >
-            <option value="true">Active</option>
-            <option value="false">Inactive</option>
+            <option value="Active">Active</option>
+            <option value="Suspended">Suspended</option>
+            <option value="Pending">Pending</option>
+          </CFormSelect>
+          <CFormSelect
+            name="adminVerified"
+            label="Admin Verified"
+            value={editUser?.adminVerified || ''}
+            onChange={handleChange}
+          >
+            <option value="Verified">Verified</option>
+            <option value="Not-Verified">Not Verified</option>
+          </CFormSelect>
+          <CFormSelect
+            name="accountStatus"
+            label="Account Status"
+            value={editUser?.accountStatus || ''}
+            onChange={handleChange}
+          >
+            <option value="Suspend">Suspend</option>
+            <option value="Deactivate">Deactivate</option>
+            <option value="Reactivate">Reactivate</option>
           </CFormSelect>
           <CFormSelect
             name="emailVerified"
@@ -240,6 +341,63 @@ const Provider = () => {
           </CButton>
           <CButton color="primary" onClick={handleSaveEdit}>
             Save Changes
+          </CButton>
+        </CModalFooter>
+      </CModal>
+
+            {/* Notification Modal */}
+            <CModal scrollable visible={isNotifModalOpen} onClose={() => setIsNotifModalOpen(false)}>
+        <CModalHeader>
+          <CModalTitle>Send Notification</CModalTitle>
+        </CModalHeader>
+        <CModalBody style={{ maxHeight: '60vh', overflowY: 'auto' }}>
+          {notifUser && (
+            <>
+              <div className="mb-3">
+                <label><strong>Notification Type</strong></label>
+                <CFormSelect
+                  value={notifType}
+                  onChange={(e) => setNotifType(e.target.value)}
+                >
+                  <option value="alert">Alert</option>
+                  <option value="reminder">Reminder</option>
+                  <option value="promotion">Promotion</option>
+                </CFormSelect>
+              </div>
+              <div className="mb-3">
+                <label><strong>Notification Text</strong></label>
+                <CFormInput
+                  type="text"
+                  placeholder="Enter notification text"
+                  value={notifText}
+                  onChange={(e) => setNotifText(e.target.value)}
+                />
+              </div>
+              <CButton color="primary" onClick={handleSendNotification} className="mb-3">
+                Send Notification
+              </CButton>
+              <hr />
+              <h5>Sent Notifications</h5>
+              {notifications.length === 0 ? (
+                <p>No notifications sent yet.</p>
+              ) : (
+                notifications.map((notif) => (
+                  <div key={notif._id} className="d-flex justify-content-between align-items-center border p-2 my-1">
+                    <div>
+                      <strong>{notif.type.toUpperCase()}</strong>: {notif.text}
+                    </div>
+                    <CButton color="danger" size="sm" onClick={() => handleDeleteNotification(notif._id)}>
+                      <CIcon icon={cilTrash} />
+                    </CButton>
+                  </div>
+                ))
+              )}
+            </>
+          )}
+        </CModalBody>
+        <CModalFooter>
+          <CButton color="secondary" onClick={() => setIsNotifModalOpen(false)}>
+            Close
           </CButton>
         </CModalFooter>
       </CModal>
