@@ -170,7 +170,7 @@ const ServiceManagement = () => {
         </CCardBody>
       </CCard>
 
-      <CModal scrollable visible={showAddModal} onClose={() => setShowAddModal(false)}>
+      <CModal scrollable visible={showAddModal}  className="custom-modal" onClose={() => setShowAddModal(false)}>
         <CModalHeader>
           <CModalTitle>Add Service</CModalTitle>
         </CModalHeader>
@@ -217,7 +217,7 @@ const ServiceManagement = () => {
         </CModalFooter>
       </CModal>
 
-      <CModal scrollable visible={showViewModal} onClose={() => setShowViewModal(false)}>
+      <CModal scrollable visible={showViewModal}  className="custom-modal" onClose={() => setShowViewModal(false)}>
         <CModalHeader>
           <CModalTitle>Service Details</CModalTitle>
         </CModalHeader>
@@ -236,7 +236,7 @@ const ServiceManagement = () => {
         </CModalFooter>
       </CModal>
 
-      <CModal scrollable visible={showEditModal} onClose={() => setShowEditModal(false)}>
+      <CModal scrollable visible={showEditModal} className="custom-modal" onClose={() => setShowEditModal(false)}>
         <CModalHeader>
           <CModalTitle>Edit Service</CModalTitle>
         </CModalHeader>
