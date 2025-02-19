@@ -312,14 +312,6 @@ const Hunter = () => {
             <option value="true">Yes</option>
             <option value="false">No</option>
           </CFormSelect>
-          <CFormSelect name="documentStatus" label="Document Status" value={editUser?.documentStatus === 1 ? 'true' : 'false'} onChange={handleChange}>
-            <option value="true">Approved</option>
-            <option value="false">Pending</option>
-          </CFormSelect>
-          <CFormSelect name="subscriptionStatus" label="Subscription Status" value={editUser?.subscriptionStatus === 1 ? 'true' : 'false'} onChange={handleChange}>
-            <option value="true">Active</option>
-            <option value="false">Inactive</option>
-          </CFormSelect>
         </CModalBody>
         <CModalFooter>
           <CButton color="secondary" onClick={() => setIsEditModalOpen(false)}>
@@ -350,6 +342,7 @@ const Hunter = () => {
               <p><strong>User Type:</strong> {viewUser.userType}</p>
               <p><strong>User Status:</strong> {viewUser.userStatus || 'N/A'}</p>
               <p><strong>Email Verified:</strong> {viewUser.emailVerified ? 'Yes' : 'No'}</p>
+              <p><strong>Admin Verified:</strong> {viewUser.adminVerified || 'N/A'}</p>
               <p><strong>Insertion Date:</strong> {formatDate(viewUser.insDate)}</p>
               <p><strong>Terms &amp; Conditions:</strong> {viewUser.termsAndCondition ? 'Accepted' : 'Not Accepted'}</p>
               {viewUser.files && viewUser.files.length > 0 && (
