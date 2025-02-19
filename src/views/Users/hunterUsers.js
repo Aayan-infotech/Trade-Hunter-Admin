@@ -18,8 +18,8 @@ import {
   CModalTitle,
   CModalBody,
   CModalFooter,
+  CButton,
   CBadge,
-  CButton
 } from '@coreui/react';
 import CIcon from '@coreui/icons-react';
 import {
@@ -135,6 +135,8 @@ const Hunter = () => {
       [name]: value,
     }));
   };
+
+  // Notification Functions
   const handleNotification = (user) => {
     setNotifUser(user);
     setIsNotifModalOpen(true);
@@ -143,7 +145,7 @@ const Hunter = () => {
 
   const fetchNotifications = async (userId) => {
     try {
-      const response = await axios.get(`http://localhost:7777/api/notification/getAll/hunter/${userId}`);
+      const response = await axios.get(`http://44.196.64.110:7777/api/notification/getAll/hunter/${userId}`);
       setNotifications(response.data.data || []);
     } catch (error) {
       console.error('Error fetching notifications:', error);
@@ -156,7 +158,7 @@ const Hunter = () => {
       return;
     }
     try {
-      await axios.post(`http://localhost:7777/api/notification/send/hunter/${notifUser._id}`, {
+      await axios.post(`http://44.196.64.110:7777/api/notification/send/hunter/${notifUser._id}`, {
         type: notifType,
         text: notifText,
       });
@@ -174,7 +176,7 @@ const Hunter = () => {
       alert("Notification user not defined");
       return;
     }
-    const deleteUrl = `http://localhost:7777/api/notification/delete/hunter/${notifUser._id}/${notifId}`;
+    const deleteUrl = `http://44.196.64.110:7777/api/notification/delete/hunter/${notifUser._id}/${notifId}`;
     console.log("Deleting notification at:", deleteUrl);
     if (window.confirm("Are you sure you want to delete this notification?")) {
       try {
@@ -200,9 +202,19 @@ const Hunter = () => {
               onChange={handleSearch}
               className="me-2 mb-0 c-form-input"
             />
-            <CButton color="primary" onClick={fetchUsers} className="d-flex flex-row gap-2 align-items-center">
+            <CButton color="primary" onClick={fetchUsers} className="btn d-flex flex-row gap-2 align-items-center">
               <CIcon icon={cilSearch} /> Search
             </CButton>
+            <CFormSelect
+              value={statusFilter}
+              onChange={(e) => { setStatusFilter(e.target.value); setPage(1); }}
+              style={{ width: '150px', marginLeft: '1rem' }}
+            >
+              <option value="">User Status</option>
+              <option value="Active">Active</option>
+              <option value="Suspended">Suspended</option>
+              <option value="Pending">Pending</option>
+            </CFormSelect>
           </div>
         </CCardHeader>
         <CCardBody>
@@ -217,31 +229,7 @@ const Hunter = () => {
                     <CTableHeaderCell>Name</CTableHeaderCell>
                     <CTableHeaderCell>Email</CTableHeaderCell>
                     <CTableHeaderCell>Contact</CTableHeaderCell>
-                    <CTableHeaderCell style={{ position: 'relative' }}>
-                      {showUserStatusDropdown ? (
-                        <CFormSelect
-                          size="sm"
-                          value={statusFilter}
-                          onChange={(e) => {
-                            setStatusFilter(e.target.value);
-                            setPage(1);
-                            setShowUserStatusDropdown(false);
-                          }}
-                          onBlur={() => setShowUserStatusDropdown(false)}
-                          style={{ width: '100%' }}
-                          autoFocus
-                        >
-                          <option value="">All</option>
-                          <option value="Active">Active</option>
-                          <option value="Suspended">Suspended</option>
-                          <option value="Pending">Pending</option>
-                        </CFormSelect>
-                      ) : (
-                        <span onClick={() => setShowUserStatusDropdown(true)} style={{ cursor: 'pointer', display: 'block' }}>
-                          {statusFilter ? `User Status: ${statusFilter}` : 'User Status'}
-                        </span>
-                      )}
-                    </CTableHeaderCell>
+                    <CTableHeaderCell>User Status</CTableHeaderCell>
                     <CTableHeaderCell>Email Verified</CTableHeaderCell>
                     <CTableHeaderCell>Actions</CTableHeaderCell>
                   </CTableRow>
@@ -268,7 +256,7 @@ const Hunter = () => {
                         <span onClick={() => handleDelete(user._id)} style={{ cursor: 'pointer', marginRight: '0.5rem' }}>
                           <CIcon icon={cilTrash} size="lg" />
                         </span>
-                        <span onClick={() => JobsManagemen(user._id)} style={{ cursor: 'pointer' }}>
+                        <span onClick={() => JobsManagemen(user._id)} style={{ cursor: 'pointer', marginRight: '0.5rem' }}>
                           <CIcon icon={cilBriefcase} size="lg" />
                         </span>
                       </CTableDataCell>
@@ -279,17 +267,18 @@ const Hunter = () => {
             </div>
           )}
           <div className="d-flex justify-content-between mt-3">
-            <CButton color="secondary" onClick={prevPage} disabled={page === 1}>
+            <CButton color="secondary" onClick={prevPage} disabled={page === 1} className="btn">
               Previous
             </CButton>
             <span>Page: {page}</span>
-            <CButton color="secondary" onClick={() => setPage(page + 1)} disabled={!hasMoreData}>
+            <CButton color="secondary" onClick={() => setPage(page + 1)} disabled={!hasMoreData} className="btn">
               Next
             </CButton>
           </div>
         </CCardBody>
       </CCard>
 
+      {/* Edit Modal */}
       <CModal scrollable visible={isEditModalOpen} onClose={() => setIsEditModalOpen(false)}>
         <CModalHeader>
           <CModalTitle>Edit User</CModalTitle>
@@ -303,14 +292,33 @@ const Hunter = () => {
             <option value="Suspended">Suspended</option>
             <option value="Pending">Pending</option>
           </CFormSelect>
-          <CFormSelect name="emailVerified" label="Email Verified" value={editUser?.emailVerified ? 'true' : 'false'} onChange={handleChange}>
-            <option value="true">Yes</option>
-            <option value="false">No</option>
+          <CFormSelect name="adminVerified" label="Admin Verified" value={editUser?.adminVerified || ''} onChange={handleChange}>
+            <option value="Verified">Verified</option>
+            <option value="Not-Verified">Not Verified</option>
           </CFormSelect>
           <CFormSelect name="accountStatus" label="Account Status" value={editUser?.accountStatus || ''} onChange={handleChange}>
             <option value="Suspend">Suspend</option>
             <option value="Deactivate">Deactivate</option>
             <option value="Reactivate">Reactivate</option>
+          </CFormSelect>
+          <CFormSelect
+            name="emailVerified"
+            label="Email Verified"
+            value={editUser?.emailVerified ? 'true' : 'false'}
+            onChange={(e) => {
+              setEditUser((prev) => ({ ...prev, emailVerified: e.target.value === 'true' }));
+            }}
+          >
+            <option value="true">Yes</option>
+            <option value="false">No</option>
+          </CFormSelect>
+          <CFormSelect name="documentStatus" label="Document Status" value={editUser?.documentStatus === 1 ? 'true' : 'false'} onChange={handleChange}>
+            <option value="true">Approved</option>
+            <option value="false">Pending</option>
+          </CFormSelect>
+          <CFormSelect name="subscriptionStatus" label="Subscription Status" value={editUser?.subscriptionStatus === 1 ? 'true' : 'false'} onChange={handleChange}>
+            <option value="true">Active</option>
+            <option value="false">Inactive</option>
           </CFormSelect>
         </CModalBody>
         <CModalFooter>
@@ -323,6 +331,7 @@ const Hunter = () => {
         </CModalFooter>
       </CModal>
 
+      {/* View Modal */}
       <CModal scrollable visible={isViewModalOpen} onClose={() => setIsViewModalOpen(false)}>
         <CModalHeader>
           <CModalTitle>View User</CModalTitle>
@@ -367,6 +376,7 @@ const Hunter = () => {
         </CModalFooter>
       </CModal>
 
+      {/* Notification Modal */}
       <CModal scrollable visible={isNotifModalOpen} onClose={() => setIsNotifModalOpen(false)}>
         <CModalHeader>
           <CModalTitle>Send Notification</CModalTitle>
