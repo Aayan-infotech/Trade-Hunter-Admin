@@ -145,8 +145,9 @@ const JobsManagement = () => {
               <CTableHead>
                 <CTableRow>
                   <CTableHeaderCell>Title</CTableHeaderCell>
-                  <CTableHeaderCell>Location</CTableHeaderCell>
-                  <CTableHeaderCell>Hunter Name</CTableHeaderCell>
+                  <CTableHeaderCell>Client Name</CTableHeaderCell>
+                  <CTableHeaderCell>Provider Name</CTableHeaderCell>
+                  <CTableHeaderCell>Budget</CTableHeaderCell>
                   <CTableHeaderCell onClick={toggleSortOrder} style={{ cursor: "pointer" }}>
                     Business Type
                     <CIcon icon={sortOrder === "asc" ? cilArrowBottom : cilArrowTop} className="ms-2" />
@@ -160,14 +161,9 @@ const JobsManagement = () => {
                   sortedJobs.map((job) => (
                     <CTableRow key={job._id}>
                       <CTableDataCell style={{ textAlign: 'left' }}>{job.title}</CTableDataCell>
-                      <CTableDataCell style={{ textAlign: 'left' }}>
-                        {job.jobLocation?.jobAddressLine
-                          ? job.jobLocation.jobAddressLine.length > 25
-                            ? job.jobLocation.jobAddressLine.slice(0, 25) + "..."
-                            : job.jobLocation.jobAddressLine
-                          : "N/A"}
-                      </CTableDataCell>
                       <CTableDataCell style={{ textAlign: 'left' }}>{job.user?.name}</CTableDataCell>
+                      <CTableDataCell style={{ textAlign: 'left' }}></CTableDataCell>
+                      <CTableDataCell style={{ textAlign: 'left' }}>{job.estimatedBudget}</CTableDataCell>
                       <CTableDataCell style={{ textAlign: 'left' }}>{job.businessType}</CTableDataCell>
                       <CTableDataCell style={{ textAlign: 'left' }}>{job.jobStatus}</CTableDataCell>
                       <CTableDataCell style={{ textAlign: 'left', display: 'flex', alignItems: 'center' }}>
@@ -254,9 +250,9 @@ const JobsManagement = () => {
               <p><strong>Business Type:</strong> {viewJob.businessType}</p>
               <p><strong>Services:</strong> {viewJob.services}</p>
               <p><strong>Requirements:</strong> {viewJob.requirements}</p>
-              <p><strong>Hunter id:</strong> {viewJob.user?._id}</p>
-              <p><strong>Hunter Name:</strong> {viewJob.user?.name}</p>
-              <p><strong>Hunter email:</strong> {viewJob.user?.email}</p>
+              <p><strong>Client id:</strong> {viewJob.user?._id}</p>
+              <p><strong>Client Name:</strong> {viewJob.user?.name}</p>
+              <p><strong>Client email:</strong> {viewJob.user?.email}</p>
               <p><strong>Job Status:</strong> {viewJob.jobStatus}</p>
               <p><strong>Timeframe:</strong></p>
               <ul>
@@ -344,9 +340,20 @@ const JobsManagement = () => {
                 className="form-control mb-2"
               >
                 <option value="Pending">Pending</option>
-                <option value="Accepted">Accepted</option>
+                <option value="Assigned">Assigned</option>
+                <option value="InProgress">InProgress</option>
                 <option value="Completed">Completed</option>
               </select>
+              <label>Job Assigned</label>
+              <select
+                value={editJob.jobAssigned || ""}
+                onChange={(e) => setEditJob({ ...editJob,jobAssigned: e.target.value})}
+                className ="form-control mb-2"
+                >
+                  <option value="Cancel">Cancel</option>
+                <option value="ReAssign">ReAssign</option>
+                <option value="Assigned">Assigned</option>
+                </select>
             </div>
           )}
         </CModalBody>
