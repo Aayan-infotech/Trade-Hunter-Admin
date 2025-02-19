@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import React, { useEffect, useState } from 'react'
+import axios from 'axios'
 import {
   CContainer,
   CCard,
@@ -20,8 +20,8 @@ import {
   CModalFooter,
   CButton,
   CBadge,
-} from '@coreui/react';
-import CIcon from '@coreui/icons-react';
+} from '@coreui/react'
+import CIcon from '@coreui/icons-react'
 import {
   cilSearch,
   cilTrash,
@@ -29,165 +29,164 @@ import {
   cilBriefcase,
   cilInfo,
   cilEnvelopeOpen,
-} from '@coreui/icons';
-import { useNavigate } from 'react-router-dom';
-import './Usermanagement.css';
+} from '@coreui/icons'
+import { useNavigate } from 'react-router-dom'
+import './Usermanagement.css'
 
 const formatDate = (dateObj) => {
-  if (!dateObj) return 'N/A';
-  const date = new Date(dateObj);
-  return date.toLocaleString();
-};
+  if (!dateObj) return 'N/A'
+  const date = new Date(dateObj)
+  return date.toLocaleString()
+}
 
 const Hunter = () => {
-  const [users, setUsers] = useState([]);
-  const [page, setPage] = useState(1);
-  const [search, setSearch] = useState('');
-  const [statusFilter, setStatusFilter] = useState('');
-  const [showUserStatusDropdown, setShowUserStatusDropdown] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-  const [isViewModalOpen, setIsViewModalOpen] = useState(false);
-  const [isNotifModalOpen, setIsNotifModalOpen] = useState(false);
-  const [editUser, setEditUser] = useState(null);
-  const [viewUser, setViewUser] = useState(null);
-  const [notifUser, setNotifUser] = useState(null);
-  const [notifications, setNotifications] = useState([]);
-  const [notifType, setNotifType] = useState('alert');
-  const [notifText, setNotifText] = useState('');
-  const [hasMoreData, setHasMoreData] = useState(true);
+  const [users, setUsers] = useState([])
+  const [page, setPage] = useState(1)
+  const [search, setSearch] = useState('')
+  const [statusFilter, setStatusFilter] = useState('')
+  const [loading, setLoading] = useState(false)
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false)
+  const [isViewModalOpen, setIsViewModalOpen] = useState(false)
+  const [isNotifModalOpen, setIsNotifModalOpen] = useState(false)
+  const [editUser, setEditUser] = useState(null)
+  const [viewUser, setViewUser] = useState(null)
+  const [notifUser, setNotifUser] = useState(null)
+  const [notifications, setNotifications] = useState([])
+  const [notifType, setNotifType] = useState('alert')
+  const [notifText, setNotifText] = useState('')
+  const [hasMoreData, setHasMoreData] = useState(true)
 
-  const navigate = useNavigate();
+  const navigate = useNavigate()
 
   const JobsManagemen = (_id) => {
-    navigate('/JobsHunter', { state: { _id } });
-  };
+    navigate('/JobsHunter', { state: { _id } })
+  }
 
   const fetchUsers = async () => {
-    setLoading(true);
+    setLoading(true)
     try {
+      // Use "userStatus" as the query parameter instead of "statusFilter"
       const response = await axios.get(
-        `http://44.196.64.110:7777/api/users/type/hunter/pagelimit/10?page=${page}&search=${search}&statusFilter=${statusFilter}`
-      );
-      setUsers(response.data.users);
-      setHasMoreData(response.data.users.length === 10);
+        `http://44.196.64.110:7777/api/users/type/hunter/pagelimit/10?page=${page}&search=${search}&userStatus=${statusFilter}`
+      )
+      setUsers(response.data.users)
+      setHasMoreData(response.data.users.length === 10)
     } catch (error) {
-      console.error('Error fetching users:', error);
+      console.error('Error fetching users:', error)
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
-  };
+  }
 
   useEffect(() => {
-    fetchUsers();
-  }, [page, search, statusFilter]);
+    fetchUsers()
+  }, [page, search, statusFilter])
 
   const handleSearch = (e) => {
-    setSearch(e.target.value);
-    setPage(1);
-  };
+    setSearch(e.target.value)
+    setPage(1)
+  }
 
   const nextPage = () => {
     if (hasMoreData) {
-      setPage((prev) => prev + 1);
+      setPage((prev) => prev + 1)
     }
-  };
+  }
 
   const prevPage = () => {
-    setPage((prev) => Math.max(prev - 1, 1));
-  };
+    setPage((prev) => Math.max(prev - 1, 1))
+  }
 
   const handleDelete = async (id) => {
     if (window.confirm("Are you sure you want to delete this user?")) {
       try {
-        await axios.delete(`http://44.196.64.110:7777/api/users/${id}`);
-        fetchUsers();
+        await axios.delete(`http://44.196.64.110:7777/api/users/${id}`)
+        fetchUsers()
       } catch (error) {
-        console.error('Error deleting user:', error);
+        console.error('Error deleting user:', error)
       }
     }
-  };
+  }
 
   const handleEdit = (user) => {
-    setEditUser(user);
-    setIsEditModalOpen(true);
-  };
+    setEditUser(user)
+    setIsEditModalOpen(true)
+  }
 
   const handleView = (user) => {
-    setViewUser(user);
-    setIsViewModalOpen(true);
-  };
+    setViewUser(user)
+    setIsViewModalOpen(true)
+  }
 
   const handleSaveEdit = async () => {
     try {
-      await axios.put(`http://44.196.64.110:7777/api/users/${editUser._id}`, editUser);
-      fetchUsers();
-      setIsEditModalOpen(false);
+      await axios.put(`http://44.196.64.110:7777/api/users/${editUser._id}`, editUser)
+      fetchUsers()
+      setIsEditModalOpen(false)
     } catch (error) {
-      console.error('Error editing user:', error);
+      console.error('Error editing user:', error)
     }
-  };
+  }
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
+    const { name, value } = e.target
     setEditUser((prevUser) => ({
       ...prevUser,
       [name]: value,
-    }));
-  };
+    }))
+  }
 
   // Notification Functions
   const handleNotification = (user) => {
-    setNotifUser(user);
-    setIsNotifModalOpen(true);
-    fetchNotifications(user._id);
-  };
+    setNotifUser(user)
+    setIsNotifModalOpen(true)
+    fetchNotifications(user._id)
+  }
 
   const fetchNotifications = async (userId) => {
     try {
-      const response = await axios.get(`http://44.196.64.110:7777/api/notification/getAll/hunter/${userId}`);
-      setNotifications(response.data.data || []);
+      const response = await axios.get(`http://44.196.64.110:7777/api/notification/getAll/hunter/${userId}`)
+      setNotifications(response.data.data || [])
     } catch (error) {
-      console.error('Error fetching notifications:', error);
+      console.error('Error fetching notifications:', error)
     }
-  };
+  }
 
   const handleSendNotification = async () => {
     if (!notifText) {
-      alert("Please enter notification text.");
-      return;
+      alert("Please enter notification text.")
+      return
     }
     try {
       await axios.post(`http://44.196.64.110:7777/api/notification/send/hunter/${notifUser._id}`, {
         type: notifType,
         text: notifText,
-      });
-      setNotifText('');
-      fetchNotifications(notifUser._id);
-      alert("Notification sent successfully!");
+      })
+      setNotifText('')
+      fetchNotifications(notifUser._id)
+      alert("Notification sent successfully!")
     } catch (error) {
-      console.error("Error sending notification:", error);
-      alert("Failed to send notification. Please try again.");
+      console.error("Error sending notification:", error)
+      alert("Failed to send notification. Please try again.")
     }
-  };
+  }
 
   const handleDeleteNotification = async (notifId) => {
     if (!notifUser || !notifUser._id) {
-      alert("Notification user not defined");
-      return;
+      alert("Notification user not defined")
+      return
     }
-    const deleteUrl = `http://44.196.64.110:7777/api/notification/delete/hunter/${notifUser._id}/${notifId}`;
-    console.log("Deleting notification at:", deleteUrl);
+    const deleteUrl = `http://44.196.64.110:7777/api/notification/delete/hunter/${notifUser._id}/${notifId}`
     if (window.confirm("Are you sure you want to delete this notification?")) {
       try {
-        await axios.delete(deleteUrl);
-        fetchNotifications(notifUser._id);
+        await axios.delete(deleteUrl)
+        fetchNotifications(notifUser._id)
       } catch (error) {
-        console.error("Error deleting notification:", error);
-        alert("Failed to delete notification. Please try again.");
+        console.error("Error deleting notification:", error)
+        alert("Failed to delete notification. Please try again.")
       }
     }
-  };
+  }
 
   return (
     <CContainer className="container">
@@ -210,7 +209,7 @@ const Hunter = () => {
               onChange={(e) => { setStatusFilter(e.target.value); setPage(1); }}
               style={{ width: '150px', marginLeft: '1rem' }}
             >
-              <option value="">User Status</option>
+              <option value="">All Status</option>
               <option value="Active">Active</option>
               <option value="Suspended">Suspended</option>
               <option value="Pending">Pending</option>
@@ -241,7 +240,7 @@ const Hunter = () => {
                       <CTableDataCell>{user.name}</CTableDataCell>
                       <CTableDataCell>{user.email}</CTableDataCell>
                       <CTableDataCell>{user.phoneNo}</CTableDataCell>
-                      <CTableDataCell>{user.userStatus ? 'Active' : 'Inactive'}</CTableDataCell>
+                      <CTableDataCell>{user.userStatus}</CTableDataCell>
                       <CTableDataCell>{user.emailVerified ? 'Yes' : 'No'}</CTableDataCell>
                       <CTableDataCell className="d-flex justify-content-start">
                         <span onClick={() => handleView(user)} style={{ cursor: 'pointer', marginRight: '0.5rem' }}>
@@ -305,12 +304,18 @@ const Hunter = () => {
             name="emailVerified"
             label="Email Verified"
             value={editUser?.emailVerified ? 'true' : 'false'}
-            onChange={(e) => {
-              setEditUser((prev) => ({ ...prev, emailVerified: e.target.value === 'true' }));
-            }}
+            onChange={(e) => setEditUser(prev => ({ ...prev, emailVerified: e.target.value === 'true' }))}
           >
             <option value="true">Yes</option>
             <option value="false">No</option>
+          </CFormSelect>
+          <CFormSelect name="documentStatus" label="Document Status" value={editUser?.documentStatus === 1 ? 'true' : 'false'} onChange={handleChange}>
+            <option value="true">Approved</option>
+            <option value="false">Pending</option>
+          </CFormSelect>
+          <CFormSelect name="subscriptionStatus" label="Subscription Status" value={editUser?.subscriptionStatus === 1 ? 'true' : 'false'} onChange={handleChange}>
+            <option value="true">Active</option>
+            <option value="false">Inactive</option>
           </CFormSelect>
         </CModalBody>
         <CModalFooter>
@@ -342,7 +347,6 @@ const Hunter = () => {
               <p><strong>User Type:</strong> {viewUser.userType}</p>
               <p><strong>User Status:</strong> {viewUser.userStatus || 'N/A'}</p>
               <p><strong>Email Verified:</strong> {viewUser.emailVerified ? 'Yes' : 'No'}</p>
-              <p><strong>Admin Verified:</strong> {viewUser.adminVerified || 'N/A'}</p>
               <p><strong>Insertion Date:</strong> {formatDate(viewUser.insDate)}</p>
               <p><strong>Terms &amp; Conditions:</strong> {viewUser.termsAndCondition ? 'Accepted' : 'Not Accepted'}</p>
               {viewUser.files && viewUser.files.length > 0 && (
@@ -426,7 +430,7 @@ const Hunter = () => {
         </CModalFooter>
       </CModal>
     </CContainer>
-  );
-};
+  )
+}
 
 export default Hunter;
