@@ -11,7 +11,7 @@ const JobsHuunter = () => {
   useEffect(() => {
     const fetchJobData = async () => {
       try {
-        const response = await axios.get(`http://44.196.64.110:7777/api/users/jobposts/${state._id}`);
+        const response = await axios.get(`http://54.236.98.193:7777/api/users/jobposts/${state._id}`);
         setJobData(response.data?.data || []);
       } catch (error) {
         console.error('Error fetching job data:', error);
@@ -31,7 +31,7 @@ const JobsHuunter = () => {
 
     setDeleting(true);
     try {
-      await axios.delete(`http://44.196.64.110:7777/api/jobs/${jobId}`);
+      await axios.delete(`http://54.236.98.193:7777/api/jobs/${jobId}`);
       setJobData((prevJobs) => prevJobs.filter((job) => job._id !== jobId));
       alert('Job deleted successfully!');
     } catch (error) {

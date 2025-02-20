@@ -43,7 +43,7 @@ const JobsManagement = () => {
     setLoading(true);
     setError(null);
     try {
-      const response = await axios.get(`http://44.196.64.110:7777/api/jobs/?page=${page}&limit=10&search=${search}`);
+      const response = await axios.get(`http://54.236.98.193:7777/api/jobs/?page=${page}&limit=10&search=${search}`);
       setJobs(response.data.data.jobPosts || []);
       setTotalPages(response.data.data.pagination.totalPages || 1);
     } catch (error) {
@@ -87,7 +87,7 @@ const JobsManagement = () => {
   const handleDeleteJob = async (jobId) => {
     if (window.confirm("Are you sure you want to delete this job?")) {
       try {
-        await axios.delete(`http://44.196.64.110:7777/api/jobs/${jobId}`);
+        await axios.delete(`http://54.236.98.193:7777/api/jobs/${jobId}`);
         fetchJobs();
       } catch (error) {
         console.error("Error deleting job:", error);
@@ -108,7 +108,7 @@ const JobsManagement = () => {
 
   const handleSaveEditJob = async () => {
     try {
-      await axios.put(`http://44.196.64.110:7777/api/jobs/${editJob._id}`, editJob);
+      await axios.put(`http://54.236.98.193:7777/api/jobs/${editJob._id}`, editJob);
       fetchJobs();
       setShowEditModal(false);
       setEditJob(null);

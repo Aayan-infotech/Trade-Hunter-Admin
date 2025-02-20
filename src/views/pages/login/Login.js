@@ -27,7 +27,7 @@ const Login = () => {
     setError('');
 
     try {
-      const response = await fetch('http://44.196.64.110:7777/api/authAdmin/login', {
+      const response = await fetch('http://54.236.98.193:7777/api/authAdmin/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

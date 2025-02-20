@@ -23,7 +23,7 @@ import {
 import CIcon from '@coreui/icons-react';
 import { cilTrash, cilPencil, cilViewColumn, cilPlus } from '@coreui/icons';
 
-const API_URL = 'http://44.196.64.110:7777/api/service/getAllServices';
+const API_URL = 'http://54.236.98.193:7777/api/service/getAllServices';
 
 const ServiceManagement = () => {
   const [services, setServices] = useState([]);
@@ -57,7 +57,7 @@ const ServiceManagement = () => {
       return;
     }
     try {
-      await axios.post('http://44.196.64.110:7777/api/service/createService', { name: newServiceName });
+      await axios.post('http://54.236.98.193:7777/api/service/createService', { name: newServiceName });
       fetchServices();
       setShowAddModal(false);
       setNewServiceName('');
@@ -73,7 +73,7 @@ const ServiceManagement = () => {
 
   const handleSaveEditService = async () => {
     try {
-      await axios.put(`http://44.196.64.110:7777/api/service/editService/${editService._id}`, { name: editService.name });
+      await axios.put(`http://54.236.98.193:7777/api/service/editService/${editService._id}`, { name: editService.name });
       fetchServices();
       setShowEditModal(false);
       setEditService(null);
@@ -85,7 +85,7 @@ const ServiceManagement = () => {
   const handleDeleteService = async (serviceId) => {
     if (window.confirm('Are you sure you want to delete this service?')) {
       try {
-        await axios.delete(`http://44.196.64.110:7777/api/service/delete/${serviceId}`);
+        await axios.delete(`http://54.236.98.193:7777/api/service/delete/${serviceId}`);
         fetchServices();
       } catch (error) {
         console.error('Error deleting service:', error);

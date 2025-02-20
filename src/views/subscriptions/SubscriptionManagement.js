@@ -44,7 +44,7 @@ const SubscriptionManagement = () => {
   const fetchSubscriptions = async () => {
     setLoading(true);
     try {
-      const response = await axios.get('http://44.196.64.110:7777/api/subscription/getAllSubscription');
+      const response = await axios.get('http://54.236.98.193:7777/api/subscription/getAllSubscription');
       setSubscriptions(response.data.data || []);
     } catch (error) {
       console.error('Error fetching subscriptions:', error);
@@ -65,7 +65,7 @@ const SubscriptionManagement = () => {
       type: newType,
     };
     try {
-      await axios.post('http://44.196.64.110:7777/api/subscription/addSubscription', payload);
+      await axios.post('http://54.236.98.193:7777/api/subscription/addSubscription', payload);
       fetchSubscriptions();
       setShowAddModal(false);
       setNewTitle('');
@@ -84,7 +84,7 @@ const SubscriptionManagement = () => {
 
   const handleSaveEditSubscription = async () => {
     try {
-      await axios.put(`http://44.196.64.110:7777/api/subscription/update/${editSubscription._id}`, editSubscription);
+      await axios.put(`http://54.236.98.193:7777/api/subscription/update/${editSubscription._id}`, editSubscription);
       fetchSubscriptions();
       setShowEditModal(false);
       setEditSubscription(null);
@@ -96,7 +96,7 @@ const SubscriptionManagement = () => {
   const handleDeleteSubscription = async (subscriptionId) => {
     if (window.confirm('Delete Subscription?')) {
       try {
-        await axios.delete(`http://44.196.64.110:7777/api/subscription/delete/${subscriptionId}`);
+        await axios.delete(`http://54.236.98.193:7777/api/subscription/delete/${subscriptionId}`);
         fetchSubscriptions();
       } catch (error) {
         console.error('Error deleting subscription:', error);
