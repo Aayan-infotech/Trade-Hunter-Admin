@@ -1,6 +1,7 @@
 import React from 'react'
 
 // const Usermanagement = React.lazy(() => import('./views/Users/Usermanagement.js'))
+const Dashboard = React.lazy(() => import('./views/dashboard/Dashboard.js'))
 const hunterUsers = React.lazy(() => import('./views/Users/hunterUsers.js'))
 const providerUsers = React.lazy(() => import('./views/Users/providerUsers.js'))
 const JobsManagement = React.lazy(() => import('./views/JobsManagement/JobsManagement.js'))
@@ -14,6 +15,7 @@ const JobsHunter = React.lazy(() => import('./views/Users/JobsHunter.js'))
 
 const routes = [
   // { path: '/Usermanagement', name: 'Usermanagement', element: Usermanagement },
+  { path: '/dashboard', name: 'Dashboard', element: Dashboard },
   { path: '/hunterUsers', name: 'hunterUsers', element: hunterUsers },
   { path: '/providerUsers', name: 'providerUsers', element: providerUsers },
   { path: '/JobsManagement', name: 'JobsManagement', element: JobsManagement },
