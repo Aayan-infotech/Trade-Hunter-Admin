@@ -59,18 +59,30 @@ const _nav = [
     to: '/serviceManagement',
     icon: <CIcon icon={cilPuzzle} customClassName="nav-icon" style={{ color: 'blue' }} />,
   },
-  {
-    component: CNavItem,
-    name: 'Subscription plans',
-    to: '/subscriptions',
-    icon: <CIcon icon={cilDescription} customClassName="nav-icon" style={{ color: 'blue' }} />,
-  },
-  // {
-  //   component: CNavItem,
-  //   name: 'Payments',
-  //   to: '/payments',
-  //   icon: <CIcon icon={cilMoney} customClassName="nav-icon" style={{ color: 'blue' }} />,
-  // },
+    {
+      component: CNavGroup,
+      name: 'Subscription Management',
+      // to: '/Usermanagement',
+      icon: <CIcon icon={cilDescription} customClassName="nav-icon" style={{ color: 'blue' }} />,  // Added cilUser here
+      items: [
+        // {
+        //   component: CNavItem,
+        //   name: 'All Users ',
+        //   to: '/Usermanagement',
+        // },
+        {
+          component: CNavItem,
+          name: "Subscription plans",
+          to: '/subscriptions',
+        },
+        {
+          component: CNavItem,
+          name: "Revenue Insights",
+          to: '/payments',
+        },      
+        
+      ],
+    },
 
   
 ]
