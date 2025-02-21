@@ -12,8 +12,8 @@ import {
   cilPencil,
   cilPuzzle,
   cilSpeedometer,
-  cilUser, 
-  cilBriefcase, 
+  cilUser,
+  cilBriefcase,
   cilMoney,
   cilStar,
 } from '@coreui/icons'
@@ -40,15 +40,15 @@ const _nav = [
         component: CNavItem,
         name: "Providers",
         to: '/providerUsers',
-      },      
-      
+      },
+
     ],
   },
   {
     component: CNavItem,
     name: 'Jobs Management',
-    to: '/JobsManagement', 
-    icon: <CIcon icon={cilBriefcase} customClassName="nav-icon" style={{ color: 'blue' }} />, 
+    to: '/JobsManagement',
+    icon: <CIcon icon={cilBriefcase} customClassName="nav-icon" style={{ color: 'blue' }} />,
     badge: {
       color: 'info',
     },
@@ -59,32 +59,32 @@ const _nav = [
     to: '/serviceManagement',
     icon: <CIcon icon={cilPuzzle} customClassName="nav-icon" style={{ color: 'blue' }} />,
   },
-    {
-      component: CNavGroup,
-      name: 'Subscription Management',
-      // to: '/Usermanagement',
-      icon: <CIcon icon={cilDescription} customClassName="nav-icon" style={{ color: 'blue' }} />,  // Added cilUser here
-      items: [
-        // {
-        //   component: CNavItem,
-        //   name: 'All Users ',
-        //   to: '/Usermanagement',
-        // },
-        {
-          component: CNavItem,
-          name: "Subscription plans",
-          to: '/subscriptions',
-        },
-        {
-          component: CNavItem,
-          name: "Revenue Insights",
-          to: '/payments',
-        },      
-        
-      ],
-    },
+  {
+    component: CNavGroup,
+    name: 'Subscription Stats',
+    // to: '/Usermanagement',
+    icon: <CIcon icon={cilDescription} customClassName="nav-icon" style={{ color: 'blue' }} />,  // Added cilUser here
+    items: [
+      // {
+      //   component: CNavItem,
+      //   name: 'All Users ',
+      //   to: '/Usermanagement',
+      // },
+      {
+        component: CNavItem,
+        name: "Subscription plans",
+        to: '/subscriptions',
+      },
+      {
+        component: CNavItem,
+        name: "Revenue Insights",
+        to: '/payments',
+      },
 
-  
+    ],
+  },
+
+
 ]
 
 export default _nav
