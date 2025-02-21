@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { CContainer, CRow, CCol, CCard, CCardHeader, CCardBody } from '@coreui/react';
+import { CContainer, CRow, CCol, CCard, CCardHeader, CCardBody, CProgress, CBadge } from '@coreui/react';
 import axios from 'axios';
 import '../Users/Usermanagement.css';
 
@@ -51,64 +51,87 @@ const Dashboard = () => {
       <CRow className="mb-4">
         <CCol md={4}>
           <CCard className="dashboard-card hover-effect">
-            <CCardHeader>User Insights</CCardHeader>
+            <CCardHeader className="text-center text-primary">User Insights</CCardHeader>
             <CCardBody>
-              <h3>Total Users: {totalUsers}</h3>
-              <p>Hunters: {hunter}</p>
-              <p>Providers: {provider}</p>
+              <h2 className="text-center">{totalUsers}</h2>
+              <p className="text-muted text-center">Total Users</p>
+              <CRow>
+                <CCol><CBadge color="info">Hunters: {hunter}</CBadge></CCol>
+                <CCol><CBadge color="success">Providers: {provider}</CBadge></CCol>
+              </CRow>
             </CCardBody>
           </CCard>
         </CCol>
+
         <CCol md={4}>
           <CCard className="dashboard-card hover-effect">
-            <CCardHeader>Job Postings</CCardHeader>
+            <CCardHeader className="text-center text-primary">Job Postings</CCardHeader>
             <CCardBody>
-              {Object.keys(jobPostings).map((status) => (
-                <p key={status}>{status}: {jobPostings[status] || 0}</p>
+              {Object.keys(jobPostings).map((status, index) => (
+                <div key={index} className="mb-2">
+                  <strong>{status}:</strong> {jobPostings[status] || 0}
+                  <CProgress 
+                    color={status === "Completed" ? "success" : status === "InProgress" ? "warning" : "info"} 
+                    value={(jobPostings[status] / (totalUsers || 1)) * 100} 
+                    className="mt-1" 
+                  />
+                </div>
               ))}
             </CCardBody>
           </CCard>
         </CCol>
+
         <CCol md={4}>
           <CCard className="dashboard-card hover-effect">
-            <CCardHeader>Subscription Revenue</CCardHeader>
-            <CCardBody>
-              <h2 className="revenue-text">${subscriptionRevenue}</h2>
-              <p>Revenue Insights</p>
+            <CCardHeader className="text-center text-primary">Subscription Revenue</CCardHeader>
+            <CCardBody className="text-center">
+              <h1 className="text-success">${subscriptionRevenue}</h1>
+              <p className="text-muted">Total Earnings</p>
             </CCardBody>
           </CCard>
         </CCol>
       </CRow>
+
       <CRow>
         <CCol md={12}>
           <CCard className="dashboard-card">
-            <CCardHeader>Recent Job Activity</CCardHeader>
+            <CCardHeader className="text-center text-primary">Recent Job Activity</CCardHeader>
             <CCardBody>
               {recentJobActivity.length > 0 ? (
-                <table className="custom-table">
-                  <thead>
-                    <tr>
-                      <th>Title</th>
-                      <th>Location</th>
-                      <th>Business Type</th>
-                      <th>Status</th>
-                      <th>Budget</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {recentJobActivity.map((job, index) => (
-                      <tr key={index}>
-                        <td>{job.title}</td>
-                        <td>{job.jobLocation?.jobAddressLine}</td>
-                        <td>{job.businessType}</td>
-                        <td>{job.jobStatus}</td>
-                        <td>${job.estimatedBudget}</td>
+                <div className="table-responsive">
+                  <table className="table table-hover custom-table">
+                    <thead className="thead-light">
+                      <tr>
+                        <th>Title</th>
+                        <th>Hunter Name</th>
+                        <th>Provider Name</th>
+                        <th>Location</th>
+                        <th>Business Type</th>
+                        <th>Status</th>
+                        <th>Budget</th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
+                    </thead>
+                    <tbody>
+                      {recentJobActivity.map((job, index) => (
+                        <tr key={index}>
+                          <td>{job.title}</td>
+                          <td>{job.user.name}</td>
+                          <td>{job.providername}</td>
+                          <td>{job.jobLocation?.jobAddressLine}</td>
+                          <td>{job.businessType}</td>
+                          <td>
+                            <CBadge color={job.jobStatus === "Completed" ? "success" : "warning"}>
+                              {job.jobStatus}
+                            </CBadge>
+                          </td>
+                          <td>${job.estimatedBudget}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
               ) : (
-                <p>No recent activity</p>
+                <p className="text-center text-muted">No recent job activities.</p>
               )}
             </CCardBody>
           </CCard>
