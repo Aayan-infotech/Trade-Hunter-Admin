@@ -7,6 +7,7 @@ const Dashboard = () => {
   const [totalUsers, setTotalUsers] = useState(0);
   const [hunter, setHunter] = useState(0);
   const [provider, setProvider] = useState(0);
+  const [guest, setGuest] = useState(0);
   const [jobPostings, setJobPostings] = useState({ Pending: 0, Assigned: 0, InProgress: 0, Completed: 0 });
   const [subscriptionRevenue, setSubscriptionRevenue] = useState(0);
   const [recentJobActivity, setRecentJobActivity] = useState([]);
@@ -25,6 +26,7 @@ const Dashboard = () => {
           setTotalUsers(results[0].value.data.totalUsers);
           setHunter(results[0].value.data.huntersCount);
           setProvider(results[0].value.data.providersCount);
+          setGuest(results[0].value.data.guestsCount || 0);
         }
 
         if (results[1].status === "fulfilled") {
@@ -58,6 +60,7 @@ const Dashboard = () => {
               <CRow>
                 <CCol><CBadge color="info">Hunters: {hunter}</CBadge></CCol>
                 <CCol><CBadge color="success">Providers: {provider}</CBadge></CCol>
+                <CCol><CBadge color="secondary">Guests: {guest}</CBadge></CCol>
               </CRow>
             </CCardBody>
           </CCard>
@@ -67,16 +70,18 @@ const Dashboard = () => {
           <CCard className="dashboard-card hover-effect">
             <CCardHeader className="text-center text-primary">Job Postings</CCardHeader>
             <CCardBody>
-              {Object.keys(jobPostings).map((status, index) => (
-                <div key={index} className="mb-2">
-                  <strong>{status}:</strong> {jobPostings[status] || 0}
-                  <CProgress 
-                    color={status === "Completed" ? "success" : status === "InProgress" ? "warning" : "info"} 
-                    value={(jobPostings[status] / (totalUsers || 1)) * 100} 
-                    className="mt-1" 
-                  />
-                </div>
-              ))}
+              <CRow>
+                {Object.keys(jobPostings).map((status, index) => (
+                  <CCol md={6} key={index} className="mb-2">
+                    <strong>{status}:</strong> {jobPostings[status] || 0}
+                    <CProgress 
+                      color={status === "Completed" ? "success" : status === "InProgress" ? "warning" : "info"} 
+                      value={(jobPostings[status] / (totalUsers || 1)) * 100} 
+                      className="mt-1" 
+                    />
+                  </CCol>
+                ))}
+              </CRow>
             </CCardBody>
           </CCard>
         </CCol>
@@ -95,7 +100,7 @@ const Dashboard = () => {
       <CRow>
         <CCol md={12}>
           <CCard className="dashboard-card">
-            <CCardHeader className="text-center text-primary">Recent Job Activity</CCardHeader>
+            <CCardHeader className="text-center text-primary">Recent Job Activities</CCardHeader>
             <CCardBody>
               {recentJobActivity.length > 0 ? (
                 <div className="table-responsive">
