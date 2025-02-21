@@ -26,20 +26,19 @@ const PaymentManagement = () => {
     const [Payment, setPayment] = useState([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
-
     const [viewPayment, setViewPayment] = useState(null);
     const [showViewModal, setShowViewModal] = useState(false);
 
     useEffect(() => {
         fetchPayment();
-    }, []); 
+    }, []);
 
     const fetchPayment = async () => {
         setLoading(true);
         setError(null);
         try {
             const response = await axios.get("http://54.236.98.193:7777/api/payment/getAllPayment");
-            setPayment(response.data.data || []); 
+            setPayment(response.data.data || []);
         } catch (error) {
             console.error("Error fetching Payments:", error);
             setError("Failed to load payment. Please try again.");
@@ -59,7 +58,7 @@ const PaymentManagement = () => {
                 <CCardHeader>
                     <h4>Payments</h4>
                 </CCardHeader>
-                <CCardBody>
+                <CCardBody style={{ maxHeight: "400px", overflowY: "auto" }}> {/* Scrollable Table */}
                     {error && <p className="text-danger">{error}</p>}
                     {loading ? (
                         <div>Loading...</div>
@@ -77,7 +76,7 @@ const PaymentManagement = () => {
                                 </CTableRow>
                             </CTableHead>
                             <CTableBody>
-                                {Payment.length > 0 ? ( 
+                                {Payment.length > 0 ? (
                                     Payment.map((payment) => (
                                         <CTableRow key={payment._id}>
                                             <CTableDataCell>{payment.transactionId}</CTableDataCell>
@@ -88,7 +87,7 @@ const PaymentManagement = () => {
                                             <CTableDataCell>${payment.SubscriptionAmount || "0.00"}</CTableDataCell>
                                             <CTableDataCell>
                                                 <CIcon
-                                                    className="me-2 text-primary"
+                                                    className="me-2 text-primary cursor-pointer"
                                                     onClick={() => handleViewPayment(payment)}
                                                     icon={cilViewColumn}
                                                     size="lg"
