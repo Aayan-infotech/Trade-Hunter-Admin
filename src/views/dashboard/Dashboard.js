@@ -47,20 +47,20 @@ const Dashboard = () => {
   }, []);
 
   return (
-    <CContainer fluid style={{ minHeight: '100vh', padding: '2rem' }}>
+    <CContainer fluid className="dashboard-container">
       <CRow className="mb-4">
         <CCol md={4}>
-          <CCard className="text-center">
+          <CCard className="dashboard-card hover-effect">
             <CCardHeader>User Insights</CCardHeader>
             <CCardBody>
-              <h5>Total Users: {totalUsers}</h5>
+              <h3>Total Users: {totalUsers}</h3>
               <p>Hunters: {hunter}</p>
               <p>Providers: {provider}</p>
             </CCardBody>
           </CCard>
         </CCol>
         <CCol md={4}>
-          <CCard className="text-center">
+          <CCard className="dashboard-card hover-effect">
             <CCardHeader>Job Postings</CCardHeader>
             <CCardBody>
               {Object.keys(jobPostings).map((status) => (
@@ -70,10 +70,10 @@ const Dashboard = () => {
           </CCard>
         </CCol>
         <CCol md={4}>
-          <CCard className="text-center">
+          <CCard className="dashboard-card hover-effect">
             <CCardHeader>Subscription Revenue</CCardHeader>
             <CCardBody>
-              <h2>${subscriptionRevenue}</h2>
+              <h2 className="revenue-text">${subscriptionRevenue}</h2>
               <p>Revenue Insights</p>
             </CCardBody>
           </CCard>
@@ -81,11 +81,11 @@ const Dashboard = () => {
       </CRow>
       <CRow>
         <CCol md={12}>
-          <CCard>
+          <CCard className="dashboard-card">
             <CCardHeader>Recent Job Activity</CCardHeader>
             <CCardBody>
               {recentJobActivity.length > 0 ? (
-                <table className="table">
+                <table className="custom-table">
                   <thead>
                     <tr>
                       <th>Title</th>
