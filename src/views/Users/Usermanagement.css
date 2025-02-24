@@ -509,7 +509,7 @@ button:hover {
 }
 
 .hunter-search-input {
-  width: 700px;
+  width: calc(100% - 28%);
   border-radius: 4px;
   padding: 5px;
 }
@@ -836,7 +836,7 @@ button:hover {
 }
 
 .guest-search-input {
-  width: 885px;
+  width: calc(100% - 12%);
   border-radius: 4px;
   padding: 5px;
 }
