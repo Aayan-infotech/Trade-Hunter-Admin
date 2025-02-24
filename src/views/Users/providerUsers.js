@@ -111,8 +111,7 @@ const Provider = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target
-    // For emailVerified, convert string to boolean.
-    if (name === 'emailVerified',  'documentStatus', 'subscriptionStatus') {
+    if (name === 'emailVerified' || name === 'documentStatus' || name === 'subscriptionStatus') {
       setEditUser(prev => ({ ...prev, [name]: value === 'true' }))
     } else {
       setEditUser(prev => ({ ...prev, [name]: value }))
@@ -121,77 +120,76 @@ const Provider = () => {
 
   // Notification Functions
   const handleNotification = (user) => {
-    setNotifUser(user);
-    setIsNotifModalOpen(true);
-    fetchNotifications(user._id);
-  };
+    setNotifUser(user)
+    setIsNotifModalOpen(true)
+    fetchNotifications(user._id)
+  }
 
   const fetchNotifications = async (userId) => {
     try {
-      const response = await axios.get(`http://54.236.98.193:7777/api/notification/getAll/hunter/${userId}`);
-      setNotifications(response.data.data || []);
+      const response = await axios.get(`http://54.236.98.193:7777/api/notification/getAll/provider/${userId}`)
+      setNotifications(response.data.data || [])
     } catch (error) {
-      console.error('Error fetching notifications:', error);
+      console.error('Error fetching notifications:', error)
     }
-  };
+  }
 
   const handleSendNotification = async () => {
     if (!notifText) {
-      alert("Please enter notification text.");
-      return;
+      alert("Please enter notification text.")
+      return
     }
     try {
-      await axios.post(`http://54.236.98.193:7777/api/notification/send/hunter/${notifUser._id}`, {
+      await axios.post(`http://54.236.98.193:7777/api/notification/send/provider/${notifUser._id}`, {
         type: notifType,
         text: notifText,
-      });
-      setNotifText('');
-      fetchNotifications(notifUser._id);
-      alert("Notification sent successfully!");
+      })
+      setNotifText('')
+      fetchNotifications(notifUser._id)
+      alert("Notification sent successfully!")
     } catch (error) {
-      console.error("Error sending notification:", error);
-      alert("Failed to send notification. Please try again.");
+      console.error("Error sending notification:", error)
+      alert("Failed to send notification. Please try again.")
     }
-  };
+  }
 
   const handleDeleteNotification = async (notifId) => {
     if (!notifUser || !notifUser._id) {
-      alert("Notification user not defined");
-      return;
+      alert("Notification user not defined")
+      return
     }
-    const deleteUrl = `http://54.236.98.193:7777/api/notification/delete/hunter/${notifUser._id}/${notifId}`;
-    console.log("Deleting notification at:", deleteUrl);
+    const deleteUrl = `http://54.236.98.193:7777/api/notification/delete/provider/${notifUser._id}/${notifId}`
     if (window.confirm("Are you sure you want to delete this notification?")) {
       try {
-        await axios.delete(deleteUrl);
-        fetchNotifications(notifUser._id);
+        await axios.delete(deleteUrl)
+        fetchNotifications(notifUser._id)
       } catch (error) {
-        console.error("Error deleting notification:", error);
-        alert("Failed to delete notification. Please try again.");
+        console.error("Error deleting notification:", error)
+        alert("Failed to delete notification. Please try again.")
       }
     }
-  };
+  }
 
   return (
-    <CContainer className="container">
-      <CCard>
-        <CCardHeader className="card-header">
+    <CContainer className="hunter-container">
+      <CCard className="hunter-card">
+        <CCardHeader className="hunter-card-header">
           <h4>Providers List</h4>
-          <div className="d-flex align-items-center">
+          <div className="hunter-search-container">
             <CFormInput
               type="text"
               placeholder="Search by name or email"
               value={search}
               onChange={handleSearch}
-              className="me-2 mb-0 c-form-input"
+              className="hunter-search-input"
             />
-            <CButton color="primary" onClick={fetchUsers} className="btn d-flex flex-row gap-2 align-items-center">
+            <CButton color="primary" onClick={fetchUsers} className="hunter-search-button">
               <CIcon icon={cilSearch} /> Search
             </CButton>
             <CFormSelect
               value={statusFilter}
               onChange={(e) => { setStatusFilter(e.target.value); setPage(1); }}
-              style={{ width: '150px', marginLeft: '1rem' }}
+              className="hunter-status-select"
             >
               <option value="">User Status</option>
               <option value="Active">Active</option>
@@ -200,12 +198,12 @@ const Provider = () => {
             </CFormSelect>
           </div>
         </CCardHeader>
-        <CCardBody>
+        <CCardBody className="hunter-card-body">
           {loading ? (
-            <div>Loading...</div>
+            <div className="loading-text">Loading...</div>
           ) : (
-            <div style={{ maxHeight: '400px', overflowY: 'auto' }}>
-              <CTable hover responsive className="ctable">
+            <div className="hunter-table-container">
+              <CTable hover responsive className="hunter-table">
                 <CTableHead>
                   <CTableRow>
                     <CTableHeaderCell>Sr. No</CTableHeaderCell>
@@ -227,22 +225,32 @@ const Provider = () => {
                       <CTableDataCell>{user.contactName}</CTableDataCell>
                       <CTableDataCell>{user.email}</CTableDataCell>
                       <CTableDataCell>{user.phoneNo}</CTableDataCell>
-                      <CTableDataCell>{user.userStatus}</CTableDataCell>
+                      <CTableDataCell>
+                        <CBadge color={
+                          user.userStatus === 'Active'
+                            ? 'success'
+                            : user.userStatus === 'Suspended'
+                            ? 'danger'
+                            : 'warning'
+                        }>
+                          {user.userStatus}
+                        </CBadge>
+                      </CTableDataCell>
                       <CTableDataCell>{user.adminVerified}</CTableDataCell>
                       <CTableDataCell>{user.emailVerified ? 'Yes' : 'No'}</CTableDataCell>
                       <CTableDataCell>{user.documentStatus ? 'Approved' : 'Pending'}</CTableDataCell>
                       <CTableDataCell>{user.subscriptionStatus ? 'Active' : 'Inactive'}</CTableDataCell>
-                      <CTableDataCell className="d-flex justify-content-start">
-                        <span onClick={() => handleView(user)} style={{ cursor: 'pointer', marginRight: '0.5rem' }}>
+                      <CTableDataCell className="hunter-actions-cell">
+                        <span onClick={() => handleView(user)} className="hunter-action-icon">
                           <CIcon icon={cilInfo} size="lg" />
                         </span>
-                        <span onClick={() => handleNotification(user)} style={{ cursor: 'pointer', marginRight: '0.5rem' }}>
+                        <span onClick={() => handleNotification(user)} className="hunter-action-icon">
                           <CIcon icon={cilEnvelopeOpen} size="lg" />
                         </span>
-                        <span onClick={() => handleEdit(user)} style={{ cursor: 'pointer', marginRight: '0.5rem' }}>
+                        <span onClick={() => handleEdit(user)} className="hunter-action-icon">
                           <CIcon icon={cilPencil} size="lg" />
                         </span>
-                        <span onClick={() => handleDelete(user._id)} style={{ cursor: 'pointer', marginRight: '0.5rem' }}>
+                        <span onClick={() => handleDelete(user._id)} className="hunter-action-icon">
                           <CIcon icon={cilTrash} size="lg" />
                         </span>
                       </CTableDataCell>
@@ -252,12 +260,12 @@ const Provider = () => {
               </CTable>
             </div>
           )}
-          <div className="d-flex justify-content-between mt-3">
-            <CButton color="secondary" onClick={prevPage} disabled={page === 1} className="btn">
+          <div className="hunter-pagination">
+            <CButton color="secondary" onClick={prevPage} disabled={page === 1} className="hunter-pagination-btn">
               Previous
             </CButton>
-            <span>Page: {page}</span>
-            <CButton color="secondary" onClick={() => setPage(page + 1)} disabled={!hasMoreData} className="btn">
+            <span className="hunter-page-info">Page: {page}</span>
+            <CButton color="secondary" onClick={() => setPage(page + 1)} disabled={!hasMoreData} className="hunter-pagination-btn">
               Next
             </CButton>
           </div>
@@ -265,63 +273,63 @@ const Provider = () => {
       </CCard>
 
       {/* Edit Modal */}
-      <CModal scrollable visible={isEditModalOpen} onClose={() => setIsEditModalOpen(false)}>
-        <CModalHeader>
+      <CModal scrollable visible={isEditModalOpen} onClose={() => setIsEditModalOpen(false)} className="hunter-modal">
+        <CModalHeader className="hunter-modal-header">
           <CModalTitle>Edit User</CModalTitle>
         </CModalHeader>
-        <CModalBody style={{ maxHeight: '60vh', overflowY: 'auto' }}>
-          <CFormInput type="text" name="contactName" label="Name" value={editUser?.contactName || ''} onChange={handleChange} />
-          <CFormInput type="email" name="email" label="Email" value={editUser?.email || ''} onChange={handleChange} />
-          <CFormInput type="text" name="phoneNo" label="Phone Number" value={editUser?.phoneNo || ''} onChange={handleChange} />
-          <CFormSelect name="userStatus" label="User Status" value={editUser?.userStatus || ''} onChange={handleChange}>
+        <CModalBody className="hunter-modal-body" style={{ maxHeight: '60vh', overflowY: 'auto' }}>
+          <CFormInput type="text" name="contactName" label="Name" value={editUser?.contactName || ''} onChange={handleChange} className="hunter-modal-input" />
+          <CFormInput type="email" name="email" label="Email" value={editUser?.email || ''} onChange={handleChange} className="hunter-modal-input" />
+          <CFormInput type="text" name="phoneNo" label="Phone Number" value={editUser?.phoneNo || ''} onChange={handleChange} className="hunter-modal-input" />
+          <CFormSelect name="userStatus" label="User Status" value={editUser?.userStatus || ''} onChange={handleChange} className="hunter-modal-select">
             <option value="Active">Active</option>
             <option value="Suspended">Suspended</option>
             <option value="Pending">Pending</option>
           </CFormSelect>
-          <CFormSelect name="adminVerified" label="Admin Verified" value={editUser?.adminVerified || ''} onChange={handleChange}>
+          <CFormSelect name="adminVerified" label="Admin Verified" value={editUser?.adminVerified || ''} onChange={handleChange} className="hunter-modal-select">
             <option value="Verified">Verified</option>
             <option value="Not-Verified">Not Verified</option>
           </CFormSelect>
-          <CFormSelect name="accountStatus" label="Account Status" value={editUser?.accountStatus || ''} onChange={handleChange}>
+          <CFormSelect name="accountStatus" label="Account Status" value={editUser?.accountStatus || ''} onChange={handleChange} className="hunter-modal-select">
             <option value="Suspend">Suspend</option>
             <option value="Deactivate">Deactivate</option>
             <option value="Reactivate">Reactivate</option>
           </CFormSelect>
           <CFormSelect name="emailVerified" label="Email Verified" value={editUser?.emailVerified ? 'true' : 'false'} onChange={(e) => {
-            setEditUser(prev => ({ ...prev, emailVerified: e.target.value === 'true' }));
-          }}>
+            setEditUser(prev => ({ ...prev, emailVerified: e.target.value === 'true' }))
+          }} className="hunter-modal-select">
             <option value="true">Yes</option>
             <option value="false">No</option>
           </CFormSelect>
-          <CFormSelect name="documentStatus" label="documentStatus" value={editUser?.documentStatus ? 'true' : 'false'} onChange={(e) => {
-            setEditUser(prev => ({ ...prev, documentStatus: e.target.value === 'true' }));
-          }}>
+          <CFormSelect name="documentStatus" label="Document Status" value={editUser?.documentStatus ? 'true' : 'false'} onChange={(e) => {
+            setEditUser(prev => ({ ...prev, documentStatus: e.target.value === 'true' }))
+          }} className="hunter-modal-select">
             <option value="true">Approved</option>
             <option value="false">Pending</option>
           </CFormSelect>
           <CFormSelect name="subscriptionStatus" label="Subscription Status" value={editUser?.subscriptionStatus ? 'true' : 'false'} onChange={(e) => {
-            setEditUser(prev => ({ ...prev, subscriptionStatus: e.target.value === 'true' }));
-          }}>
+            setEditUser(prev => ({ ...prev, subscriptionStatus: e.target.value === 'true' }))
+          }} className="hunter-modal-select">
             <option value="true">Active</option>
             <option value="false">Inactive</option>
           </CFormSelect>
         </CModalBody>
-        <CModalFooter>
-          <CButton color="secondary" onClick={() => setIsEditModalOpen(false)}>
+        <CModalFooter className="hunter-modal-footer">
+          <CButton color="secondary" onClick={() => setIsEditModalOpen(false)} className="hunter-modal-btn">
             Close
           </CButton>
-          <CButton color="primary" onClick={handleSaveEdit}>
+          <CButton color="primary" onClick={handleSaveEdit} className="hunter-modal-btn">
             Save Changes
           </CButton>
         </CModalFooter>
       </CModal>
 
       {/* View Modal */}
-      <CModal scrollable visible={isViewModalOpen} onClose={() => setIsViewModalOpen(false)}>
-        <CModalHeader>
+      <CModal scrollable visible={isViewModalOpen} onClose={() => setIsViewModalOpen(false)} className="hunter-modal">
+        <CModalHeader className="hunter-modal-header">
           <CModalTitle>View User</CModalTitle>
         </CModalHeader>
-        <CModalBody style={{ maxHeight: '60vh', overflowY: 'auto' }}>
+        <CModalBody className="hunter-modal-body" style={{ maxHeight: '60vh', overflowY: 'auto' }}>
           {viewUser && (
             <div>
               {viewUser.images && (
@@ -355,69 +363,69 @@ const Provider = () => {
             </div>
           )}
         </CModalBody>
-        <CModalFooter>
-          <CButton color="secondary" onClick={() => setIsViewModalOpen(false)}>
+        <CModalFooter className="hunter-modal-footer">
+          <CButton color="secondary" onClick={() => setIsViewModalOpen(false)} className="hunter-modal-btn">
             Close
           </CButton>
         </CModalFooter>
       </CModal>
 
       {/* Notification Modal */}
-       <CModal scrollable visible={isNotifModalOpen} onClose={() => setIsNotifModalOpen(false)}>
-              <CModalHeader>
-                <CModalTitle>Send Notification</CModalTitle>
-              </CModalHeader>
-              <CModalBody style={{ maxHeight: '60vh', overflowY: 'auto' }}>
-                {notifUser && (
-                  <>
-                    <div className="mb-3">
-                      <label><strong>Notification Type</strong></label>
-                      <CFormSelect value={notifType} onChange={(e) => setNotifType(e.target.value)}>
-                        <option value="alert">Alert</option>
-                        <option value="reminder">Reminder</option>
-                        <option value="promotion">Promotion</option>
-                      </CFormSelect>
+      <CModal scrollable visible={isNotifModalOpen} onClose={() => setIsNotifModalOpen(false)} className="hunter-modal">
+        <CModalHeader className="hunter-modal-header">
+          <CModalTitle>Send Notification</CModalTitle>
+        </CModalHeader>
+        <CModalBody className="hunter-modal-body" style={{ maxHeight: '60vh', overflowY: 'auto' }}>
+          {notifUser && (
+            <>
+              <div className="mb-3">
+                <label><strong>Notification Type</strong></label>
+                <CFormSelect value={notifType} onChange={(e) => setNotifType(e.target.value)}>
+                  <option value="alert">Alert</option>
+                  <option value="reminder">Reminder</option>
+                  <option value="promotion">Promotion</option>
+                </CFormSelect>
+              </div>
+              <div className="mb-3">
+                <label><strong>Notification Text</strong></label>
+                <CFormInput
+                  type="text"
+                  placeholder="Enter notification text"
+                  value={notifText}
+                  onChange={(e) => setNotifText(e.target.value)}
+                />
+              </div>
+              <div className="text-center mb-3">
+                <span onClick={handleSendNotification} style={{ cursor: 'pointer', color: '#0d6efd', fontSize: '1.8rem' }}>
+                  <CIcon icon={cilEnvelopeOpen} />
+                </span>
+                <p style={{ margin: '0.5rem 0', fontSize: '0.9rem' }}>Send</p>
+              </div>
+              <hr />
+              <h5>Sent Notifications</h5>
+              {notifications.length === 0 ? (
+                <p>No notifications sent yet.</p>
+              ) : (
+                notifications.map((notif) => (
+                  <div key={notif._id} className="d-flex justify-content-between align-items-center border p-2 my-1">
+                    <div>
+                      <strong>{notif.type.toUpperCase()}</strong>: {notif.text}
                     </div>
-                    <div className="mb-3">
-                      <label><strong>Notification Text</strong></label>
-                      <CFormInput
-                        type="text"
-                        placeholder="Enter notification text"
-                        value={notifText}
-                        onChange={(e) => setNotifText(e.target.value)}
-                      />
-                    </div>
-                    <div className="text-center mb-3">
-                      <span onClick={handleSendNotification} style={{ cursor: 'pointer', color: '#0d6efd', fontSize: '1.8rem' }}>
-                        <CIcon icon={cilEnvelopeOpen} />
-                      </span>
-                      <p style={{ margin: '0.5rem 0', fontSize: '0.9rem' }}>Send</p>
-                    </div>
-                    <hr />
-                    <h5>Sent Notifications</h5>
-                    {notifications.length === 0 ? (
-                      <p>No notifications sent yet.</p>
-                    ) : (
-                      notifications.map((notif) => (
-                        <div key={notif._id} className="d-flex justify-content-between align-items-center border p-2 my-1">
-                          <div>
-                            <strong>{notif.type.toUpperCase()}</strong>: {notif.text}
-                          </div>
-                          <span onClick={() => handleDeleteNotification(notif._id)} style={{ cursor: 'pointer', color: 'red', fontSize: '1.3rem' }}>
-                            <CIcon icon={cilTrash} />
-                          </span>
-                        </div>
-                      ))
-                    )}
-                  </>
-                )}
-              </CModalBody>
-              <CModalFooter>
-                <CButton color="secondary" onClick={() => setIsNotifModalOpen(false)}>
-                  Close
-                </CButton>
-              </CModalFooter>
-            </CModal>
+                    <span onClick={() => handleDeleteNotification(notif._id)} style={{ cursor: 'pointer', color: 'red', fontSize: '1.3rem' }}>
+                      <CIcon icon={cilTrash} />
+                    </span>
+                  </div>
+                ))
+              )}
+            </>
+          )}
+        </CModalBody>
+        <CModalFooter className="hunter-modal-footer">
+          <CButton color="secondary" onClick={() => setIsNotifModalOpen(false)}>
+            Close
+          </CButton>
+        </CModalFooter>
+      </CModal>
     </CContainer>
   )
 }

@@ -25,8 +25,8 @@ const Dashboard = () => {
         if (results[0].status === "fulfilled") {
           setTotalUsers(results[0].value.data.totalUsers);
           setHunter(results[0].value.data.huntersCount);
-          setProvider(results[0].value.data.providersCount);
-          setGuest(results[0].value.data.guestsCount || 0);
+          setProvider(results[0].value.data.providers);
+          setGuest(results[0].value.data.guestModeProviders || 0);
         }
 
         if (results[1].status === "fulfilled") {
