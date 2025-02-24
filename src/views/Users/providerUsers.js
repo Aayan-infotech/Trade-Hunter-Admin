@@ -20,9 +20,19 @@ import {
   CModalBody,
   CModalFooter,
   CBadge,
+  CRow,
+  CCol,
 } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
-import { cilSearch, cilTrash, cilPencil, cilBriefcase, cilInfo, cilEnvelopeOpen } from '@coreui/icons'
+import {
+  cilSearch,
+  cilTrash,
+  cilPencil,
+  cilBriefcase,
+  cilInfo,
+  cilEnvelopeOpen,
+  cilCommentBubble,
+} from '@coreui/icons'
 import './Usermanagement.css'
 
 const formatDate = (dateObj) => {
@@ -39,6 +49,7 @@ const Provider = () => {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false)
   const [isViewModalOpen, setIsViewModalOpen] = useState(false)
   const [isNotifModalOpen, setIsNotifModalOpen] = useState(false)
+  const [isChatModalOpen, setIsChatModalOpen] = useState(false) 
   const [editUser, setEditUser] = useState(null)
   const [viewUser, setViewUser] = useState(null)
   const [notifUser, setNotifUser] = useState(null)
@@ -47,6 +58,10 @@ const Provider = () => {
   const [notifText, setNotifText] = useState('')
   const [hasMoreData, setHasMoreData] = useState(true)
   const [statusFilter, setStatusFilter] = useState('')
+
+  const [chatUser, setChatUser] = useState(null)
+  const [chatMessages, setChatMessages] = useState([]) 
+  const [newChatMessage, setNewChatMessage] = useState('') 
 
   const fetchUsers = async () => {
     try {
@@ -118,7 +133,6 @@ const Provider = () => {
     }
   }
 
-  // Notification Functions
   const handleNotification = (user) => {
     setNotifUser(user)
     setIsNotifModalOpen(true)
@@ -168,6 +182,26 @@ const Provider = () => {
         alert("Failed to delete notification. Please try again.")
       }
     }
+  }
+
+  const handleChat = (user) => {
+    setChatUser(user)
+    setIsChatModalOpen(true)
+    setChatMessages([
+      { id: 'c1', text: 'Hello!', sender: 'them' },
+      { id: 'c2', text: 'Hi, how can I help you?', sender: 'me' },
+    ])
+  }
+
+  const handleSendChatMessage = () => {
+    if (!newChatMessage.trim()) return
+    const message = {
+      id: Date.now().toString(),
+      text: newChatMessage,
+      sender: 'me',
+    }
+    setChatMessages([...chatMessages, message])
+    setNewChatMessage('')
   }
 
   return (
@@ -247,6 +281,9 @@ const Provider = () => {
                         <span onClick={() => handleNotification(user)} className="hunter-action-icon">
                           <CIcon icon={cilEnvelopeOpen} size="lg" />
                         </span>
+                        <span onClick={() => handleChat(user)} className="hunter-action-icon">
+                          <CIcon icon={cilCommentBubble} size="lg" />
+                        </span>
                         <span onClick={() => handleEdit(user)} className="hunter-action-icon">
                           <CIcon icon={cilPencil} size="lg" />
                         </span>
@@ -265,14 +302,13 @@ const Provider = () => {
               Previous
             </CButton>
             <span className="hunter-page-info">Page: {page}</span>
-            <CButton color="secondary" onClick={() => setPage(page + 1)} disabled={!hasMoreData} className="hunter-pagination-btn">
+            <CButton color="secondary" onClick={nextPage} disabled={!hasMoreData} className="hunter-pagination-btn">
               Next
             </CButton>
           </div>
         </CCardBody>
       </CCard>
 
-      {/* Edit Modal */}
       <CModal scrollable visible={isEditModalOpen} onClose={() => setIsEditModalOpen(false)} className="hunter-modal">
         <CModalHeader className="hunter-modal-header">
           <CModalTitle>Edit User</CModalTitle>
@@ -324,7 +360,6 @@ const Provider = () => {
         </CModalFooter>
       </CModal>
 
-      {/* View Modal */}
       <CModal scrollable visible={isViewModalOpen} onClose={() => setIsViewModalOpen(false)} className="hunter-modal">
         <CModalHeader className="hunter-modal-header">
           <CModalTitle>View User</CModalTitle>
@@ -370,7 +405,6 @@ const Provider = () => {
         </CModalFooter>
       </CModal>
 
-      {/* Notification Modal */}
       <CModal scrollable visible={isNotifModalOpen} onClose={() => setIsNotifModalOpen(false)} className="hunter-modal">
         <CModalHeader className="hunter-modal-header">
           <CModalTitle>Send Notification</CModalTitle>
@@ -426,8 +460,55 @@ const Provider = () => {
           </CButton>
         </CModalFooter>
       </CModal>
+
+      <CModal visible={isChatModalOpen} onClose={() => setIsChatModalOpen(false)} size="md" className="hunter-modal">
+        <CModalHeader onClose={() => setIsChatModalOpen(false)}>
+          <CModalTitle>Chat with {chatUser?.contactName || chatUser?.name}</CModalTitle>
+        </CModalHeader>
+        <CModalBody style={{ height: '400px', overflowY: 'auto', position: 'relative' }}>
+          {chatMessages.length === 0 ? (
+            <p>No messages yet.</p>
+          ) : (
+            chatMessages.map((msg) => (
+              <div key={msg.id} style={{ textAlign: msg.sender === 'me' ? 'right' : 'left', marginBottom: '5px' }}>
+                <span style={{
+                  backgroundColor: msg.sender === 'me' ? '#007bff' : '#f1f1f1',
+                  color: msg.sender === 'me' ? '#fff' : '#333',
+                  padding: '5px 10px',
+                  borderRadius: '15px'
+                }}>
+                  {msg.text}
+                </span>
+              </div>
+            ))
+          )}
+          <div style={{
+            position: 'absolute',
+            bottom: 0,
+            left: 0,
+            right: 0,
+            padding: '10px',
+            background: '#fff',
+            borderTop: '1px solid #ddd'
+          }}>
+            <CRow className="align-items-center">
+              <CCol md={10}>
+                <CFormInput
+                  type="text"
+                  placeholder="Type a message..."
+                  value={newChatMessage}
+                  onChange={(e) => setNewChatMessage(e.target.value)}
+                />
+              </CCol>
+              <CCol md={2}>
+                <CButton color="primary" onClick={handleSendChatMessage}>Send</CButton>
+              </CCol>
+            </CRow>
+          </div>
+        </CModalBody>
+      </CModal>
     </CContainer>
   )
 }
 
-export default Provider;
+export default Provider

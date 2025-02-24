@@ -20,6 +20,8 @@ import {
   CModalFooter,
   CButton,
   CBadge,
+  CRow,
+  CCol,
 } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
 import {
@@ -29,6 +31,7 @@ import {
   cilBriefcase,
   cilInfo,
   cilEnvelopeOpen,
+  cilCommentBubble,
 } from '@coreui/icons'
 import { useNavigate } from 'react-router-dom'
 import './Usermanagement.css'
@@ -48,12 +51,16 @@ const Hunter = () => {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false)
   const [isViewModalOpen, setIsViewModalOpen] = useState(false)
   const [isNotifModalOpen, setIsNotifModalOpen] = useState(false)
+  const [isChatModalOpen, setIsChatModalOpen] = useState(false) 
   const [editUser, setEditUser] = useState(null)
   const [viewUser, setViewUser] = useState(null)
   const [notifUser, setNotifUser] = useState(null)
+  const [chatUser, setChatUser] = useState(null) 
   const [notifications, setNotifications] = useState([])
   const [notifType, setNotifType] = useState('alert')
   const [notifText, setNotifText] = useState('')
+  const [chatMessages, setChatMessages] = useState([]) 
+  const [newChatMessage, setNewChatMessage] = useState('') 
   const [hasMoreData, setHasMoreData] = useState(true)
 
   const navigate = useNavigate()
@@ -65,7 +72,6 @@ const Hunter = () => {
   const fetchUsers = async () => {
     setLoading(true)
     try {
-      // Using "userStatus" as the query parameter for filtering
       const response = await axios.get(
         `http://54.236.98.193:7777/api/users/type/hunter/pagelimit/10?page=${page}&search=${search}&userStatus=${statusFilter}`
       )
@@ -188,6 +194,28 @@ const Hunter = () => {
     }
   }
 
+  // Chat Functions
+  const handleChat = (user) => {
+    setChatUser(user)
+    setIsChatModalOpen(true)
+    // Set dummy chat messages for UI demonstration
+    setChatMessages([
+      { id: 'c1', text: 'Hello!', sender: 'them' },
+      { id: 'c2', text: 'Hi, how can I help you?', sender: 'me' },
+    ])
+  }
+
+  const handleSendChatMessage = () => {
+    if (!newChatMessage.trim()) return
+    const message = {
+      id: Date.now().toString(),
+      text: newChatMessage,
+      sender: 'me',
+    }
+    setChatMessages([...chatMessages, message])
+    setNewChatMessage('')
+  }
+
   return (
     <CContainer className="hunter-container">
       <CCard className="hunter-card">
@@ -252,6 +280,9 @@ const Hunter = () => {
                         </span>
                         <span onClick={() => handleNotification(user)} className="hunter-action-icon">
                           <CIcon icon={cilEnvelopeOpen} size="lg" />
+                        </span>
+                        <span onClick={() => handleChat(user)} className="hunter-action-icon">
+                          <CIcon icon={cilCommentBubble} size="lg" />
                         </span>
                         <span onClick={() => handleEdit(user)} className="hunter-action-icon">
                           <CIcon icon={cilPencil} size="lg" />
@@ -435,8 +466,56 @@ const Hunter = () => {
           </CButton>
         </CModalFooter>
       </CModal>
+
+      {/* Chat Modal (Set to medium width) */}
+      <CModal visible={isChatModalOpen} onClose={() => setIsChatModalOpen(false)} size="md" className="hunter-modal">
+        <CModalHeader onClose={() => setIsChatModalOpen(false)}>
+          <CModalTitle>Chat with {chatUser?.name}</CModalTitle>
+        </CModalHeader>
+        <CModalBody style={{ height: '400px', overflowY: 'auto', position: 'relative' }}>
+          {chatMessages.length === 0 ? (
+            <p>No messages yet.</p>
+          ) : (
+            chatMessages.map((msg) => (
+              <div key={msg.id} style={{ textAlign: msg.sender === 'me' ? 'right' : 'left', marginBottom: '5px' }}>
+                <span style={{
+                  backgroundColor: msg.sender === 'me' ? '#007bff' : '#f1f1f1',
+                  color: msg.sender === 'me' ? '#fff' : '#333',
+                  padding: '5px 10px',
+                  borderRadius: '15px'
+                }}>
+                  {msg.text}
+                </span>
+              </div>
+            ))
+          )}
+          <div style={{
+            position: 'absolute',
+            bottom: 0,
+            left: 0,
+            right: 0,
+            padding: '10px',
+            background: '#fff',
+            borderTop: '1px solid #ddd'
+          }}>
+            <CRow className="align-items-center">
+              <CCol md={10}>
+                <CFormInput
+                  type="text"
+                  placeholder="Type a message..."
+                  value={newChatMessage}
+                  onChange={(e) => setNewChatMessage(e.target.value)}
+                />
+              </CCol>
+              <CCol md={2}>
+                <CButton color="primary" onClick={handleSendChatMessage}>Send</CButton>
+              </CCol>
+            </CRow>
+          </div>
+        </CModalBody>
+      </CModal>
     </CContainer>
   )
 }
 
-export default Hunter;
+export default Hunter
