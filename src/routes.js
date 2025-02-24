@@ -10,6 +10,7 @@ const SubscriptionManagement =React.lazy(() => import('./views/subscriptions/Sub
  const paymentManagement = React.lazy(() => import('./views/payments/paymentManagement.js'));
 
 const JobsHunter = React.lazy(() => import('./views/Users/JobsHunter.js'))
+const GuestUsers = React.lazy(() => import('./views/Users/guestUsers.js'))
 
 
 
@@ -22,7 +23,8 @@ const routes = [
   { path: '/serviceManagement', name: 'Service Management', element: ServiceManagement },
   {path: '/subscriptions', name: 'Subscription Management', element: SubscriptionManagement},
   { path: '/JobsHunter', name: 'HunterJobs', element: JobsHunter },
-  {path: '/payments', name: "Payment Management", element: paymentManagement}
+  {path: '/payments', name: "Payment Management", element: paymentManagement},
+  {path: '/guestUsers', name:"Guest Management", element: GuestUsers}
 
 
   // { path: '/JobsManagement', name: 'JobsManagement', element: JobsManagement },

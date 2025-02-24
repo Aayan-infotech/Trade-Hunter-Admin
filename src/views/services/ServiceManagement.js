@@ -22,6 +22,7 @@ import {
 } from '@coreui/react';
 import CIcon from '@coreui/icons-react';
 import { cilTrash, cilPencil, cilViewColumn, cilPlus } from '@coreui/icons';
+import '../Users/Usermanagement.css';
 
 const API_URL = 'http://54.236.98.193:7777/api/service/getAllServices';
 
@@ -99,19 +100,19 @@ const ServiceManagement = () => {
   };
 
   return (
-    <CContainer>
-      <CCard>
-        <CCardHeader className="d-flex justify-content-between align-items-center">
-          <h4>Services Management</h4>
-          <CButton color="primary" onClick={() => setShowAddModal(true)}>
+    <CContainer className="service-container">
+      <CCard className="service-card">
+        <CCardHeader className="service-card-header d-flex justify-content-between align-items-center">
+          <h4 className="mb-0">Services Management</h4>
+          <CButton color="primary" onClick={() => setShowAddModal(true)} className="service-add-button">
             <CIcon icon={cilPlus} /> Add Service
           </CButton>
         </CCardHeader>
-        <CCardBody>
+        <CCardBody className="service-card-body">
           {loading ? (
-            <div>Loading...</div>
+            <div className="text-center">Loading...</div>
           ) : (
-            <CTable hover responsive>
+            <CTable hover responsive className="service-table">
               <CTableHead>
                 <CTableRow>
                   <CTableHeaderCell>Service Name</CTableHeaderCell>
@@ -121,13 +122,26 @@ const ServiceManagement = () => {
               <CTableBody>
                 {services.map((service, index) => (
                   <CTableRow key={service._id || index}>
-                    <CTableDataCell style={{ textAlign: 'left' }}>
-                      {service.name}
-                    </CTableDataCell>
-                    <CTableDataCell style={{ display: 'flex', alignItems: 'center' }}>
-                      <CIcon className="fw-bold text-success me-2" onClick={() => handleViewService(service)} icon={cilViewColumn} size="lg" />
-                      <CIcon className="fw-bold text-success me-2" onClick={() => handleEditService(service)} icon={cilPencil} size="lg" />
-                      <CIcon className="text-danger" onClick={() => handleDeleteService(service._id)} icon={cilTrash} size="lg" />
+                    <CTableDataCell className="text-left">{service.name}</CTableDataCell>
+                    <CTableDataCell className="service-actions-cell">
+                      <CIcon
+                        className="action-icon view-icon me-2"
+                        onClick={() => handleViewService(service)}
+                        icon={cilViewColumn}
+                        size="lg"
+                      />
+                      <CIcon
+                        className="action-icon edit-icon me-2"
+                        onClick={() => handleEditService(service)}
+                        icon={cilPencil}
+                        size="lg"
+                      />
+                      <CIcon
+                        className="action-icon delete-icon"
+                        onClick={() => handleDeleteService(service._id)}
+                        icon={cilTrash}
+                        size="lg"
+                      />
                     </CTableDataCell>
                   </CTableRow>
                 ))}
@@ -137,11 +151,12 @@ const ServiceManagement = () => {
         </CCardBody>
       </CCard>
 
-      <CModal scrollable visible={showAddModal} onClose={() => setShowAddModal(false)}>
-        <CModalHeader>
+      {/* Add Service Modal */}
+      <CModal scrollable visible={showAddModal} onClose={() => setShowAddModal(false)} className="service-modal">
+        <CModalHeader className="service-modal-header">
           <CModalTitle>Add Service</CModalTitle>
         </CModalHeader>
-        <CModalBody>
+        <CModalBody className="service-modal-body">
           <CForm>
             <CFormInput
               placeholder="Enter service name"
@@ -151,29 +166,37 @@ const ServiceManagement = () => {
             />
           </CForm>
         </CModalBody>
-        <CModalFooter>
-          <CButton color="secondary" onClick={() => setShowAddModal(false)}>Cancel</CButton>
-          <CButton color="primary" onClick={handleAddService}>Save Service</CButton>
+        <CModalFooter className="service-modal-footer">
+          <CButton color="secondary" onClick={() => setShowAddModal(false)}>
+            Cancel
+          </CButton>
+          <CButton color="primary" onClick={handleAddService}>
+            Save Service
+          </CButton>
         </CModalFooter>
       </CModal>
 
-      <CModal scrollable visible={showViewModal} onClose={() => setShowViewModal(false)}>
-        <CModalHeader>
+      {/* View Service Modal */}
+      <CModal scrollable visible={showViewModal} onClose={() => setShowViewModal(false)} className="service-modal">
+        <CModalHeader className="service-modal-header">
           <CModalTitle>Service Details</CModalTitle>
         </CModalHeader>
-        <CModalBody>
+        <CModalBody className="service-modal-body">
           <p><strong>Service Name:</strong> {viewService?.name}</p>
         </CModalBody>
-        <CModalFooter>
-          <CButton color="secondary" onClick={() => setShowViewModal(false)}>Close</CButton>
+        <CModalFooter className="service-modal-footer">
+          <CButton color="secondary" onClick={() => setShowViewModal(false)}>
+            Close
+          </CButton>
         </CModalFooter>
       </CModal>
 
-      <CModal scrollable visible={showEditModal} onClose={() => setShowEditModal(false)}>
-        <CModalHeader>
+      {/* Edit Service Modal */}
+      <CModal scrollable visible={showEditModal} onClose={() => setShowEditModal(false)} className="service-modal">
+        <CModalHeader className="service-modal-header">
           <CModalTitle>Edit Service</CModalTitle>
         </CModalHeader>
-        <CModalBody>
+        <CModalBody className="service-modal-body">
           {editService && (
             <CFormInput
               placeholder="Edit service name"
@@ -183,9 +206,13 @@ const ServiceManagement = () => {
             />
           )}
         </CModalBody>
-        <CModalFooter>
-          <CButton color="secondary" onClick={() => setShowEditModal(false)}>Cancel</CButton>
-          <CButton color="primary" onClick={handleSaveEditService}>Save Changes</CButton>
+        <CModalFooter className="service-modal-footer">
+          <CButton color="secondary" onClick={() => setShowEditModal(false)}>
+            Cancel
+          </CButton>
+          <CButton color="primary" onClick={handleSaveEditService}>
+            Save Changes
+          </CButton>
         </CModalFooter>
       </CModal>
     </CContainer>

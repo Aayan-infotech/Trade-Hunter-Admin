@@ -19,6 +19,7 @@ import {
 } from '@coreui/icons'
 import { CNavGroup, CNavItem, CNavTitle } from '@coreui/react'
 
+
 const _nav = [
   {
     component: CNavGroup,
@@ -40,6 +41,11 @@ const _nav = [
         component: CNavItem,
         name: "Providers",
         to: '/providerUsers',
+      },
+      {
+        component: CNavItem,
+        name: "Guest Users",
+        to:"/guestUsers"
       },
 
     ],
@@ -82,6 +88,12 @@ const _nav = [
       },
 
     ],
+  },
+  {
+    component: CNavItem,
+    name: 'Contacts',
+    to: '/contacts',
+    icon: <CIcon icon={cilPuzzle } customClassName="nav-icon" style={{ color: 'blue' }} />,
   },
 
 
