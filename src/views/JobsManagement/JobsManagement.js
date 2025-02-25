@@ -130,7 +130,7 @@ const JobsManagement = () => {
   return (
     <CContainer className="jobs-container">
       <CCard>
-        <CCardHeader className="card-header-custom">
+        <CCardHeader  className="service-card-header">
           <h4>Jobs Management</h4>
           <div className="search-container">
             <CFormInput
@@ -245,12 +245,11 @@ const JobsManagement = () => {
         scrollable
         visible={showViewModal}
         onClose={() => setShowViewModal(false)}
-        className="custom-modal"
       >
-        <CModalHeader className="modal-header-custom">
+        <CModalHeader  className="service-card-header">
           <CModalTitle>Job Details</CModalTitle>
         </CModalHeader>
-        <CModalBody className="modal-body-custom">
+        <CModalBody  className="modal-body-custom">
           {viewJob && (
             <div className="view-job-details">
               <p>
@@ -340,9 +339,8 @@ const JobsManagement = () => {
         scrollable
         visible={showEditModal}
         onClose={() => setShowEditModal(false)}
-        className="custom-modal"
       >
-        <CModalHeader className="modal-header-custom">
+        <CModalHeader  className="service-card-header">
           <CModalTitle>Edit Job</CModalTitle>
         </CModalHeader>
         <CModalBody className="modal-body-custom">

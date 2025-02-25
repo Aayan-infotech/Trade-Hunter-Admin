@@ -123,7 +123,7 @@ const Dashboard = () => {
                           <td>{job.user.name}</td>
                           <td>{job.providername}</td>
                           <td>{job.jobLocation?.jobAddressLine}</td>
-                          <td>{job.businessType}</td>
+                          <td>{[job.businessType]}</td>
                           <td>
                             <CBadge color={job.jobStatus === "Completed" ? "success" : "warning"}>
                               {job.jobStatus}

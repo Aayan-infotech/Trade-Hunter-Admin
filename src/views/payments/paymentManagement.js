@@ -55,7 +55,7 @@ const PaymentManagement = () => {
     return (
         <CContainer>
             <CCard>
-                <CCardHeader>
+                <CCardHeader  className="service-card-header">
                     <h4>Payments</h4>
                 </CCardHeader>
                 <CCardBody style={{ maxHeight: "400px", overflowY: "auto" }}> {/* Scrollable Table */}
@@ -109,7 +109,7 @@ const PaymentManagement = () => {
             </CCard>
 
             <CModal visible={showViewModal} onClose={() => setShowViewModal(false)}>
-                <CModalHeader>
+                <CModalHeader   className="service-card-header">
                     <CModalTitle>Payment Details</CModalTitle>
                 </CModalHeader>
                 <CModalBody>
