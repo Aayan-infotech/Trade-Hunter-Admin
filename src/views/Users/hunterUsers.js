@@ -36,6 +36,10 @@ import {
 import { useNavigate } from 'react-router-dom'
 import './Usermanagement.css'
 
+// Firebase imports and realtimeDb instance
+import { ref, push, onValue } from "firebase/database"
+import { realtimeDb } from "../chat/firestore" // Adjust path as needed
+
 const formatDate = (dateObj) => {
   if (!dateObj) return 'N/A'
   const date = new Date(dateObj)
@@ -59,11 +63,26 @@ const Hunter = () => {
   const [notifications, setNotifications] = useState([])
   const [notifType, setNotifType] = useState('alert')
   const [notifText, setNotifText] = useState('')
+  // Chat state variables for Firebase
   const [chatMessages, setChatMessages] = useState([])
   const [newChatMessage, setNewChatMessage] = useState('')
   const [hasMoreData, setHasMoreData] = useState(true)
 
   const navigate = useNavigate()
+  const currentUser = localStorage.getItem("adminId")
+
+  // Debug: Log the Firebase DB instance on mount
+  useEffect(() => {
+    console.log("Firebase DB Instance:", realtimeDb)
+    console.log("Current User (adminId):", currentUser)
+  }, [currentUser])
+
+  // Helper: Generate a stable chatId based on current user and the selected hunter's id.
+  const generateChatId = (otherUserId) => {
+    const chatId = [currentUser, otherUserId].sort().join('_')
+    console.log("Generated Chat ID:", chatId)
+    return chatId
+  }
 
   const JobsManagemen = (_id) => {
     navigate('/JobsHunter', { state: { _id } })
@@ -126,7 +145,7 @@ const Hunter = () => {
 
   const handleSaveEdit = async () => {
     try {
-      await axios.put(`http://54.236.98.193:7777/api/users/${editUser._id}`, editUser)
+      await axios.put(`http://54.236.98.193:7777/api/users/${editUser._id}editUser`, )
       fetchUsers()
       setIsEditModalOpen(false)
     } catch (error) {
@@ -193,24 +212,69 @@ const Hunter = () => {
     }
   }
 
+  // Updated handleChat: Open chat modal with selected user
   const handleChat = (user) => {
+    console.log("Chat initiated with:", user)
     setChatUser(user)
     setIsChatModalOpen(true)
-    setChatMessages([
-      { id: 'c1', text: 'Hello!', sender: 'them' },
-      { id: 'c2', text: 'Hi, how can I help you?', sender: 'me' },
-    ])
   }
 
+  // Subscribe to chat messages from Firebase when a chat user is selected.
+  useEffect(() => {
+    if (chatUser) {
+      const chatChannelId = generateChatId(chatUser._id)
+      const chatMessagesRef = ref(realtimeDb, `chats/${chatChannelId}/messages`)
+      console.log("Subscribing to Firebase chat messages at:", `chats/${chatChannelId}/messages`)
+
+      const unsubscribe = onValue(chatMessagesRef, (snapshot) => {
+        const data = snapshot.val()
+        if (data) {
+          const messagesArray = Object.values(data).sort((a, b) => a.createdAt - b.createdAt)
+          console.log(" messages:", messagesArray)
+          setChatMessages(messagesArray)
+        } else {
+          console.log("No messages found at this channel.")
+          setChatMessages([])
+        }
+      })
+
+      return () => {
+        console.log("Unsubscribing from Firebase chat messages.")
+        unsubscribe()
+      }
+    }
+  }, [chatUser])
+
+  // Send a new chat message via Firebase.
   const handleSendChatMessage = () => {
     if (!newChatMessage.trim()) return
-    const message = {
-      id: Date.now().toString(),
-      text: newChatMessage,
-      sender: 'me',
+
+    if (!chatUser || !chatUser._id) {
+      console.error("Chat user is not defined.")
+      return
     }
-    setChatMessages([...chatMessages, message])
-    setNewChatMessage('')
+
+    const chatChannelId = generateChatId(chatUser._id)
+    const chatRef = ref(realtimeDb, `chats/${chatChannelId}/messages`)
+    console.log("Sending message to path:", `chats/${chatChannelId}/messages`)
+    console.log("Current User:", currentUser, "Chat User:", chatUser)
+
+    const message = {
+      senderId: currentUser,
+      receiverId: chatUser._id,
+      receiverName: chatUser.name,
+      text: newChatMessage,
+      createdAt: Date.now(),
+    }
+
+    push(chatRef, message)
+      .then(() => {
+        console.log("Message sent successfully:", message)
+        setNewChatMessage('')
+      })
+      .catch((error) => {
+        console.error("Error sending message:", error)
+      })
   }
 
   return (
@@ -464,22 +528,21 @@ const Hunter = () => {
         </CModalFooter>
       </CModal>
 
-      {/* Chat Modal with Fixed Input Area */}
+      {/* Chat Modal with Firebase Integration */}
       <CModal visible={isChatModalOpen} onClose={() => setIsChatModalOpen(false)} size="md" className="hunter-modal">
         <CModalHeader onClose={() => setIsChatModalOpen(false)}>
           <CModalTitle>Chat with {chatUser?.contactName || chatUser?.name}</CModalTitle>
         </CModalHeader>
-        {/* Flex container for chat messages and fixed input area */}
         <div style={{ display: 'flex', flexDirection: 'column', height: '400px' }}>
           <div style={{ flex: 1, overflowY: 'auto', padding: '20px' }}>
             {chatMessages.length === 0 ? (
               <p>No messages yet.</p>
             ) : (
-              chatMessages.map((msg) => (
-                <div key={msg.id} style={{ textAlign: msg.sender === 'me' ? 'right' : 'left', marginBottom: '10px' }}>
+              chatMessages.map((msg, index) => (
+                <div key={index} style={{ textAlign: msg.senderId === currentUser ? 'right' : 'left', marginBottom: '10px' }}>
                   <span style={{
-                    backgroundColor: msg.sender === 'me' ? '#007bff' : '#f1f1f1',
-                    color: msg.sender === 'me' ? '#fff' : '#333',
+                    backgroundColor: msg.senderId === currentUser ? '#007bff' : '#f1f1f1',
+                    color: msg.senderId === currentUser ? '#fff' : '#333',
                     padding: '10px 15px',
                     borderRadius: '20px',
                     display: 'inline-block',
