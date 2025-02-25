@@ -112,7 +112,7 @@ const Contact = () => {
             <CRow>
                 <CCol md={3} style={{ borderRight: '1px solid #ddd', maxHeight: '80vh', overflowY: 'auto' }}>
                     <CCard className="recent-chats-card">
-                        <CCardHeader>Recent Chats</CCardHeader>
+                        <CCardHeader  className="service-card-header">Recent Chats</CCardHeader>
                         <CCardBody>
                             <CListGroup>
                                 {recentChats.length > 0 ? (
@@ -141,15 +141,15 @@ const Contact = () => {
                     <CCard
                         className="chat-panel-card"
                         style={{
-                            height: '75vh',
+                            height: '70vh',
                             display: 'flex',
                             flexDirection: 'column',
                             position: 'relative',
-                            maxWidth: '800px',
+                            maxWidth: '700px',
                             margin: '0 auto',
                             border: '1px solid #ccc',
-                            boxShadow: '0 2px 10px rgba(0,0,0,0.1)',
-                            borderRadius: '10px',
+                            boxShadow: '0 2px 10px rgba(65, 1, 1, 0.1)',
+                            borderRadius: '20px',
                         }}
                     >
                         <CCardHeader style={{ backgroundColor: '#f8f9fa', fontWeight: 'bold', borderBottom: '1px solid #ccc' }}>

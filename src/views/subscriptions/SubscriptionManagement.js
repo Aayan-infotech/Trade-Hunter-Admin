@@ -121,7 +121,7 @@ const SubscriptionManagement = () => {
   return (
     <CContainer style={{ maxHeight: '100vh', overflowY: 'auto' }}>
       <CCard>
-        <CCardHeader className="d-flex justify-content-between align-items-center">
+        <CCardHeader className="service-card-header d-flex justify-content-between align-items-center">
           <h4>Subscription Management</h4>
           <CButton color="primary" onClick={() => setShowAddModal(true)}>
             <CIcon icon={cilPlus} /> Add Subscription
@@ -176,8 +176,8 @@ const SubscriptionManagement = () => {
         </CCardBody>
       </CCard>
 
-      <CModal scrollable visible={showAddModal}  className="custom-modal" onClose={() => setShowAddModal(false)}>
-        <CModalHeader>
+      <CModal scrollable visible={showAddModal}   onClose={() => setShowAddModal(false)}>
+        <CModalHeader  className="service-card-header">
           <CModalTitle>Add Subscription</CModalTitle>
         </CModalHeader>
         <CModalBody>
@@ -197,8 +197,8 @@ const SubscriptionManagement = () => {
         </CModalFooter>
       </CModal>
 
-      <CModal scrollable visible={showEditModal}  className="custom-modal" onClose={() => setShowEditModal(false)}>
-        <CModalHeader>
+      <CModal scrollable visible={showEditModal}   onClose={() => setShowEditModal(false)}>
+        <CModalHeader  className="service-card-header">
           <CModalTitle>Edit Subscription</CModalTitle>
         </CModalHeader>
         <CModalBody>
@@ -222,8 +222,8 @@ const SubscriptionManagement = () => {
         </CModalFooter>
       </CModal>
 
-      <CModal scrollable visible={showViewModal}  className="custom-modal" onClose={() => setShowViewModal(false)}>
-        <CModalHeader>
+      <CModal scrollable visible={showViewModal}   onClose={() => setShowViewModal(false)}>
+        <CModalHeader  className="service-card-header">
           <CModalTitle>Subscription Details</CModalTitle>
         </CModalHeader>
         <CModalBody>

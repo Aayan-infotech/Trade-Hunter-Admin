@@ -236,7 +236,6 @@ const Provider = () => {
     }
   }, [chatUser])
 
-  // Send a new chat message via Firebase.
   const handleSendChatMessage = () => {
     if (!newChatMessage.trim()) return
 

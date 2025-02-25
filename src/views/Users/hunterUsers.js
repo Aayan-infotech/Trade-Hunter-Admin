@@ -36,9 +36,8 @@ import {
 import { useNavigate } from 'react-router-dom'
 import './Usermanagement.css'
 
-// Firebase imports and realtimeDb instance
 import { ref, push, onValue } from "firebase/database"
-import { realtimeDb } from "../chat/firestore" // Adjust path as needed
+import { realtimeDb } from "../chat/firestore" 
 
 const formatDate = (dateObj) => {
   if (!dateObj) return 'N/A'
@@ -63,7 +62,6 @@ const Hunter = () => {
   const [notifications, setNotifications] = useState([])
   const [notifType, setNotifType] = useState('alert')
   const [notifText, setNotifText] = useState('')
-  // Chat state variables for Firebase
   const [chatMessages, setChatMessages] = useState([])
   const [newChatMessage, setNewChatMessage] = useState('')
   const [hasMoreData, setHasMoreData] = useState(true)
@@ -71,13 +69,11 @@ const Hunter = () => {
   const navigate = useNavigate()
   const currentUser = localStorage.getItem("adminId")
 
-  // Debug: Log the Firebase DB instance on mount
   useEffect(() => {
     console.log("Firebase DB Instance:", realtimeDb)
     console.log("Current User (adminId):", currentUser)
   }, [currentUser])
 
-  // Helper: Generate a stable chatId based on current user and the selected hunter's id.
   const generateChatId = (otherUserId) => {
     const chatId = [currentUser, otherUserId].sort().join('_')
     console.log("Generated Chat ID:", chatId)
@@ -212,14 +208,12 @@ const Hunter = () => {
     }
   }
 
-  // Updated handleChat: Open chat modal with selected user
   const handleChat = (user) => {
     console.log("Chat initiated with:", user)
     setChatUser(user)
     setIsChatModalOpen(true)
   }
 
-  // Subscribe to chat messages from Firebase when a chat user is selected.
   useEffect(() => {
     if (chatUser) {
       const chatChannelId = generateChatId(chatUser._id)
@@ -245,7 +239,6 @@ const Hunter = () => {
     }
   }, [chatUser])
 
-  // Send a new chat message via Firebase.
   const handleSendChatMessage = () => {
     if (!newChatMessage.trim()) return
 
