@@ -34,6 +34,10 @@ import {
 } from '@coreui/icons'
 import './Usermanagement.css'
 
+// Firebase imports
+import { ref, push, onValue } from 'firebase/database'
+import { realtimeDb } from '../chat/firestore' // Adjust the path as needed
+
 const formatDate = (dateObj) => {
   if (!dateObj) return 'N/A'
   const date = new Date(dateObj)
@@ -58,9 +62,24 @@ const Provider = () => {
   const [hasMoreData, setHasMoreData] = useState(true)
   const [statusFilter, setStatusFilter] = useState('')
 
+  // Chat state variables
   const [chatUser, setChatUser] = useState(null)
   const [chatMessages, setChatMessages] = useState([])
   const [newChatMessage, setNewChatMessage] = useState('')
+
+  // IMPORTANT: The sender is always the admin.
+  const currentUser = localStorage.getItem('adminId')
+  useEffect(() => {
+    console.log('Firebase DB Instance:', realtimeDb)
+    console.log('Current Admin ID:', currentUser)
+  }, [currentUser])
+
+  // Helper: Generate a stable chat ID using the admin id and the selected provider's ID.
+  const generateChatId = (otherUserId) => {
+    const chatId = [currentUser, otherUserId].sort().join('_')
+    console.log('Generated Chat ID:', chatId)
+    return chatId
+  }
 
   const fetchUsers = async () => {
     try {
@@ -93,7 +112,7 @@ const Provider = () => {
   const prevPage = () => setPage((prevPage) => Math.max(prevPage - 1, 1))
 
   const handleDelete = async (id) => {
-    if (window.confirm("Are you sure you want to delete this user?")) {
+    if (window.confirm('Are you sure you want to delete this user?')) {
       try {
         await axios.delete(`http://54.236.98.193:7777/api/Prvdr/${id}`)
         fetchUsers()
@@ -126,9 +145,9 @@ const Provider = () => {
   const handleChange = (e) => {
     const { name, value } = e.target
     if (name === 'emailVerified' || name === 'documentStatus' || name === 'subscriptionStatus') {
-      setEditUser(prev => ({ ...prev, [name]: value === 'true' }))
+      setEditUser((prev) => ({ ...prev, [name]: value === 'true' }))
     } else {
-      setEditUser(prev => ({ ...prev, [name]: value }))
+      setEditUser((prev) => ({ ...prev, [name]: value }))
     }
   }
 
@@ -149,7 +168,7 @@ const Provider = () => {
 
   const handleSendNotification = async () => {
     if (!notifText) {
-      alert("Please enter notification text.")
+      alert('Please enter notification text.')
       return
     }
     try {
@@ -159,48 +178,94 @@ const Provider = () => {
       })
       setNotifText('')
       fetchNotifications(notifUser._id)
-      alert("Notification sent successfully!")
+      alert('Notification sent successfully!')
     } catch (error) {
-      console.error("Error sending notification:", error)
-      alert("Failed to send notification. Please try again.")
+      console.error('Error sending notification:', error)
+      alert('Failed to send notification. Please try again.')
     }
   }
 
   const handleDeleteNotification = async (notifId) => {
     if (!notifUser || !notifUser._id) {
-      alert("Notification user not defined")
+      alert('Notification user not defined')
       return
     }
     const deleteUrl = `http://54.236.98.193:7777/api/notification/delete/provider/${notifUser._id}/${notifId}`
-    if (window.confirm("Are you sure you want to delete this notification?")) {
+    if (window.confirm('Are you sure you want to delete this notification?')) {
       try {
         await axios.delete(deleteUrl)
         fetchNotifications(notifUser._id)
       } catch (error) {
-        console.error("Error deleting notification:", error)
-        alert("Failed to delete notification. Please try again.")
+        console.error('Error deleting notification:', error)
+        alert('Failed to delete notification. Please try again.')
       }
     }
   }
 
+  // Open chat modal with the selected provider.
   const handleChat = (user) => {
+    console.log('Chat initiated with:', user)
     setChatUser(user)
     setIsChatModalOpen(true)
-    setChatMessages([
-      { id: 'c1', text: 'Hello!', sender: 'them' },
-      { id: 'c2', text: 'Hi, how can I help you?', sender: 'me' },
-    ])
+    // Firebase will load chat messages; no dummy messages are set here.
   }
 
+  // Subscribe to chat messages from Firebase when a chat user is selected.
+  useEffect(() => {
+    if (chatUser) {
+      const chatChannelId = generateChatId(chatUser._id)
+      const chatMessagesRef = ref(realtimeDb, `chats/${chatChannelId}/messages`)
+      console.log('Subscribing to Firebase chat messages at:', `chats/${chatChannelId}/messages`)
+
+      const unsubscribe = onValue(chatMessagesRef, (snapshot) => {
+        const data = snapshot.val()
+        if (data) {
+          const messagesArray = Object.values(data).sort((a, b) => a.createdAt - b.createdAt)
+          console.log('Received messages:', messagesArray)
+          setChatMessages(messagesArray)
+        } else {
+          console.log('No messages found at this channel.')
+          setChatMessages([])
+        }
+      })
+
+      return () => {
+        console.log('Unsubscribing from Firebase chat messages.')
+        unsubscribe()
+      }
+    }
+  }, [chatUser])
+
+  // Send a new chat message via Firebase.
   const handleSendChatMessage = () => {
     if (!newChatMessage.trim()) return
-    const message = {
-      id: Date.now().toString(),
-      text: newChatMessage,
-      sender: 'me',
+
+    if (!chatUser || !chatUser._id) {
+      console.error('Chat user is not defined.')
+      return
     }
-    setChatMessages([...chatMessages, message])
-    setNewChatMessage('')
+
+    const chatChannelId = generateChatId(chatUser._id)
+    const chatRef = ref(realtimeDb, `chats/${chatChannelId}/messages`)
+    console.log('Sending message to:', `chats/${chatChannelId}/messages`)
+    console.log('Current Admin (Sender):', currentUser, 'Chat Provider (Receiver):', chatUser)
+
+    const message = {
+      senderId: currentUser, // Always the admin
+      receiverId: chatUser._id,
+      receiverName: chatUser.contactName,
+      text: newChatMessage,
+      createdAt: Date.now(),
+    }
+
+    push(chatRef, message)
+      .then(() => {
+        console.log('Message sent successfully:', message)
+        setNewChatMessage('')
+      })
+      .catch((error) => {
+        console.error('Error sending message:', error)
+      })
   }
 
   return (
@@ -221,7 +286,10 @@ const Provider = () => {
             </CButton>
             <CFormSelect
               value={statusFilter}
-              onChange={(e) => { setStatusFilter(e.target.value); setPage(1); }}
+              onChange={(e) => {
+                setStatusFilter(e.target.value)
+                setPage(1)
+              }}
               className="hunter-status-select"
             >
               <option value="">User Status</option>
@@ -259,13 +327,15 @@ const Provider = () => {
                       <CTableDataCell>{user.email}</CTableDataCell>
                       <CTableDataCell>{user.phoneNo}</CTableDataCell>
                       <CTableDataCell>
-                        <CBadge color={
-                          user.userStatus === 'Active'
-                            ? 'success'
-                            : user.userStatus === 'Suspended'
+                        <CBadge
+                          color={
+                            user.userStatus === 'Active'
+                              ? 'success'
+                              : user.userStatus === 'Suspended'
                               ? 'danger'
                               : 'warning'
-                        }>
+                          }
+                        >
                           {user.userStatus}
                         </CBadge>
                       </CTableDataCell>
@@ -308,14 +378,36 @@ const Provider = () => {
         </CCardBody>
       </CCard>
 
+      {/* Edit Modal */}
       <CModal scrollable visible={isEditModalOpen} onClose={() => setIsEditModalOpen(false)} className="hunter-modal">
         <CModalHeader className="hunter-modal-header">
           <CModalTitle>Edit User</CModalTitle>
         </CModalHeader>
         <CModalBody className="hunter-modal-body" style={{ maxHeight: '60vh', overflowY: 'auto' }}>
-          <CFormInput type="text" name="contactName" label="Name" value={editUser?.contactName || ''} onChange={handleChange} className="hunter-modal-input" />
-          <CFormInput type="email" name="email" label="Email" value={editUser?.email || ''} onChange={handleChange} className="hunter-modal-input" />
-          <CFormInput type="text" name="phoneNo" label="Phone Number" value={editUser?.phoneNo || ''} onChange={handleChange} className="hunter-modal-input" />
+          <CFormInput
+            type="text"
+            name="contactName"
+            label="Name"
+            value={editUser?.contactName || ''}
+            onChange={handleChange}
+            className="hunter-modal-input"
+          />
+          <CFormInput
+            type="email"
+            name="email"
+            label="Email"
+            value={editUser?.email || ''}
+            onChange={handleChange}
+            className="hunter-modal-input"
+          />
+          <CFormInput
+            type="text"
+            name="phoneNo"
+            label="Phone Number"
+            value={editUser?.phoneNo || ''}
+            onChange={handleChange}
+            className="hunter-modal-input"
+          />
           <CFormSelect name="userStatus" label="User Status" value={editUser?.userStatus || ''} onChange={handleChange} className="hunter-modal-select">
             <option value="Active">Active</option>
             <option value="Suspended">Suspended</option>
@@ -334,17 +426,29 @@ const Provider = () => {
             name="emailVerified"
             label="Email Verified"
             value={editUser?.emailVerified ? 'true' : 'false'}
-            onChange={(e) => setEditUser(prev => ({ ...prev, emailVerified: e.target.value === 'true' }))}
+            onChange={(e) => setEditUser((prev) => ({ ...prev, emailVerified: e.target.value === 'true' }))}
             className="hunter-modal-select"
           >
             <option value="true">Yes</option>
             <option value="false">No</option>
           </CFormSelect>
-          <CFormSelect name="documentStatus" label="Document Status" value={editUser?.documentStatus ? 'true' : 'false'} onChange={(e) => setEditUser(prev => ({ ...prev, documentStatus: e.target.value === 'true' }))} className="hunter-modal-select">
+          <CFormSelect
+            name="documentStatus"
+            label="Document Status"
+            value={editUser?.documentStatus ? 'true' : 'false'}
+            onChange={(e) => setEditUser((prev) => ({ ...prev, documentStatus: e.target.value === 'true' }))}
+            className="hunter-modal-select"
+          >
             <option value="true">Approved</option>
             <option value="false">Pending</option>
           </CFormSelect>
-          <CFormSelect name="subscriptionStatus" label="Subscription Status" value={editUser?.subscriptionStatus ? 'true' : 'false'} onChange={(e) => setEditUser(prev => ({ ...prev, subscriptionStatus: e.target.value === 'true' }))} className="hunter-modal-select">
+          <CFormSelect
+            name="subscriptionStatus"
+            label="Subscription Status"
+            value={editUser?.subscriptionStatus ? 'true' : 'false'}
+            onChange={(e) => setEditUser((prev) => ({ ...prev, subscriptionStatus: e.target.value === 'true' }))}
+            className="hunter-modal-select"
+          >
             <option value="true">Active</option>
             <option value="false">Inactive</option>
           </CFormSelect>
@@ -359,6 +463,7 @@ const Provider = () => {
         </CModalFooter>
       </CModal>
 
+      {/* View Modal */}
       <CModal scrollable visible={isViewModalOpen} onClose={() => setIsViewModalOpen(false)} className="hunter-modal">
         <CModalHeader className="hunter-modal-header">
           <CModalTitle>View User</CModalTitle>
@@ -403,6 +508,7 @@ const Provider = () => {
         </CModalFooter>
       </CModal>
 
+      {/* Notification Modal */}
       <CModal scrollable visible={isNotifModalOpen} onClose={() => setIsNotifModalOpen(false)} className="hunter-modal">
         <CModalHeader className="hunter-modal-header">
           <CModalTitle>Send Notification</CModalTitle>
@@ -459,6 +565,7 @@ const Provider = () => {
         </CModalFooter>
       </CModal>
 
+      {/* Chat Modal with Firebase Integration */}
       <CModal visible={isChatModalOpen} onClose={() => setIsChatModalOpen(false)} size="md" className="hunter-modal">
         <CModalHeader onClose={() => setIsChatModalOpen(false)}>
           <CModalTitle>Chat with {chatUser?.contactName || chatUser?.name}</CModalTitle>
@@ -468,11 +575,11 @@ const Provider = () => {
             {chatMessages.length === 0 ? (
               <p>No messages yet.</p>
             ) : (
-              chatMessages.map((msg) => (
-                <div key={msg.id} style={{ textAlign: msg.sender === 'me' ? 'right' : 'left', marginBottom: '10px' }}>
+              chatMessages.map((msg, index) => (
+                <div key={index} style={{ textAlign: msg.senderId === currentUser ? 'right' : 'left', marginBottom: '10px' }}>
                   <span style={{
-                    backgroundColor: msg.sender === 'me' ? '#007bff' : '#f1f1f1',
-                    color: msg.sender === 'me' ? '#fff' : '#333',
+                    backgroundColor: msg.senderId === currentUser ? '#007bff' : '#f1f1f1',
+                    color: msg.senderId === currentUser ? '#fff' : '#333',
                     padding: '10px 15px',
                     borderRadius: '20px',
                     display: 'inline-block',

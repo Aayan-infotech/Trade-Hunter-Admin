@@ -58,6 +58,7 @@ const Login = () => {
         console.log('Login successful');
         const firebaseUser = await signInWithEmailAndPassword(auth, email, password);
         const userId = firebaseUser.user.uid;
+        localStorage.setItem("adminId" , userId)
         console.log("User login id", userId)
         navigate('/dashboard');
         return;
