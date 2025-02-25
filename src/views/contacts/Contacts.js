@@ -52,7 +52,7 @@ const Contact = () => {
     <CContainer fluid className="contact-module-container" style={{ padding: '20px' }}>
       <CRow>
         <CCol md={3} style={{ borderRight: '1px solid #ddd', maxHeight: '80vh', overflowY: 'auto' }}>
-          <CCard>
+          <CCard className="recent-chats-card">
             <CCardHeader>Recent Chats</CCardHeader>
             <CCardBody>
               <CListGroup>
@@ -77,12 +77,22 @@ const Contact = () => {
         <CCol md={9}>
           <CCard
             className="chat-panel-card"
-            style={{ height: '75vh', display: 'flex', flexDirection: 'column', position: 'relative' }}
+            style={{
+              height: '75vh',
+              display: 'flex',
+              flexDirection: 'column',
+              position: 'relative',
+              maxWidth: '800px',
+              margin: '0 auto',
+              border: '1px solid #ccc',
+              boxShadow: '0 2px 10px rgba(0,0,0,0.1)',
+              borderRadius: '10px',
+            }}
           >
-            <CCardHeader>
+            <CCardHeader style={{ backgroundColor: '#f8f9fa', fontWeight: 'bold', borderBottom: '1px solid #ccc' }}>
               {selectedContact ? `Chat with ${selectedContact.name}` : 'Chat Panel'}
             </CCardHeader>
-            <CCardBody style={{ flex: 1, overflowY: 'auto', paddingBottom: '70px' }}>
+            <CCardBody style={{ flex: 1, overflowY: 'auto', padding: '20px', paddingBottom: '70px' }}>
               {selectedContact ? (
                 chatMessages.length === 0 ? (
                   <p>No messages yet.</p>
@@ -90,14 +100,16 @@ const Contact = () => {
                   chatMessages.map(msg => (
                     <div
                       key={msg.id}
-                      style={{ textAlign: msg.sender === 'me' ? 'right' : 'left', marginBottom: '5px' }}
+                      style={{ textAlign: msg.sender === 'me' ? 'right' : 'left', marginBottom: '10px' }}
                     >
                       <span
                         style={{
-                          backgroundColor: msg.sender === 'me' ? '#007bff' : '#f1f1f1',
+                          display: 'inline-block',
+                          maxWidth: '70%',
+                          backgroundColor: msg.sender === 'me' ? '#007bff' : '#e9ecef',
                           color: msg.sender === 'me' ? '#fff' : '#333',
-                          padding: '5px 10px',
-                          borderRadius: '15px',
+                          padding: '10px 15px',
+                          borderRadius: '20px',
                         }}
                       >
                         {msg.text}
@@ -115,7 +127,7 @@ const Contact = () => {
                 bottom: 0,
                 left: 0,
                 right: 0,
-                padding: '10px',
+                padding: '10px 20px',
                 background: '#fff',
                 borderTop: '1px solid #ddd',
               }}
@@ -124,13 +136,19 @@ const Contact = () => {
                 <CCol md={10}>
                   <CFormInput
                     type="text"
-                    placeholder="Type a message..."
+                    placeholder="Type your message..."
                     value={newChatMessage}
                     onChange={(e) => setNewChatMessage(e.target.value)}
+                    style={{
+                      borderRadius: '25px',
+                      padding: '10px 15px',
+                      border: '1px solid #ced4da',
+                      boxShadow: 'none',
+                    }}
                   />
                 </CCol>
                 <CCol md={2}>
-                  <CButton color="primary" onClick={handleSendChatMessage}>
+                  <CButton color="primary" onClick={handleSendChatMessage} style={{ borderRadius: '25px', padding: '10px 15px' }}>
                     Send
                   </CButton>
                 </CCol>

@@ -51,16 +51,16 @@ const Hunter = () => {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false)
   const [isViewModalOpen, setIsViewModalOpen] = useState(false)
   const [isNotifModalOpen, setIsNotifModalOpen] = useState(false)
-  const [isChatModalOpen, setIsChatModalOpen] = useState(false) 
+  const [isChatModalOpen, setIsChatModalOpen] = useState(false)
   const [editUser, setEditUser] = useState(null)
   const [viewUser, setViewUser] = useState(null)
   const [notifUser, setNotifUser] = useState(null)
-  const [chatUser, setChatUser] = useState(null) 
+  const [chatUser, setChatUser] = useState(null)
   const [notifications, setNotifications] = useState([])
   const [notifType, setNotifType] = useState('alert')
   const [notifText, setNotifText] = useState('')
-  const [chatMessages, setChatMessages] = useState([]) 
-  const [newChatMessage, setNewChatMessage] = useState('') 
+  const [chatMessages, setChatMessages] = useState([])
+  const [newChatMessage, setNewChatMessage] = useState('')
   const [hasMoreData, setHasMoreData] = useState(true)
 
   const navigate = useNavigate()
@@ -142,7 +142,6 @@ const Hunter = () => {
     }))
   }
 
-  // Notification Functions
   const handleNotification = (user) => {
     setNotifUser(user)
     setIsNotifModalOpen(true)
@@ -194,11 +193,9 @@ const Hunter = () => {
     }
   }
 
-  // Chat Functions
   const handleChat = (user) => {
     setChatUser(user)
     setIsChatModalOpen(true)
-    // Set dummy chat messages for UI demonstration
     setChatMessages([
       { id: 'c1', text: 'Hello!', sender: 'them' },
       { id: 'c2', text: 'Hi, how can I help you?', sender: 'me' },
@@ -467,37 +464,35 @@ const Hunter = () => {
         </CModalFooter>
       </CModal>
 
-      {/* Chat Modal (Set to medium width) */}
+      {/* Chat Modal with Fixed Input Area */}
       <CModal visible={isChatModalOpen} onClose={() => setIsChatModalOpen(false)} size="md" className="hunter-modal">
         <CModalHeader onClose={() => setIsChatModalOpen(false)}>
-          <CModalTitle>Chat with {chatUser?.name}</CModalTitle>
+          <CModalTitle>Chat with {chatUser?.contactName || chatUser?.name}</CModalTitle>
         </CModalHeader>
-        <CModalBody style={{ height: '400px', overflowY: 'auto', position: 'relative' }}>
-          {chatMessages.length === 0 ? (
-            <p>No messages yet.</p>
-          ) : (
-            chatMessages.map((msg) => (
-              <div key={msg.id} style={{ textAlign: msg.sender === 'me' ? 'right' : 'left', marginBottom: '5px' }}>
-                <span style={{
-                  backgroundColor: msg.sender === 'me' ? '#007bff' : '#f1f1f1',
-                  color: msg.sender === 'me' ? '#fff' : '#333',
-                  padding: '5px 10px',
-                  borderRadius: '15px'
-                }}>
-                  {msg.text}
-                </span>
-              </div>
-            ))
-          )}
-          <div style={{
-            position: 'absolute',
-            bottom: 0,
-            left: 0,
-            right: 0,
-            padding: '10px',
-            background: '#fff',
-            borderTop: '1px solid #ddd'
-          }}>
+        {/* Flex container for chat messages and fixed input area */}
+        <div style={{ display: 'flex', flexDirection: 'column', height: '400px' }}>
+          <div style={{ flex: 1, overflowY: 'auto', padding: '20px' }}>
+            {chatMessages.length === 0 ? (
+              <p>No messages yet.</p>
+            ) : (
+              chatMessages.map((msg) => (
+                <div key={msg.id} style={{ textAlign: msg.sender === 'me' ? 'right' : 'left', marginBottom: '10px' }}>
+                  <span style={{
+                    backgroundColor: msg.sender === 'me' ? '#007bff' : '#f1f1f1',
+                    color: msg.sender === 'me' ? '#fff' : '#333',
+                    padding: '10px 15px',
+                    borderRadius: '20px',
+                    display: 'inline-block',
+                    maxWidth: '70%',
+                    wordBreak: 'break-word'
+                  }}>
+                    {msg.text}
+                  </span>
+                </div>
+              ))
+            )}
+          </div>
+          <div style={{ padding: '10px', borderTop: '1px solid #ddd', background: '#fff' }}>
             <CRow className="align-items-center">
               <CCol md={10}>
                 <CFormInput
@@ -512,7 +507,7 @@ const Hunter = () => {
               </CCol>
             </CRow>
           </div>
-        </CModalBody>
+        </div>
       </CModal>
     </CContainer>
   )
