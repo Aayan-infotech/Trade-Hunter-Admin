@@ -51,7 +51,7 @@ const Contact = () => {
                         console.log(firstMessage.name)
                         chatsArray.push({
                             id: channelId,
-                            name:firstMessage.name,
+                            name:firstMessage.name  || firstMessage.receiverName,
                             lastMessage,
                             lastMessageTime,
                         });
