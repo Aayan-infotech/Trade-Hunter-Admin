@@ -56,9 +56,9 @@ const Login = () => {
         const data = await response.json();
         localStorage.setItem('token', data.token);
         console.log('Login successful');
-        // const firebaseUser = await createUserWithEmailAndPassword(auth, email, password);
-        // const userId = firebaseUser.user.uid;
-        // console.log("User registered", userId)
+        const firebaseUser = await signInWithEmailAndPassword(auth, email, password);
+        const userId = firebaseUser.user.uid;
+        console.log("User login id", userId)
         navigate('/dashboard');
         return;
       }

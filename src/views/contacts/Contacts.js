@@ -14,20 +14,75 @@ import {
 import CIcon from '@coreui/icons-react';
 import { cilEnvelopeOpen } from '@coreui/icons';
 import '../Users/Usermanagement.css';
+import { ref, push, set, onValue , get } from "firebase/database";
+import { realtimeDb } from "../chat/firestore";
 
 const Contact = () => {
   const [recentChats, setRecentChats] = useState([]);
   const [selectedContact, setSelectedContact] = useState(null);
   const [chatMessages, setChatMessages] = useState([]);
   const [newChatMessage, setNewChatMessage] = useState('');
+  const [show, setShow] = useState(false);
+  const [messages, setMessages] = useState([]);
+  const [text, setText] = useState("");
+  const location = useLocation();
+  const [chatId, setChatId] = useState(uuidv4());
+  const [receiverId, setReceiverId] = useState("123");
+  const [currentUser, setCurrentUser] = useState(null);
+
+
+
 
   useEffect(() => {
-    setRecentChats([
-      { id: '1', name: 'Hunter Alpha', lastMessage: 'Hello, are you available?' },
-      { id: '2', name: 'Provider Beta', lastMessage: 'Your service is ready.' },
-      { id: '3', name: 'Hunter Gamma', lastMessage: 'Let’s catch up soon.' },
-    ]);
-  }, []);
+    if (!currentUser || !receiverId) return;
+    
+    const fetchMessages = async () => {
+      const chatRef = ref(realtimeDb, "chats");
+      const snapshot = await get(chatRef);
+      if (snapshot.exists()) {
+        const data = snapshot.val();
+        const allMessages = [];
+        
+        Object.values(data).forEach((chat) => {
+          if (chat.messages) {
+            Object.values(chat.messages).forEach((msg) => {
+              if (
+                (msg.senderId === currentUser && msg.receiverId === receiverId)
+              ) {
+                allMessages.push(msg);
+              }
+            });
+          }
+        });
+        
+        setMessages(allMessages);
+      }
+    };
+    
+    fetchMessages();
+    
+    const chatMessagesRef = ref(realtimeDb, `chats/${chatId}/messages`);
+    onValue(chatMessagesRef, (snapshot) => {
+      const data = snapshot.val() ? Object.values(snapshot.val()) : [];
+      setMessages((prevMessages) => [...prevMessages, ...data]);
+    });
+  }, [chatId, currentUser, receiverId]);
+
+  const handleSend = async () => {
+    if (text === "" || !currentUser) return;
+    try {
+      const newMessageRef = push(ref(realtimeDb, `chats/${chatId}/messages`));
+      await set(newMessageRef, {
+        senderId: currentUser,
+        receiverId: receiverId,
+        text,
+        createdAt: Date.now(),
+      });
+      setText("");
+    } catch (err) {
+      console.log("Error sending message:", err);
+    }
+  };
 
   const openChatPanel = (contact) => {
     setSelectedContact(contact);
