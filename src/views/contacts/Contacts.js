@@ -44,14 +44,14 @@ const Contact = () => {
                         const lastMessageTime = messagesArray.length ? messagesArray[messagesArray.length - 1].createdAt : 0;
                         const participants = channelId.split('_');
                         const otherId = participants.find((id) => id !== currentUser);
-                        console.log(channelData)
+                        console.log("channelData" , channelData)
                         const messagesObject = channelData?.messages || {};
                         const firstMessage = Object.values(messagesObject)[0]; // This returns the first message object (if it exists)
 
-                        console.log(firstMessage.receiverName)
+                        console.log(firstMessage.name)
                         chatsArray.push({
                             id: channelId,
-                            name:firstMessage.receiverName,
+                            name:firstMessage.name,
                             lastMessage,
                             lastMessageTime,
                         });
