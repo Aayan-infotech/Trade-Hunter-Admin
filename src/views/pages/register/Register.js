@@ -14,6 +14,24 @@ import {
 import CIcon from '@coreui/icons-react'
 import { cilLockLocked, cilUser } from '@coreui/icons'
 
+import {
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+} from "firebase/auth";
+import { ref, set } from "firebase/database";
+
+import { auth, db } from "../../chat/firestore";
+import {
+  collection,
+  query,
+  where,
+  getDocs,
+  setDoc,
+  doc,
+} from "firebase/firestore";
+import upload from "../../Chat/lib/upload";
+import { realtimeDb } from "../../chat/firestore";
+
 const Register = () => {
   return (
     <div className="bg-body-tertiary min-vh-100 d-flex flex-row align-items-center">

@@ -16,37 +16,64 @@ import {
 import CIcon from '@coreui/icons-react';
 import { cilLockLocked, cilUser } from '@coreui/icons';
 
+import {
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+} from "firebase/auth";
+import { ref, set } from "firebase/database";
+
+import { auth, db } from "../../chat/firestore";
+import {
+  collection,
+  query,
+  where,
+  getDocs,
+  setDoc,
+  doc,
+} from "firebase/firestore";
+import { realtimeDb } from "../../chat/firestore";
+
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const navigate = useNavigate();
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e, userType) => {
     e.preventDefault();
     setError('');
+    // setLoading(true);
 
     try {
+      // Attempt to login
       const response = await fetch('http://54.236.98.193:7777/api/authAdmin/login', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email, password }),
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password })
       });
 
-      
-      if (!response.ok) {
-        throw new Error('Invalid credentials');
+      if (response.ok) {
+        const data = await response.json();
+        localStorage.setItem('token', data.token);
+        console.log('Login successful');
+        // const firebaseUser = await createUserWithEmailAndPassword(auth, email, password);
+        // const userId = firebaseUser.user.uid;
+        // console.log("User registered", userId)
+        navigate('/dashboard');
+        return;
       }
 
-      const data = await response.json();
-      localStorage.setItem('token', data.token);
-      console.log('Login successful');
-      navigate('/dashboard'); // Navigate to the dashboard after successful login
-    } catch (err) {
-      console.error('Login Error:', err.message);
-      setError('Failed to login. Please check your credentials.');
+      // If login fails, attempt signup
+
+
+
+      setToastProps({ message: "User created successfully!", type: "success" });
+      setTimeout(() => navigate(userType === "provider" ? `/provider/otp?email=${email}` : `/otp?email=${email}`), 2000);
+    } catch (error) {
+      console.error('Authentication Error:', error);
+      setError('Failed to authenticate. Please check credentials.');
+    } finally {
+      // setLoading(false);
     }
   };
 

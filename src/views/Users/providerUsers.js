@@ -28,7 +28,6 @@ import {
   cilSearch,
   cilTrash,
   cilPencil,
-  cilBriefcase,
   cilInfo,
   cilEnvelopeOpen,
   cilCommentBubble,
@@ -49,7 +48,7 @@ const Provider = () => {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false)
   const [isViewModalOpen, setIsViewModalOpen] = useState(false)
   const [isNotifModalOpen, setIsNotifModalOpen] = useState(false)
-  const [isChatModalOpen, setIsChatModalOpen] = useState(false) 
+  const [isChatModalOpen, setIsChatModalOpen] = useState(false)
   const [editUser, setEditUser] = useState(null)
   const [viewUser, setViewUser] = useState(null)
   const [notifUser, setNotifUser] = useState(null)
@@ -60,8 +59,8 @@ const Provider = () => {
   const [statusFilter, setStatusFilter] = useState('')
 
   const [chatUser, setChatUser] = useState(null)
-  const [chatMessages, setChatMessages] = useState([]) 
-  const [newChatMessage, setNewChatMessage] = useState('') 
+  const [chatMessages, setChatMessages] = useState([])
+  const [newChatMessage, setNewChatMessage] = useState('')
 
   const fetchUsers = async () => {
     try {
@@ -264,8 +263,8 @@ const Provider = () => {
                           user.userStatus === 'Active'
                             ? 'success'
                             : user.userStatus === 'Suspended'
-                            ? 'danger'
-                            : 'warning'
+                              ? 'danger'
+                              : 'warning'
                         }>
                           {user.userStatus}
                         </CBadge>
@@ -331,21 +330,21 @@ const Provider = () => {
             <option value="Deactivate">Deactivate</option>
             <option value="Reactivate">Reactivate</option>
           </CFormSelect>
-          <CFormSelect name="emailVerified" label="Email Verified" value={editUser?.emailVerified ? 'true' : 'false'} onChange={(e) => {
-            setEditUser(prev => ({ ...prev, emailVerified: e.target.value === 'true' }))
-          }} className="hunter-modal-select">
+          <CFormSelect
+            name="emailVerified"
+            label="Email Verified"
+            value={editUser?.emailVerified ? 'true' : 'false'}
+            onChange={(e) => setEditUser(prev => ({ ...prev, emailVerified: e.target.value === 'true' }))}
+            className="hunter-modal-select"
+          >
             <option value="true">Yes</option>
             <option value="false">No</option>
           </CFormSelect>
-          <CFormSelect name="documentStatus" label="Document Status" value={editUser?.documentStatus ? 'true' : 'false'} onChange={(e) => {
-            setEditUser(prev => ({ ...prev, documentStatus: e.target.value === 'true' }))
-          }} className="hunter-modal-select">
+          <CFormSelect name="documentStatus" label="Document Status" value={editUser?.documentStatus ? 'true' : 'false'} onChange={(e) => setEditUser(prev => ({ ...prev, documentStatus: e.target.value === 'true' }))} className="hunter-modal-select">
             <option value="true">Approved</option>
             <option value="false">Pending</option>
           </CFormSelect>
-          <CFormSelect name="subscriptionStatus" label="Subscription Status" value={editUser?.subscriptionStatus ? 'true' : 'false'} onChange={(e) => {
-            setEditUser(prev => ({ ...prev, subscriptionStatus: e.target.value === 'true' }))
-          }} className="hunter-modal-select">
+          <CFormSelect name="subscriptionStatus" label="Subscription Status" value={editUser?.subscriptionStatus ? 'true' : 'false'} onChange={(e) => setEditUser(prev => ({ ...prev, subscriptionStatus: e.target.value === 'true' }))} className="hunter-modal-select">
             <option value="true">Active</option>
             <option value="false">Inactive</option>
           </CFormSelect>
@@ -366,10 +365,10 @@ const Provider = () => {
         </CModalHeader>
         <CModalBody className="hunter-modal-body" style={{ maxHeight: '60vh', overflowY: 'auto' }}>
           {viewUser && (
-            <div>
+            <div className="hunter-view-content">
               {viewUser.images && (
-                <div style={{ marginBottom: '1rem' }}>
-                  <img src={viewUser.images} alt="User" style={{ width: '150px', height: 'auto', borderRadius: '5px' }} />
+                <div className="hunter-view-image">
+                  <img src={viewUser.images} alt="User" className="hunter-user-image" />
                 </div>
               )}
               <p><strong>Name:</strong> {viewUser.name}</p>
@@ -377,12 +376,11 @@ const Provider = () => {
               <p><strong>Phone Number:</strong> {viewUser.phoneNo}</p>
               <p><strong>User Type:</strong> {viewUser.userType}</p>
               <p><strong>User Status:</strong> {viewUser.userStatus || 'N/A'}</p>
-              <p><strong>Admin Verified:</strong> {viewUser.adminVerified}</p>
               <p><strong>Email Verified:</strong> {viewUser.emailVerified ? 'Yes' : 'No'}</p>
               <p><strong>Insertion Date:</strong> {formatDate(viewUser.insDate)}</p>
               <p><strong>Terms &amp; Conditions:</strong> {viewUser.termsAndCondition ? 'Accepted' : 'Not Accepted'}</p>
               {viewUser.files && viewUser.files.length > 0 && (
-                <div>
+                <div className="hunter-files-section">
                   <strong>Files:</strong>
                   <ul>
                     {viewUser.files.map((file, idx) => (
@@ -465,32 +463,29 @@ const Provider = () => {
         <CModalHeader onClose={() => setIsChatModalOpen(false)}>
           <CModalTitle>Chat with {chatUser?.contactName || chatUser?.name}</CModalTitle>
         </CModalHeader>
-        <CModalBody style={{ height: '400px', overflowY: 'auto', position: 'relative' }}>
-          {chatMessages.length === 0 ? (
-            <p>No messages yet.</p>
-          ) : (
-            chatMessages.map((msg) => (
-              <div key={msg.id} style={{ textAlign: msg.sender === 'me' ? 'right' : 'left', marginBottom: '5px' }}>
-                <span style={{
-                  backgroundColor: msg.sender === 'me' ? '#007bff' : '#f1f1f1',
-                  color: msg.sender === 'me' ? '#fff' : '#333',
-                  padding: '5px 10px',
-                  borderRadius: '15px'
-                }}>
-                  {msg.text}
-                </span>
-              </div>
-            ))
-          )}
-          <div style={{
-            position: 'absolute',
-            bottom: 0,
-            left: 0,
-            right: 0,
-            padding: '10px',
-            background: '#fff',
-            borderTop: '1px solid #ddd'
-          }}>
+        <div style={{ display: 'flex', flexDirection: 'column', height: '400px' }}>
+          <div style={{ flex: 1, overflowY: 'auto', padding: '20px' }}>
+            {chatMessages.length === 0 ? (
+              <p>No messages yet.</p>
+            ) : (
+              chatMessages.map((msg) => (
+                <div key={msg.id} style={{ textAlign: msg.sender === 'me' ? 'right' : 'left', marginBottom: '10px' }}>
+                  <span style={{
+                    backgroundColor: msg.sender === 'me' ? '#007bff' : '#f1f1f1',
+                    color: msg.sender === 'me' ? '#fff' : '#333',
+                    padding: '10px 15px',
+                    borderRadius: '20px',
+                    display: 'inline-block',
+                    maxWidth: '70%',
+                    wordBreak: 'break-word'
+                  }}>
+                    {msg.text}
+                  </span>
+                </div>
+              ))
+            )}
+          </div>
+          <div style={{ padding: '10px', borderTop: '1px solid #ddd', background: '#fff' }}>
             <CRow className="align-items-center">
               <CCol md={10}>
                 <CFormInput
@@ -505,7 +500,7 @@ const Provider = () => {
               </CCol>
             </CRow>
           </div>
-        </CModalBody>
+        </div>
       </CModal>
     </CContainer>
   )
