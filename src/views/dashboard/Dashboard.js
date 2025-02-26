@@ -1,5 +1,14 @@
 import React, { useEffect, useState } from 'react';
-import { CContainer, CRow, CCol, CCard, CCardHeader, CCardBody, CProgress, CBadge } from '@coreui/react';
+import { 
+  CContainer, 
+  CRow, 
+  CCol, 
+  CCard, 
+  CCardHeader, 
+  CCardBody, 
+  CProgress, 
+  CBadge 
+} from '@coreui/react';
 import axios from 'axios';
 import '../Users/Usermanagement.css';
 
@@ -11,6 +20,14 @@ const Dashboard = () => {
   const [jobPostings, setJobPostings] = useState({ Pending: 0, Assigned: 0, InProgress: 0, Completed: 0 });
   const [subscriptionRevenue, setSubscriptionRevenue] = useState(0);
   const [recentJobActivity, setRecentJobActivity] = useState([]);
+
+  // Color mapping for each job posting status.
+  const jobPostingColors = {
+    Pending: "danger",
+    Assigned: "primary",
+    InProgress: "warning",
+    Completed: "success",
+  };
 
   useEffect(() => {
     const fetchDashboardData = async () => {
@@ -53,7 +70,7 @@ const Dashboard = () => {
       <CRow className="mb-4">
         <CCol md={4}>
           <CCard className="dashboard-card hover-effect">
-            <CCardHeader className="text-center text-primary">User Insights</CCardHeader>
+            <CCardHeader className="service-card-header">User Insights</CCardHeader>
             <CCardBody>
               <h2 className="text-center">{totalUsers}</h2>
               <p className="text-muted text-center">Total Users</p>
@@ -68,14 +85,14 @@ const Dashboard = () => {
 
         <CCol md={4}>
           <CCard className="dashboard-card hover-effect">
-            <CCardHeader className="text-center text-primary">Job Postings</CCardHeader>
+            <CCardHeader className="service-card-header">Job Postings</CCardHeader>
             <CCardBody>
               <CRow>
                 {Object.keys(jobPostings).map((status, index) => (
                   <CCol md={6} key={index} className="mb-2">
                     <strong>{status}:</strong> {jobPostings[status] || 0}
                     <CProgress 
-                      color={status === "Completed" ? "success" : status === "InProgress" ? "warning" : "info"} 
+                      color={jobPostingColors[status] || "info"} 
                       value={(jobPostings[status] / (totalUsers || 1)) * 100} 
                       className="mt-1" 
                     />
@@ -88,7 +105,7 @@ const Dashboard = () => {
 
         <CCol md={4}>
           <CCard className="dashboard-card hover-effect">
-            <CCardHeader className="text-center text-primary">Subscription Revenue</CCardHeader>
+            <CCardHeader className="service-card-header">Subscription Revenue</CCardHeader>
             <CCardBody className="text-center">
               <h1 className="text-success">${subscriptionRevenue}</h1>
               <p className="text-muted">Total Earnings</p>
@@ -100,7 +117,7 @@ const Dashboard = () => {
       <CRow>
         <CCol md={12}>
           <CCard className="dashboard-card">
-            <CCardHeader className="text-center text-primary">Recent Job Activities</CCardHeader>
+            <CCardHeader className="service-card-header">Recent Job Activities</CCardHeader>
             <CCardBody>
               {recentJobActivity.length > 0 ? (
                 <div className="table-responsive">
@@ -125,7 +142,7 @@ const Dashboard = () => {
                           <td>{job.jobLocation?.jobAddressLine}</td>
                           <td>{[job.businessType]}</td>
                           <td>
-                            <CBadge color={job.jobStatus === "Completed" ? "success" : "warning"}>
+                            <CBadge color={jobPostingColors[job.jobStatus] || "warning"}>
                               {job.jobStatus}
                             </CBadge>
                           </td>
@@ -136,7 +153,7 @@ const Dashboard = () => {
                   </table>
                 </div>
               ) : (
-                <p className="text-center text-muted">No recent job activities.</p>
+                <p className="service-card-header">No recent job activities.</p>
               )}
             </CCardBody>
           </CCard>
