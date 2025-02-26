@@ -490,7 +490,7 @@ button:hover {
 
 /* Card Header */
 .hunter-card-header {
-  background-color: #004085;
+  background-color: #030172;
   color: #f0f0f0;
   padding: 15px;
   display: flex;
@@ -762,7 +762,7 @@ button:hover {
 }
 
 .service-card-header {
-  background-color: #004085;
+  background-color: #030172;
   color: #fff;
   padding: 15px;
   display: flex;
