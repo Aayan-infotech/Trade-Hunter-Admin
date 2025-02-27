@@ -67,8 +67,12 @@ const JobsManagement = () => {
     fetchJobs();
   }, [page, search]);
 
+  // Default sort: sort jobs by creation date descending (most recent first)
   useEffect(() => {
-    setSortedJobs(jobs);
+    const sortedByRecent = [...jobs].sort(
+      (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+    );
+    setSortedJobs(sortedByRecent);
   }, [jobs]);
 
   const handleSearch = (e) => {
@@ -76,6 +80,7 @@ const JobsManagement = () => {
     setPage(1);
   };
 
+  // Existing toggle for sorting by Business Type (if needed)
   const toggleSortOrder = () => {
     const newOrder = sortOrder === "asc" ? "desc" : "asc";
     setSortOrder(newOrder);
@@ -111,13 +116,28 @@ const JobsManagement = () => {
   };
 
   const handleEditJob = (job) => {
-    setEditJob({ ...job });
+    // Convert businessType array to comma separated string for editing, if necessary
+    const formattedJob = {
+      ...job,
+      businessType: Array.isArray(job.businessType)
+        ? job.businessType.join(", ")
+        : job.businessType,
+    };
+    setEditJob(formattedJob);
     setShowEditModal(true);
   };
 
   const handleSaveEditJob = async () => {
     try {
-      await axios.put(`http://54.236.98.193:7777/api/jobs/${editJob._id}`, editJob);
+      // Convert the comma separated string back into an array
+      const updatedJob = {
+        ...editJob,
+        businessType: editJob.businessType
+          .split(",")
+          .map((item) => item.trim())
+          .filter((item) => item),
+      };
+      await axios.put(`http://54.236.98.193:7777/api/jobs/${editJob._id}`, updatedJob);
       fetchJobs();
       setShowEditModal(false);
       setEditJob(null);
@@ -130,7 +150,7 @@ const JobsManagement = () => {
   return (
     <CContainer className="jobs-container">
       <CCard>
-        <CCardHeader  className="service-card-header">
+        <CCardHeader className="service-card-header">
           <h4>Jobs Management</h4>
           <div className="search-container">
             <CFormInput
@@ -159,10 +179,7 @@ const JobsManagement = () => {
                   <CTableHeaderCell>Budget</CTableHeaderCell>
                   <CTableHeaderCell onClick={toggleSortOrder} style={{ cursor: "pointer" }}>
                     Business Type
-                    <CIcon
-                      icon={sortOrder === "asc" ? cilArrowBottom : cilArrowTop}
-                      className="ms-2"
-                    />
+                    <CIcon icon={sortOrder === "asc" ? cilArrowBottom : cilArrowTop} className="ms-2" />
                   </CTableHeaderCell>
                   <CTableHeaderCell>Status</CTableHeaderCell>
                   <CTableHeaderCell>Actions</CTableHeaderCell>
@@ -176,7 +193,11 @@ const JobsManagement = () => {
                       <CTableDataCell>{job.user?.name}</CTableDataCell>
                       <CTableDataCell>{job.providerName || "N/A"}</CTableDataCell>
                       <CTableDataCell>{job.estimatedBudget}</CTableDataCell>
-                      <CTableDataCell>{job.businessType}</CTableDataCell>
+                      <CTableDataCell>
+                        {Array.isArray(job.businessType)
+                          ? job.businessType.join(", ")
+                          : job.businessType}
+                      </CTableDataCell>
                       <CTableDataCell>{job.jobStatus}</CTableDataCell>
                       <CTableDataCell className="actions-cell">
                         <CIcon
@@ -246,10 +267,10 @@ const JobsManagement = () => {
         visible={showViewModal}
         onClose={() => setShowViewModal(false)}
       >
-        <CModalHeader  className="service-card-header">
+        <CModalHeader className="service-card-header">
           <CModalTitle>Job Details</CModalTitle>
         </CModalHeader>
-        <CModalBody  className="modal-body-custom">
+        <CModalBody className="modal-body-custom">
           {viewJob && (
             <div className="view-job-details">
               <p>
@@ -260,14 +281,16 @@ const JobsManagement = () => {
                 {viewJob.jobLocation?.jobAddressLine || "N/A"}
               </p>
               <p>
-                <strong>Job Radius:</strong> {viewJob.jobLocation?.jobRadius}{" "}
-                meters
+                <strong>Job Radius:</strong> {viewJob.jobLocation?.jobRadius} meters
               </p>
               <p>
                 <strong>Estimated Budget:</strong> ${viewJob.estimatedBudget}
               </p>
               <p>
-                <strong>Business Type:</strong> {viewJob.businessType}
+                <strong>Business Type:</strong>{" "}
+                {Array.isArray(viewJob.businessType)
+                  ? viewJob.businessType.join(", ")
+                  : viewJob.businessType}
               </p>
               <p>
                 <strong>Services:</strong> {viewJob.services}
@@ -340,7 +363,7 @@ const JobsManagement = () => {
         visible={showEditModal}
         onClose={() => setShowEditModal(false)}
       >
-        <CModalHeader  className="service-card-header">
+        <CModalHeader className="service-card-header">
           <CModalTitle>Edit Job</CModalTitle>
         </CModalHeader>
         <CModalBody className="modal-body-custom">

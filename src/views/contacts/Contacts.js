@@ -14,6 +14,7 @@ import {
 import '../Users/Usermanagement.css';
 import { ref, push, set, onValue } from "firebase/database";
 import { realtimeDb } from "../chat/firestore";
+import Hunter from '../Users/hunterUsers';
 
 const Contact = () => {
     const [recentChats, setRecentChats] = useState([]);
@@ -50,7 +51,7 @@ const Contact = () => {
                         chatsArray.push({
                             id: channelId,
                             name:firstMessage.name  || firstMessage.receiverName,
-                            type:firstMessage.type,
+                            type:firstMessage.type ||firstMessage.userType,
                             lastMessage,
                             lastMessageTime,
                         });
