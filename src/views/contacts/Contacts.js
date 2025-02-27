@@ -124,8 +124,10 @@ const Contact = () => {
                       onClick={() => openChatPanel(chat)}
                     >
                       <div>
-                        <strong>{chat.name} ({chat.type})</strong>
-                        <p className="mb-0 text-muted" style={{ fontSize: '0.85rem' }}>{chat.lastMessage}</p>
+                        <div className="ABC" style={{ fontSize: 'small', width: '100%' }}>
+                          <span className="XYZ" style={{ fontWeight: 'bold' }}>{chat.name}</span> <code>({chat.type})</code>
+                        </div>
+                        <p className="mb-0 text-muted" style={{ fontSize: '10px' }}>{chat.lastMessage}</p>
                       </div>
                     </CListGroupItem>
                   ))
@@ -133,7 +135,6 @@ const Contact = () => {
                   <p>No chats available.</p>
                 )}
               </CListGroup>
-              {/* Show the Load More button if the number of fetched chats equals the current limit */}
               {recentChats.length === limit && (
                 <div className="text-center mt-3">
                   <CButton color="primary" onClick={() => setLimit(limit + 10)}>
