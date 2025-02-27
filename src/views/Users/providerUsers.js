@@ -253,6 +253,7 @@ const Provider = () => {
       senderId: currentUser, // Always the admin
       receiverId: chatUser._id,
       receiverName: chatUser.contactName,
+      type:chatUser.userType,
       text: newChatMessage,
       createdAt: Date.now(),
     }

@@ -140,7 +140,11 @@ const Dashboard = () => {
                           <td>{job.user.name}</td>
                           <td>{job.providername}</td>
                           <td>{job.jobLocation?.jobAddressLine}</td>
-                          <td>{[job.businessType]}</td>
+                          <td>
+                            {Array.isArray(job.businessType)
+                              ? job.businessType.join(", ")
+                              : job.businessType}
+                          </td>
                           <td>
                             <CBadge color={jobPostingColors[job.jobStatus] || "warning"}>
                               {job.jobStatus}

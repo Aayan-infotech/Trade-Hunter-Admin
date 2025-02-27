@@ -256,6 +256,7 @@ const Hunter = () => {
       senderId: currentUser,
       receiverId: chatUser._id,
       receiverName: chatUser.name,
+      type:chatUser.userType,
       text: newChatMessage,
       createdAt: Date.now(),
     }
