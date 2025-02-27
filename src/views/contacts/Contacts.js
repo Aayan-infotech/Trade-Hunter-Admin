@@ -11,8 +11,6 @@ import {
     CListGroup,
     CListGroupItem,
 } from '@coreui/react';
-import CIcon from '@coreui/icons-react';
-import { cilEnvelopeOpen } from '@coreui/icons';
 import '../Users/Usermanagement.css';
 import { ref, push, set, onValue } from "firebase/database";
 import { realtimeDb } from "../chat/firestore";
@@ -46,12 +44,13 @@ const Contact = () => {
                         const otherId = participants.find((id) => id !== currentUser);
                         console.log("channelData" , channelData)
                         const messagesObject = channelData?.messages || {};
-                        const firstMessage = Object.values(messagesObject)[0]; // This returns the first message object (if it exists)
+                        const firstMessage = Object.values(messagesObject)[0]; 
 
                         console.log(firstMessage.name)
                         chatsArray.push({
                             id: channelId,
                             name:firstMessage.name  || firstMessage.receiverName,
+                            type:firstMessage.type,
                             lastMessage,
                             lastMessageTime,
                         });
@@ -124,7 +123,7 @@ const Contact = () => {
                                             onClick={() => openChatPanel(chat)}
                                         >
                                             <div>
-                                                <strong>{chat.name}</strong>
+                                                <strong>{chat.name} ({chat.type})</strong>
                                                 <p className="mb-0 text-muted" style={{ fontSize: '0.85rem' }}>{chat.lastMessage}</p>
                                             </div>
                                         </CListGroupItem>
@@ -153,7 +152,7 @@ const Contact = () => {
                         }}
                     >
                         <CCardHeader style={{ backgroundColor: '#f8f9fa', fontWeight: 'bold', borderBottom: '1px solid #ccc' }}>
-                            {selectedChat ? `Chat with ${selectedChat.name}` : 'Chat Panel'}
+                            {selectedChat ? `Chat with ${selectedChat.name} (${selectedChat.type})` : 'Chat Panel'}
                         </CCardHeader>
                         <CCardBody style={{ flex: 1, overflowY: 'auto', padding: '20px', paddingBottom: '70px' }}>
                             {messages.length === 0 ? (
