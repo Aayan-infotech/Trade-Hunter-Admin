@@ -133,7 +133,6 @@ const Contact = () => {
                   <p>No chats available.</p>
                 )}
               </CListGroup>
-              {/* Show the Load More button if the number of fetched chats equals the current limit */}
               {recentChats.length === limit && (
                 <div className="text-center mt-3">
                   <CButton color="primary" onClick={() => setLimit(limit + 10)}>
