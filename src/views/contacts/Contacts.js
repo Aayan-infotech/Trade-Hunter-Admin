@@ -124,8 +124,10 @@ const Contact = () => {
                       onClick={() => openChatPanel(chat)}
                     >
                       <div>
-                        <strong>{chat.name} ({chat.type})</strong>
-                        <p className="mb-0 text-muted" style={{ fontSize: '0.85rem' }}>{chat.lastMessage}</p>
+                        <div className="ABC" style={{ fontSize: 'small', width: '100%' }}>
+                          <span className="XYZ" style={{ fontWeight: 'bold' }}>{chat.name}</span> <code>({chat.type})</code>
+                        </div>
+                        <p className="mb-0 text-muted" style={{ fontSize: '10px' }}>{chat.lastMessage}</p>
                       </div>
                     </CListGroupItem>
                   ))
