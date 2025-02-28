@@ -38,10 +38,11 @@ import './Usermanagement.css'
 import { ref, push, onValue } from 'firebase/database'
 import { realtimeDb } from '../chat/firestore' // Adjust the path as needed
 
+// Updated formatDate returns only the date portion (no time)
 const formatDate = (dateObj) => {
   if (!dateObj) return 'N/A'
   const date = new Date(dateObj)
-  return date.toLocaleString()
+  return date.toLocaleDateString()  // Only the date is returned
 }
 
 const Provider = () => {
@@ -144,7 +145,11 @@ const Provider = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target
-    if (name === 'emailVerified' || name === 'documentStatus' || name === 'subscriptionStatus') {
+    if (
+      name === 'emailVerified' ||
+      name === 'documentStatus' ||
+      name === 'subscriptionStatus'
+    ) {
       setEditUser((prev) => ({ ...prev, [name]: value === 'true' }))
     } else {
       setEditUser((prev) => ({ ...prev, [name]: value }))
@@ -253,7 +258,7 @@ const Provider = () => {
       senderId: currentUser, // Always the admin
       receiverId: chatUser._id,
       receiverName: chatUser.contactName,
-      type:chatUser.userType,
+      type: chatUser.userType,
       text: newChatMessage,
       createdAt: Date.now(),
     }
@@ -484,7 +489,7 @@ const Provider = () => {
               <p><strong>User Type:</strong> {viewUser.userType}</p>
               <p><strong>User Status:</strong> {viewUser.userStatus || 'N/A'}</p>
               <p><strong>Email Verified:</strong> {viewUser.emailVerified ? 'Yes' : 'No'}</p>
-              <p><strong>Insertion Date:</strong> {formatDate(viewUser.insDate)}</p>
+              <p><strong>Joining Date:</strong> {formatDate(viewUser.insDate)}</p>
               <p><strong>Terms &amp; Conditions:</strong> {viewUser.termsAndCondition ? 'Accepted' : 'Not Accepted'}</p>
               {viewUser.files && viewUser.files.length > 0 && (
                 <div className="hunter-files-section">
