@@ -16,6 +16,8 @@ import {
   cilBriefcase,
   cilMoney,
   cilStar,
+  cilPhone,
+  cilLibraryAdd,
 } from '@coreui/icons'
 import { CNavGroup, CNavItem, CNavTitle } from '@coreui/react'
 
@@ -69,7 +71,7 @@ const _nav = [
     component: CNavGroup,
     name: 'Subscription Stats',
     // to: '/Usermanagement',
-    icon: <CIcon icon={cilDescription} customClassName="nav-icon" style={{ color: 'blue' }} />,  // Added cilUser here
+    icon: <CIcon icon={cilLibraryAdd} customClassName="nav-icon" style={{ color: 'blue' }} />,  // Added cilUser here
     items: [
       // {
       //   component: CNavItem,
@@ -93,7 +95,7 @@ const _nav = [
     component: CNavItem,
     name: 'Contacts',
     to: '/contacts',
-    icon: <CIcon icon={cilPuzzle } customClassName="nav-icon" style={{ color: 'blue' }} />,
+    icon: <CIcon icon={cilPhone } customClassName="nav-icon" style={{ color: 'blue' }} />,
   },
 
 
