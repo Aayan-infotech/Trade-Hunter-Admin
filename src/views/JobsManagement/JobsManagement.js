@@ -32,6 +32,12 @@ import {
 } from "@coreui/icons";
 import "../Users/Usermanagement.css";
 
+const formatDate = (dateObj) => {
+  if (!dateObj) return "N/A";
+  const date = new Date(dateObj);
+  return date.toLocaleDateString();
+};
+
 const JobsManagement = () => {
   const [jobs, setJobs] = useState([]);
   const [sortedJobs, setSortedJobs] = useState([]);
@@ -67,7 +73,6 @@ const JobsManagement = () => {
     fetchJobs();
   }, [page, search]);
 
-  // Default sort: sort jobs by creation date descending (most recent first)
   useEffect(() => {
     const sortedByRecent = [...jobs].sort(
       (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
@@ -80,7 +85,6 @@ const JobsManagement = () => {
     setPage(1);
   };
 
-  // Existing toggle for sorting by Business Type (if needed)
   const toggleSortOrder = () => {
     const newOrder = sortOrder === "asc" ? "desc" : "asc";
     setSortOrder(newOrder);
@@ -116,7 +120,6 @@ const JobsManagement = () => {
   };
 
   const handleEditJob = (job) => {
-    // Convert businessType array to comma separated string for editing, if necessary
     const formattedJob = {
       ...job,
       businessType: Array.isArray(job.businessType)
@@ -129,7 +132,6 @@ const JobsManagement = () => {
 
   const handleSaveEditJob = async () => {
     try {
-      // Convert the comma separated string back into an array
       const updatedJob = {
         ...editJob,
         businessType: editJob.businessType
@@ -176,7 +178,9 @@ const JobsManagement = () => {
                   <CTableHeaderCell>Title</CTableHeaderCell>
                   <CTableHeaderCell>Client Name</CTableHeaderCell>
                   <CTableHeaderCell>Provider Name</CTableHeaderCell>
-                  <CTableHeaderCell>Budget</CTableHeaderCell>
+                  <CTableHeaderCell>Job Address</CTableHeaderCell>
+                  <CTableHeaderCell>JobPosted Date</CTableHeaderCell>
+                  <CTableHeaderCell>Completion Date</CTableHeaderCell>
                   <CTableHeaderCell onClick={toggleSortOrder} style={{ cursor: "pointer" }}>
                     Business Type
                     <CIcon icon={sortOrder === "asc" ? cilArrowBottom : cilArrowTop} className="ms-2" />
@@ -191,8 +195,10 @@ const JobsManagement = () => {
                     <CTableRow key={job._id}>
                       <CTableDataCell>{job.title}</CTableDataCell>
                       <CTableDataCell>{job.user?.name}</CTableDataCell>
-                      <CTableDataCell>{job.providerName || "N/A"}</CTableDataCell>
-                      <CTableDataCell>{job.estimatedBudget}</CTableDataCell>
+                      <CTableDataCell>{job.providerName}</CTableDataCell>
+                      <CTableDataCell>{job.jobLocation?.jobAddressLine}</CTableDataCell>
+                      <CTableDataCell>{formatDate(job.createdAt)}</CTableDataCell>
+                      <CTableDataCell>{formatDate(job.updatedAt)}</CTableDataCell>
                       <CTableDataCell>
                         {Array.isArray(job.businessType)
                           ? job.businessType.join(", ")
@@ -223,7 +229,7 @@ const JobsManagement = () => {
                   ))
                 ) : (
                   <CTableRow>
-                    <CTableDataCell colSpan={7} className="text-center">
+                    <CTableDataCell colSpan={9} className="text-center">
                       No jobs available.
                     </CTableDataCell>
                   </CTableRow>
@@ -311,16 +317,22 @@ const JobsManagement = () => {
                 <strong>Job Status:</strong> {viewJob.jobStatus}
               </p>
               <p>
+                <strong>JobPosted Date:</strong> {formatDate(viewJob.createdAt)}
+              </p>
+              <p>
+                <strong>Completion Date:</strong> {formatDate(viewJob.updatedAt)}
+              </p>
+              <p>
                 <strong>Timeframe:</strong>
               </p>
               <ul>
                 <li>
                   <strong>From:</strong>{" "}
-                  {new Date(viewJob.timeframe?.from * 1000).toLocaleString()}
+                  {new Date(viewJob.timeframe?.from * 1000).toLocaleDateString()}
                 </li>
                 <li>
                   <strong>To:</strong>{" "}
-                  {new Date(viewJob.timeframe?.to * 1000).toLocaleString()}
+                  {new Date(viewJob.timeframe?.to * 1000).toLocaleDateString()}
                 </li>
               </ul>
               {viewJob.documents && viewJob.documents.length > 0 ? (
