@@ -37,7 +37,7 @@ const PaymentManagement = () => {
         setLoading(true);
         setError(null);
         try {
-            const response = await axios.get("http://localhost:7777/api/payment/getAllPayment");
+            const response = await axios.get("http://54.236.98.193:7777/api/payment/getAllPayment");
             console.log(response.data.data)
             setPayment(response.data.data || []);
         } catch (error) {
