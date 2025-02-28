@@ -37,7 +37,8 @@ const PaymentManagement = () => {
         setLoading(true);
         setError(null);
         try {
-            const response = await axios.get("http://54.236.98.193:7777/api/payment/getAllPayment");
+            const response = await axios.get("http://localhost:7777/api/payment/getAllPayment");
+            console.log(response.data.data)
             setPayment(response.data.data || []);
         } catch (error) {
             console.error("Error fetching Payments:", error);
@@ -68,10 +69,11 @@ const PaymentManagement = () => {
                                 <CTableRow>
                                     <CTableHeaderCell>Transaction ID</CTableHeaderCell>
                                     <CTableHeaderCell>Date</CTableHeaderCell>
+                                    <CTableHeaderCell>Provider Name</CTableHeaderCell>
                                     <CTableHeaderCell>Transaction Amount</CTableHeaderCell>
                                     <CTableHeaderCell>Status</CTableHeaderCell>
                                     <CTableHeaderCell>Mode</CTableHeaderCell>
-                                    <CTableHeaderCell>Subscription Amount</CTableHeaderCell>
+                                    <CTableHeaderCell>Subscription Type</CTableHeaderCell>
                                     <CTableHeaderCell>Action</CTableHeaderCell>
                                 </CTableRow>
                             </CTableHead>
@@ -81,10 +83,11 @@ const PaymentManagement = () => {
                                         <CTableRow key={payment._id}>
                                             <CTableDataCell>{payment.transactionId}</CTableDataCell>
                                             <CTableDataCell>{payment.transactionDate}</CTableDataCell>
+                                            <CTableDataCell>{payment?.userId?.contactName}</CTableDataCell>
                                             <CTableDataCell>${payment.transactionAmount}</CTableDataCell>
                                             <CTableDataCell>{payment.transactionStatus}</CTableDataCell>
                                             <CTableDataCell>{payment.transactionMode}</CTableDataCell>
-                                            <CTableDataCell>${payment.SubscriptionAmount || "0.00"}</CTableDataCell>
+                                            <CTableDataCell>{payment.type}</CTableDataCell>
                                             <CTableDataCell>
                                                 <CIcon
                                                     className="me-2 text-primary cursor-pointer"
