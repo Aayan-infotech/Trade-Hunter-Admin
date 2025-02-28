@@ -34,15 +34,13 @@ import {
 } from '@coreui/icons'
 import './Usermanagement.css'
 
-// Firebase imports
 import { ref, push, onValue } from 'firebase/database'
-import { realtimeDb } from '../chat/firestore' // Adjust the path as needed
+import { realtimeDb } from '../chat/firestore' 
 
-// Updated formatDate returns only the date portion (no time)
 const formatDate = (dateObj) => {
   if (!dateObj) return 'N/A'
   const date = new Date(dateObj)
-  return date.toLocaleDateString()  // Only the date is returned
+  return date.toLocaleDateString()  
 }
 
 const Provider = () => {
@@ -63,19 +61,17 @@ const Provider = () => {
   const [hasMoreData, setHasMoreData] = useState(true)
   const [statusFilter, setStatusFilter] = useState('')
 
-  // Chat state variables
   const [chatUser, setChatUser] = useState(null)
   const [chatMessages, setChatMessages] = useState([])
   const [newChatMessage, setNewChatMessage] = useState('')
 
-  // IMPORTANT: The sender is always the admin.
   const currentUser = localStorage.getItem('adminId')
+
   useEffect(() => {
     console.log('Firebase DB Instance:', realtimeDb)
     console.log('Current Admin ID:', currentUser)
   }, [currentUser])
 
-  // Helper: Generate a stable chat ID using the admin id and the selected provider's ID.
   const generateChatId = (otherUserId) => {
     const chatId = [currentUser, otherUserId].sort().join('_')
     console.log('Generated Chat ID:', chatId)
@@ -88,8 +84,11 @@ const Provider = () => {
       const response = await axios.get(
         `http://54.236.98.193:7777/api/Prvdr?page=${page}&limit=10&search=${search}&userStatus=${statusFilter}`
       )
-      setUsers(response.data.data)
-      setHasMoreData(response.data.data.length === 10)
+      const sortedProviders = (response.data.data || []).sort(
+        (a, b) => new Date(b.insDate) - new Date(a.insDate)
+      )
+      setUsers(sortedProviders)
+      setHasMoreData(sortedProviders.length === 10)
     } catch (error) {
       console.error('Error fetching users:', error)
     } finally {
@@ -207,15 +206,12 @@ const Provider = () => {
     }
   }
 
-  // Open chat modal with the selected provider.
   const handleChat = (user) => {
     console.log('Chat initiated with:', user)
     setChatUser(user)
     setIsChatModalOpen(true)
-    // Firebase will load chat messages; no dummy messages are set here.
   }
 
-  // Subscribe to chat messages from Firebase when a chat user is selected.
   useEffect(() => {
     if (chatUser) {
       const chatChannelId = generateChatId(chatUser._id)
@@ -255,7 +251,7 @@ const Provider = () => {
     console.log('Current Admin (Sender):', currentUser, 'Chat Provider (Receiver):', chatUser)
 
     const message = {
-      senderId: currentUser, // Always the admin
+      senderId: currentUser, 
       receiverId: chatUser._id,
       receiverName: chatUser.contactName,
       type: chatUser.userType,
@@ -385,7 +381,6 @@ const Provider = () => {
         </CCardBody>
       </CCard>
 
-      {/* Edit Modal */}
       <CModal scrollable visible={isEditModalOpen} onClose={() => setIsEditModalOpen(false)} className="hunter-modal">
         <CModalHeader className="hunter-modal-header">
           <CModalTitle>Edit User</CModalTitle>
@@ -470,7 +465,6 @@ const Provider = () => {
         </CModalFooter>
       </CModal>
 
-      {/* View Modal */}
       <CModal scrollable visible={isViewModalOpen} onClose={() => setIsViewModalOpen(false)} className="hunter-modal">
         <CModalHeader className="hunter-modal-header">
           <CModalTitle>View User</CModalTitle>
@@ -515,7 +509,6 @@ const Provider = () => {
         </CModalFooter>
       </CModal>
 
-      {/* Notification Modal */}
       <CModal scrollable visible={isNotifModalOpen} onClose={() => setIsNotifModalOpen(false)} className="hunter-modal">
         <CModalHeader className="hunter-modal-header">
           <CModalTitle>Send Notification</CModalTitle>
@@ -572,7 +565,6 @@ const Provider = () => {
         </CModalFooter>
       </CModal>
 
-      {/* Chat Modal with Firebase Integration */}
       <CModal visible={isChatModalOpen} onClose={() => setIsChatModalOpen(false)} size="md" className="hunter-modal">
         <CModalHeader onClose={() => setIsChatModalOpen(false)}>
           <CModalTitle>Chat with {chatUser?.contactName || chatUser?.name}</CModalTitle>
