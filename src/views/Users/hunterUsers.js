@@ -91,8 +91,12 @@ const Hunter = () => {
       const response = await axios.get(
         `http://54.236.98.193:7777/api/users/type/hunter/pagelimit/10?page=${page}&search=${search}&userStatus=${statusFilter}`
       )
-      setUsers(response.data.users)
-      setHasMoreData(response.data.users.length === 10)
+      // Sort the fetched users by insDate in descending order (latest joining first)
+      const sortedUsers = (response.data.users || []).sort(
+        (a, b) => new Date(b.insDate) - new Date(a.insDate)
+      )
+      setUsers(sortedUsers)
+      setHasMoreData(sortedUsers.length === 10)
     } catch (error) {
       console.error('Error fetching users:', error)
     } finally {
