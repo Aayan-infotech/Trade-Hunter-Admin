@@ -125,7 +125,8 @@ const PaymentManagement = () => {
                             <p><strong>Mode:</strong> {viewPayment.transactionMode}</p>
                             <p><strong>Subscription ID:</strong> {viewPayment.SubscriptionId || "N/A"}</p>
                             <p><strong>Subscription Amount:</strong> ${viewPayment.SubscriptionAmount || "0.00"}</p>
-                            <p><strong>User ID:</strong> {viewPayment.userId}</p>
+                            <p><strong>User ID:</strong> {viewPayment?.userId?._id}</p>
+                            <p><strong>Provider Name:</strong> {viewPayment?.userId?.contactName}</p>
                         </div>
                     )}
                 </CModalBody>
