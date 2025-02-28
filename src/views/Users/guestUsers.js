@@ -24,6 +24,13 @@ import CIcon from '@coreui/icons-react';
 import { cilSearch, cilInfo, cilEnvelopeOpen, cilTrash, cilViewColumn } from '@coreui/icons';
 import '../Users/Usermanagement.css';
 
+// Helper function to display only the date portion
+const formatDate = (dateStr) => {
+  if (!dateStr) return 'N/A';
+  const date = new Date(dateStr);
+  return date.toLocaleDateString();
+};
+
 const GuestUsers = () => {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -68,10 +75,10 @@ const GuestUsers = () => {
   };
 
   const nextPage = () => {
-    if (hasMoreData) setPage(prev => prev + 1);
+    if (hasMoreData) setPage((prev) => prev + 1);
   };
 
-  const prevPage = () => setPage(prev => Math.max(prev - 1, 1));
+  const prevPage = () => setPage((prev) => Math.max(prev - 1, 1));
 
   // View modal functions
   const handleViewUser = (user) => {
@@ -158,6 +165,8 @@ const GuestUsers = () => {
             <CTable hover responsive className="hunter-table">
               <CTableHead>
                 <CTableRow>
+                  <CTableHeaderCell>Sr. No</CTableHeaderCell>
+                  <CTableHeaderCell>Joining Date</CTableHeaderCell>
                   <CTableHeaderCell>Name</CTableHeaderCell>
                   <CTableHeaderCell>Email</CTableHeaderCell>
                   <CTableHeaderCell>Contact No</CTableHeaderCell>
@@ -167,8 +176,10 @@ const GuestUsers = () => {
                 </CTableRow>
               </CTableHead>
               <CTableBody>
-                {users.map((user) => (
+                {users.map((user, index) => (
                   <CTableRow key={user._id}>
+                    <CTableDataCell>{index + 1 + (page - 1) * 10}</CTableDataCell>
+                    <CTableDataCell>{formatDate(user.insDate)}</CTableDataCell>
                     <CTableDataCell className="text-left">{user.contactName}</CTableDataCell>
                     <CTableDataCell className="text-left">{user.email}</CTableDataCell>
                     <CTableDataCell className="text-left">{user.phoneNo}</CTableDataCell>
@@ -176,7 +187,10 @@ const GuestUsers = () => {
                     <CTableDataCell className="text-left">
                       {user.emailVerified === 1 ? 'Yes' : 'No'}
                     </CTableDataCell>
-                    <CTableDataCell className="text-left" style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+                    <CTableDataCell
+                      className="text-left"
+                      style={{ display: 'flex', gap: '10px', alignItems: 'center' }}
+                    >
                       <CIcon
                         className="action-icon view-icon"
                         onClick={() => handleViewUser(user)}
@@ -195,12 +209,20 @@ const GuestUsers = () => {
               </CTableBody>
             </CTable>
           )}
-          <div className="hunter-pagination d-flex justify-content-center align-items-center mt-3" style={{ gap: '20px' }}>
+          <div
+            className="hunter-pagination d-flex justify-content-center align-items-center mt-3"
+            style={{ gap: '20px' }}
+          >
             <CButton color="secondary" onClick={prevPage} disabled={page === 1} className="hunter-pagination-btn">
               Previous
             </CButton>
             <span className="hunter-page-info">Page: {page}</span>
-            <CButton color="secondary" onClick={nextPage} disabled={!hasMoreData} className="hunter-pagination-btn">
+            <CButton
+              color="secondary"
+              onClick={nextPage}
+              disabled={!hasMoreData}
+              className="hunter-pagination-btn"
+            >
               Next
             </CButton>
           </div>
@@ -208,28 +230,50 @@ const GuestUsers = () => {
       </CCard>
 
       {/* View User Modal */}
-      <CModal scrollable visible={showViewModal} onClose={() => setShowViewModal(false)} className="custom-modal">
+      <CModal
+        scrollable
+        visible={showViewModal}
+        onClose={() => setShowViewModal(false)}
+        className="custom-modal"
+      >
         <CModalHeader className="modal-header-custom">
           <CModalTitle>Guest User Details</CModalTitle>
         </CModalHeader>
         <CModalBody className="modal-body-custom">
           {viewUser && (
             <div>
-              <p><strong>Name:</strong> {viewUser.contactName}</p>
-              <p><strong>Email:</strong> {viewUser.email}</p>
-              <p><strong>Contact No:</strong> {viewUser.phoneNo}</p>
-              <p><strong>Address:</strong> {viewUser.businessName || 'N/A'}</p>
-              <p><strong>Email Verified:</strong> {viewUser.emailVerified === 1 ? 'Yes' : 'No'}</p>
+              <p>
+                <strong>Name:</strong> {viewUser.contactName}
+              </p>
+              <p>
+                <strong>Email:</strong> {viewUser.email}
+              </p>
+              <p>
+                <strong>Contact No:</strong> {viewUser.phoneNo}
+              </p>
+              <p>
+                <strong>Address:</strong> {viewUser.businessName || 'N/A'}
+              </p>
+              <p>
+                <strong>Email Verified:</strong> {viewUser.emailVerified === 1 ? 'Yes' : 'No'}
+              </p>
             </div>
           )}
         </CModalBody>
         <CModalFooter className="modal-footer-custom">
-          <CButton color="secondary" onClick={() => setShowViewModal(false)}>Close</CButton>
+          <CButton color="secondary" onClick={() => setShowViewModal(false)}>
+            Close
+          </CButton>
         </CModalFooter>
       </CModal>
 
       {/* Notification Modal */}
-      <CModal scrollable visible={showNotifModal} onClose={() => setShowNotifModal(false)} className="custom-modal">
+      <CModal
+        scrollable
+        visible={showNotifModal}
+        onClose={() => setShowNotifModal(false)}
+        className="custom-modal"
+      >
         <CModalHeader className="modal-header-custom">
           <CModalTitle>Send Notification</CModalTitle>
         </CModalHeader>
@@ -237,7 +281,9 @@ const GuestUsers = () => {
           {notifUser && (
             <>
               <div className="mb-3">
-                <label><strong>Notification Type</strong></label>
+                <label>
+                  <strong>Notification Type</strong>
+                </label>
                 <CFormSelect value={notifType} onChange={(e) => setNotifType(e.target.value)}>
                   <option value="alert">Alert</option>
                   <option value="reminder">Reminder</option>
@@ -245,7 +291,9 @@ const GuestUsers = () => {
                 </CFormSelect>
               </div>
               <div className="mb-3">
-                <label><strong>Notification Text</strong></label>
+                <label>
+                  <strong>Notification Text</strong>
+                </label>
                 <CFormInput
                   type="text"
                   placeholder="Enter notification text"
@@ -259,7 +307,10 @@ const GuestUsers = () => {
                 <p>No notifications sent yet.</p>
               ) : (
                 notifications.map((notif) => (
-                  <div key={notif._id} className="d-flex justify-content-between align-items-center border p-2 my-1">
+                  <div
+                    key={notif._id}
+                    className="d-flex justify-content-between align-items-center border p-2 my-1"
+                  >
                     <div>
                       <strong>{notif.type.toUpperCase()}</strong>: {notif.text}
                     </div>
@@ -276,8 +327,12 @@ const GuestUsers = () => {
           )}
         </CModalBody>
         <CModalFooter className="modal-footer-custom">
-          <CButton color="secondary" onClick={() => setShowNotifModal(false)}>Close</CButton>
-          <CButton color="primary" onClick={handleSendNotification}>Send</CButton>
+          <CButton color="secondary" onClick={() => setShowNotifModal(false)}>
+            Close
+          </CButton>
+          <CButton color="primary" onClick={handleSendNotification}>
+            Send
+          </CButton>
         </CModalFooter>
       </CModal>
     </CContainer>

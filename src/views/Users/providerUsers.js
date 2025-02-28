@@ -308,6 +308,7 @@ const Provider = () => {
                 <CTableHead>
                   <CTableRow>
                     <CTableHeaderCell>Sr. No</CTableHeaderCell>
+                    <CTableHeaderCell>Joining Date</CTableHeaderCell>
                     <CTableHeaderCell>Name</CTableHeaderCell>
                     <CTableHeaderCell>Email</CTableHeaderCell>
                     <CTableHeaderCell>Contact</CTableHeaderCell>
@@ -323,6 +324,7 @@ const Provider = () => {
                   {users.map((user, index) => (
                     <CTableRow key={user._id}>
                       <CTableDataCell>{index + 1 + (page - 1) * 10}</CTableDataCell>
+                      <CTableDataCell>{formatDate(user.insDate)}</CTableDataCell>
                       <CTableDataCell>{user.contactName}</CTableDataCell>
                       <CTableDataCell>{user.email}</CTableDataCell>
                       <CTableDataCell>{user.phoneNo}</CTableDataCell>
@@ -476,7 +478,7 @@ const Provider = () => {
                   <img src={viewUser.images} alt="User" className="hunter-user-image" />
                 </div>
               )}
-              <p><strong>Name:</strong> {viewUser.name}</p>
+              <p><strong>Name:</strong> {viewUser.contactName}</p>
               <p><strong>Email:</strong> {viewUser.email}</p>
               <p><strong>Phone Number:</strong> {viewUser.phoneNo}</p>
               <p><strong>User Type:</strong> {viewUser.userType}</p>
