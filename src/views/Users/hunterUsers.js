@@ -37,12 +37,13 @@ import { useNavigate } from 'react-router-dom'
 import './Usermanagement.css'
 
 import { ref, push, onValue } from "firebase/database"
-import { realtimeDb } from "../chat/firestore" 
+import { realtimeDb } from "../chat/firestore"
 
+// Updated formatDate returns only the date portion (no time)
 const formatDate = (dateObj) => {
   if (!dateObj) return 'N/A'
   const date = new Date(dateObj)
-  return date.toLocaleString()
+  return date.toLocaleDateString()
 }
 
 const Hunter = () => {
@@ -141,7 +142,7 @@ const Hunter = () => {
 
   const handleSaveEdit = async () => {
     try {
-      await axios.put(`http://54.236.98.193:7777/api/users/${editUser._id}editUser`, )
+      await axios.put(`http://54.236.98.193:7777/api/users/${editUser._id}editUser`)
       fetchUsers()
       setIsEditModalOpen(false)
     } catch (error) {
@@ -256,7 +257,7 @@ const Hunter = () => {
       senderId: currentUser,
       receiverId: chatUser._id,
       receiverName: chatUser.name,
-      type:chatUser.userType,
+      type: chatUser.userType,
       text: newChatMessage,
       createdAt: Date.now(),
     }
@@ -308,6 +309,7 @@ const Hunter = () => {
                 <CTableHead>
                   <CTableRow>
                     <CTableHeaderCell>Sr. No</CTableHeaderCell>
+                    <CTableHeaderCell>Joining Date</CTableHeaderCell>
                     <CTableHeaderCell>Name</CTableHeaderCell>
                     <CTableHeaderCell>Email</CTableHeaderCell>
                     <CTableHeaderCell>Contact</CTableHeaderCell>
@@ -320,6 +322,7 @@ const Hunter = () => {
                   {users.map((user, index) => (
                     <CTableRow key={user._id}>
                       <CTableDataCell>{index + 1 + (page - 1) * 10}</CTableDataCell>
+                      <CTableDataCell>{formatDate(user.insDate)}</CTableDataCell>
                       <CTableDataCell>{user.name}</CTableDataCell>
                       <CTableDataCell>{user.email}</CTableDataCell>
                       <CTableDataCell>{user.phoneNo}</CTableDataCell>
@@ -438,7 +441,7 @@ const Hunter = () => {
               <p><strong>User Type:</strong> {viewUser.userType}</p>
               <p><strong>User Status:</strong> {viewUser.userStatus || 'N/A'}</p>
               <p><strong>Email Verified:</strong> {viewUser.emailVerified ? 'Yes' : 'No'}</p>
-              <p><strong>Insertion Date:</strong> {formatDate(viewUser.insDate)}</p>
+              <p><strong>Joining Date:</strong> {formatDate(viewUser.insDate)}</p>
               <p><strong>Terms &amp; Conditions:</strong> {viewUser.termsAndCondition ? 'Accepted' : 'Not Accepted'}</p>
               {viewUser.files && viewUser.files.length > 0 && (
                 <div className="hunter-files-section">
