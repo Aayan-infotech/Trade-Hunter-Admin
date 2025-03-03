@@ -10,7 +10,8 @@ const ServiceManagement = React.lazy(() => import('./views/services/ServiceManag
 const SubscriptionManagement =React.lazy(() => import('./views/subscriptions/SubscriptionManagement.js'));
  const paymentManagement = React.lazy(() => import('./views/payments/paymentManagement.js')); 
  const contacts  = React.lazy(() => import('./views/contacts/Contacts.js'))
-
+ const analytics = React.lazy(() => import('./views/platformAnalytics/platformAnalytics.js'))
+const contentManagement = React.lazy(() => import('./views/contentAndCommunication/contentManagement.js'))
 const JobsHunter = React.lazy(() => import('./views/Users/JobsHunter.js'))
 const GuestUsers = React.lazy(() => import('./views/Users/guestUsers.js'))
 
@@ -27,7 +28,9 @@ const routes = [
   { path: '/JobsHunter', name: 'HunterJobs', element: JobsHunter },
   {path: '/payments', name: "Payment Management", element: paymentManagement},
   {path: '/guestUsers', name:"Guest Management", element: GuestUsers},
-  {path: '/contacts', name:"Contact", element:contacts}
+  {path: '/contacts', name:"Contact", element:contacts},
+  {path: '/analytics', name:"Platform Analytics", element:analytics},
+  {path: '/contentManagement', name:"Content and Communication Management", element:contentManagement}
 
 
   // { path: '/JobsManagement', name: 'JobsManagement', element: JobsManagement },

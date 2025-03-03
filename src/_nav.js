@@ -18,6 +18,8 @@ import {
   cilStar,
   cilPhone,
   cilLibraryAdd,
+  cilBarChart,
+  cilBullhorn
 } from '@coreui/icons'
 import { CNavGroup, CNavItem, CNavTitle } from '@coreui/react'
 
@@ -96,6 +98,18 @@ const _nav = [
     name: 'Contacts',
     to: '/contacts',
     icon: <CIcon icon={cilPhone } customClassName="nav-icon" style={{ color: 'blue' }} />,
+  },
+  {
+    component: CNavItem,
+    name: 'Platform Analytics',
+    to: '/analytics',
+    icon: <CIcon icon={cilBarChart } customClassName="nav-icon" style={{ color: 'blue' }} />,
+  },
+  {
+    component: CNavItem,
+    name: 'Content And Communication Management',
+    to: '/contentManagement',
+    icon: <CIcon icon={cilBullhorn } customClassName="nav-icon" style={{ color: 'blue' }} />,
   },
 
 
