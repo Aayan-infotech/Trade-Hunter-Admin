@@ -191,6 +191,7 @@ const AnalyticsReports = () => {
             <CCardHeader className="service-card-header">Retention Rate</CCardHeader>
             <CCardBody>
               <h3>{retentionRate}</h3>
+              <CIcon icon={cilCalendar} size="xl" />
             </CCardBody>
           </CCard>
         </CCol>
