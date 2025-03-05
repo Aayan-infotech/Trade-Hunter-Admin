@@ -157,7 +157,7 @@ const JobsManagement = () => {
           <div className="search-container">
             <CFormInput
               type="text"
-              placeholder="Search by Title"
+              placeholder="Search by Hunters name or Providers name"
               value={search}
               onChange={handleSearch}
               className="search-input"
@@ -176,8 +176,8 @@ const JobsManagement = () => {
               <CTableHead>
                 <CTableRow>
                   <CTableHeaderCell>Title</CTableHeaderCell>
-                  <CTableHeaderCell>Client Name</CTableHeaderCell>
-                  <CTableHeaderCell>Provider Name</CTableHeaderCell>
+                  <CTableHeaderCell>Hunters Name</CTableHeaderCell>
+                  <CTableHeaderCell>Providers Name</CTableHeaderCell>
                   <CTableHeaderCell>Job Address</CTableHeaderCell>
                   <CTableHeaderCell>JobPosted Date</CTableHeaderCell>
                   <CTableHeaderCell>Completion Date</CTableHeaderCell>

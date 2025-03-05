@@ -40,7 +40,11 @@ const ServiceManagement = () => {
     setLoading(true);
     try {
       const response = await axios.get(API_URL);
-      setServices(response.data.data || []);
+      // Sort services alphabetically by name
+      const sortedServices = (response.data.data || []).sort((a, b) =>
+        a.name.localeCompare(b.name)
+      );
+      setServices(sortedServices);
     } catch (error) {
       console.error('Error fetching services:', error);
     } finally {

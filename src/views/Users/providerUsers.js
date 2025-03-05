@@ -315,7 +315,7 @@ const Provider = () => {
                     <CTableHeaderCell>Contact</CTableHeaderCell>
                     <CTableHeaderCell>User Status</CTableHeaderCell>
                     <CTableHeaderCell>Admin Verified</CTableHeaderCell>
-                    <CTableHeaderCell>Email Verified</CTableHeaderCell>
+                    <CTableHeaderCell>Business Name</CTableHeaderCell>
                     <CTableHeaderCell>Document Status</CTableHeaderCell>
                     <CTableHeaderCell>Subscription Status</CTableHeaderCell>
                     <CTableHeaderCell>Actions</CTableHeaderCell>
@@ -343,7 +343,7 @@ const Provider = () => {
                         </CBadge>
                       </CTableDataCell>
                       <CTableDataCell>{user.adminVerified}</CTableDataCell>
-                      <CTableDataCell>{user.emailVerified ? 'Yes' : 'No'}</CTableDataCell>
+                      <CTableDataCell>{user.businessName}</CTableDataCell>
                       <CTableDataCell>{user.documentStatus ? 'Approved' : 'Pending'}</CTableDataCell>
                       <CTableDataCell>{user.subscriptionStatus ? 'Active' : 'Inactive'}</CTableDataCell>
                       <CTableDataCell className="hunter-actions-cell">
@@ -483,6 +483,9 @@ const Provider = () => {
               <p><strong>User Type:</strong> {viewUser.userType}</p>
               <p><strong>User Status:</strong> {viewUser.userStatus || 'N/A'}</p>
               <p><strong>Email Verified:</strong> {viewUser.emailVerified ? 'Yes' : 'No'}</p>
+              <p><strong>ABN number: </strong> {viewUser.ABN_Number}</p>
+              <p><strong>Address: </strong> {viewUser.address?.addressLine}</p>
+              <p><strong>Subscription Type:  </strong> {viewUser.subscriptionType}</p>
               <p><strong>Joining Date:</strong> {formatDate(viewUser.insDate)}</p>
               <p><strong>Terms &amp; Conditions:</strong> {viewUser.termsAndCondition ? 'Accepted' : 'Not Accepted'}</p>
               {viewUser.files && viewUser.files.length > 0 && (
