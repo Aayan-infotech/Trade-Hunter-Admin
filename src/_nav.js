@@ -107,7 +107,7 @@ const _nav = [
   },
   {
     component: CNavItem,
-    name: 'Content And Communication Management',
+    name: 'Content & Communication',
     to: '/contentManagement',
     icon: <CIcon icon={cilBullhorn } customClassName="nav-icon" style={{ color: 'blue' }} />,
   },

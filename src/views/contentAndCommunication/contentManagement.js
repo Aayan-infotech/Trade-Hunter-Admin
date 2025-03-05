@@ -123,7 +123,7 @@ const ContentAndCommunicationManagement = () => {
       
       {/* Module Navigation Row: Left, Center, Right */}
       <CRow className="mb-4" style={{ backgroundColor: '#f0f2f5', padding: '10px 0' }}>
-        <CCol md="4" className="text-start">
+        <CCol md="4" className="text-end">
           <CButton 
             color={activeModule === 'Static Content' ? 'primary' : 'secondary'} 
             block 
@@ -143,7 +143,7 @@ const ContentAndCommunicationManagement = () => {
             Send Mass Notifications
           </CButton>
         </CCol>
-        <CCol md="4" className="text-end">
+        <CCol md="4" className="text-start">
           <CButton 
             color={activeModule === 'Automated Alerts' ? 'primary' : 'secondary'} 
             block 
