@@ -444,6 +444,7 @@ const Hunter = () => {
               <p><strong>User Status:</strong> {viewUser.userStatus || 'N/A'}</p>
               <p><strong>Email Verified:</strong> {viewUser.emailVerified ? 'Yes' : 'No'}</p>
               <p><strong>Joining Date:</strong> {formatDate(viewUser.insDate)}</p>
+              <p><strong>Address:</strong>{viewUser?.address?.addressLine}</p>
               <p><strong>Terms &amp; Conditions:</strong> {viewUser.termsAndCondition ? 'Accepted' : 'Not Accepted'}</p>
               {viewUser.files && viewUser.files.length > 0 && (
                 <div className="hunter-files-section">

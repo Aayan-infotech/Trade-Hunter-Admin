@@ -49,7 +49,7 @@ const AppSidebar = () => {
               className="me-2"
               style={{ maxHeight: "80px", maxWidth: "100%" }}
             />
-            <span className="trade-hunter-name fs-4 text-decoration-none">Trade Hunter</span>
+            <span className="trade-hunter-name fs-4 text-decoration-none">Trade Hunters</span>
           </div>
 
 

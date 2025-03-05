@@ -54,7 +54,7 @@ const AppHeader = () => {
         <CHeaderNav className="d-none d-md-flex">
           <CNavItem>
             <CNavLink to="/dashboard" as={NavLink}>
-            Trade Hunter
+            Trade Hunters
             </CNavLink>
           </CNavItem>
 

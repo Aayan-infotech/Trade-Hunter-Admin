@@ -173,8 +173,7 @@ const GuestUsers = () => {
                   <CTableHeaderCell>Name</CTableHeaderCell>
                   <CTableHeaderCell>Email</CTableHeaderCell>
                   <CTableHeaderCell>Contact No</CTableHeaderCell>
-                  <CTableHeaderCell>Address</CTableHeaderCell>
-                  <CTableHeaderCell>Email Verified</CTableHeaderCell>
+                  <CTableHeaderCell>Business Name</CTableHeaderCell>
                   <CTableHeaderCell>Actions</CTableHeaderCell>
                 </CTableRow>
               </CTableHead>
@@ -187,9 +186,7 @@ const GuestUsers = () => {
                     <CTableDataCell className="text-left">{user.email}</CTableDataCell>
                     <CTableDataCell className="text-left">{user.phoneNo}</CTableDataCell>
                     <CTableDataCell className="text-left">{user.businessName || 'N/A'}</CTableDataCell>
-                    <CTableDataCell className="text-left">
-                      {user.emailVerified === 1 ? 'Yes' : 'No'}
-                    </CTableDataCell>
+                   
                     <CTableDataCell
                       className="text-left"
                       style={{ display: 'flex', gap: '10px', alignItems: 'center' }}
@@ -255,10 +252,16 @@ const GuestUsers = () => {
                 <strong>Contact No:</strong> {viewUser.phoneNo}
               </p>
               <p>
-                <strong>Address:</strong> {viewUser.businessName || 'N/A'}
+                <strong>Address:</strong> {viewUser?.address?.addressLine || 'N/A'}
               </p>
               <p>
                 <strong>Email Verified:</strong> {viewUser.emailVerified === 1 ? 'Yes' : 'No'}
+              </p>
+              <p>
+                <strong>businessName: </strong> {viewUser.businessName}
+              </p>
+              <p>
+                <strong>ABN Number: </strong> {viewUser.ABN_Number}
               </p>
             </div>
           )}
