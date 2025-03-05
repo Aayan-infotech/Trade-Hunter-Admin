@@ -146,14 +146,14 @@ const Hunter = () => {
 
   const handleSaveEdit = async () => {
     try {
-      await axios.put(`http://54.236.98.193:7777/api/users/${editUser._id}editUser`)
+      await axios.put(`http://54.236.98.193:7777/api/users/${editUser._id}`, editUser)
       fetchUsers()
       setIsEditModalOpen(false)
     } catch (error) {
       console.error('Error editing user:', error)
     }
   }
-
+  
   const handleChange = (e) => {
     const { name, value } = e.target
     setEditUser((prevUser) => ({
@@ -374,7 +374,6 @@ const Hunter = () => {
         </CCardBody>
       </CCard>
 
-      {/* Edit Modal */}
       <CModal scrollable visible={isEditModalOpen} onClose={() => setIsEditModalOpen(false)} className="hunter-modal">
         <CModalHeader className="hunter-modal-header">
           <CModalTitle>Edit User</CModalTitle>
@@ -426,7 +425,6 @@ const Hunter = () => {
         </CModalFooter>
       </CModal>
 
-      {/* View Modal */}
       <CModal scrollable visible={isViewModalOpen} onClose={() => setIsViewModalOpen(false)} className="hunter-modal">
         <CModalHeader className="hunter-modal-header">
           <CModalTitle>View User</CModalTitle>
@@ -471,7 +469,6 @@ const Hunter = () => {
         </CModalFooter>
       </CModal>
 
-      {/* Notification Modal */}
       <CModal scrollable visible={isNotifModalOpen} onClose={() => setIsNotifModalOpen(false)} className="hunter-modal">
         <CModalHeader className="hunter-modal-header">
           <CModalTitle>Send Notification</CModalTitle>
@@ -529,7 +526,6 @@ const Hunter = () => {
         </CModalFooter>
       </CModal>
 
-      {/* Chat Modal with Firebase Integration */}
       <CModal visible={isChatModalOpen} onClose={() => setIsChatModalOpen(false)} size="md" className="hunter-modal">
         <CModalHeader onClose={() => setIsChatModalOpen(false)}>
           <CModalTitle>Chat with {chatUser?.contactName || chatUser?.name}</CModalTitle>
