@@ -28,7 +28,6 @@ const sectionMapping = {
 
 const ContentAndCommunicationManagement = () => {
   const [activeModule, setActiveModule] = useState('Static Content');
-
   const [activeSection, setActiveSection] = useState('About Us');
   const [contentData, setContentData] = useState({
     "About Us": "",
@@ -36,11 +35,8 @@ const ContentAndCommunicationManagement = () => {
     "Privacy Policy": ""
   });
   
-  const [postType, setPostType] = useState('');
-  const [postTitle, setPostTitle] = useState('');
-  const [postMessage, setPostMessage] = useState('');
-  
   const [notificationRecipient, setNotificationRecipient] = useState('');
+  const [notificationSubject, setNotificationSubject] = useState('');
   const [notificationMessage, setNotificationMessage] = useState('');
   
   const [pendingVerificationsAlert, setPendingVerificationsAlert] = useState('');
@@ -83,26 +79,22 @@ const ContentAndCommunicationManagement = () => {
     }
   };
 
-  const savePost = async () => {
+  const sendNotification = async () => {
     try {
-      setError(null);
-      await axios.post('http://54.236.98.193:7777/api/Posts', { type: postType, title: postTitle, message: postMessage });
-      alert('Post saved successfully!');
-      setPostType('');
-      setPostTitle('');
-      setPostMessage('');
+      const payload = {
+        userType: notificationRecipient, 
+        subject: notificationSubject,
+        message: notificationMessage,
+      };
+      const response = await axios.post('http://54.236.98.193:7777/api/massNotification/', payload);
+      alert('Notification sent successfully!\nResponse: ' + JSON.stringify(response.data));
+      setNotificationRecipient('');
+      setNotificationSubject('');
+      setNotificationMessage('');
     } catch (err) {
-      console.error('Error saving post:', err);
-      setError('Error saving post.');
+      console.error('Error sending notification:', err);
+      setError('Error sending notification.');
     }
-  };
-
-  const sendNotification = () => {
-    console.log('Sending notification to:', notificationRecipient);
-    console.log('Notification message:', notificationMessage);
-    alert('Notification feature is under development.');
-    setNotificationRecipient('');
-    setNotificationMessage('');
   };
 
   const saveAlerts = () => {
@@ -129,19 +121,38 @@ const ContentAndCommunicationManagement = () => {
         </CHeaderBrand>
       </CHeader>
       
+      {/* Module Navigation Row: Left, Center, Right */}
       <CRow className="mb-4" style={{ backgroundColor: '#f0f2f5', padding: '10px 0' }}>
-        {['Static Content', 'Posts', 'Notifications', 'Automated Alerts'].map((module) => (
-          <CCol key={module} xs="3">
-            <CButton 
-              color={activeModule === module ? 'primary' : 'secondary'} 
-              block 
-              onClick={() => setActiveModule(module)}
-              style={{ borderRadius: 0, fontWeight: 'bold' }}
-            >
-              {module}
-            </CButton>
-          </CCol>
-        ))}
+        <CCol md="4" className="text-start">
+          <CButton 
+            color={activeModule === 'Static Content' ? 'primary' : 'secondary'} 
+            block 
+            onClick={() => setActiveModule('Static Content')}
+            style={{ borderRadius: 0, fontWeight: 'bold' }}
+          >
+            Static Content
+          </CButton>
+        </CCol>
+        <CCol md="4" className="text-center">
+          <CButton 
+            color={activeModule === 'Send Mass Notifications' ? 'primary' : 'secondary'} 
+            block 
+            onClick={() => setActiveModule('Send Mass Notifications')}
+            style={{ borderRadius: 0, fontWeight: 'bold' }}
+          >
+            Send Mass Notifications
+          </CButton>
+        </CCol>
+        <CCol md="4" className="text-end">
+          <CButton 
+            color={activeModule === 'Automated Alerts' ? 'primary' : 'secondary'} 
+            block 
+            onClick={() => setActiveModule('Automated Alerts')}
+            style={{ borderRadius: 0, fontWeight: 'bold' }}
+          >
+            Automated Alerts
+          </CButton>
+        </CCol>
       </CRow>
 
       {activeModule === 'Static Content' && (
@@ -185,41 +196,7 @@ const ContentAndCommunicationManagement = () => {
         </>
       )}
 
-      {activeModule === 'Posts' && (
-        <CCard className="p-4 mb-5">
-          <CCardHeader className="service-card-header">Post Announcements, Blogs & Promotions</CCardHeader>
-          <CCardBody>
-            <CFormSelect
-              value={postType}
-              onChange={(e) => setPostType(e.target.value)}
-            >
-              <option value="">Select Post Type</option>
-              <option value="announcement">Announcement</option>
-              <option value="blog">Blog</option>
-              <option value="promotion">Promotion</option>
-            </CFormSelect>
-            <CFormInput 
-              className="mt-3" 
-              type="text" 
-              placeholder="Enter post title" 
-              value={postTitle} 
-              onChange={(e) => setPostTitle(e.target.value)} 
-            />
-            <ReactQuill 
-              className="mt-3" 
-              value={postMessage} 
-              onChange={setPostMessage} 
-              placeholder="Enter your message" 
-              style={{ height: "250px", marginBottom: "50px" }} 
-            />
-            <CButton color="success" className="mt-3" onClick={savePost}>
-              Post Content
-            </CButton>
-          </CCardBody>
-        </CCard>
-      )}
-
-      {activeModule === 'Notifications' && (
+      {activeModule === 'Send Mass Notifications' && (
         <CCard className="p-4 mb-5">
           <CCardHeader className="service-card-header">Send Mass Notifications</CCardHeader>
           <CCardBody>
@@ -228,9 +205,16 @@ const ContentAndCommunicationManagement = () => {
               onChange={(e) => setNotificationRecipient(e.target.value)}
             >
               <option value="">Select Recipient</option>
-              <option value="clients">To Clients</option>
-              <option value="providers">To Providers</option>
+              <option value="hunter">To Hunters</option>
+              <option value="provider">To Providers</option>
             </CFormSelect>
+            <CFormInput
+              className="mt-3"
+              type="text"
+              placeholder="Enter notification subject"
+              value={notificationSubject}
+              onChange={(e) => setNotificationSubject(e.target.value)}
+            />
             <CFormTextarea
               className="mt-3"
               placeholder="Enter notification message"
