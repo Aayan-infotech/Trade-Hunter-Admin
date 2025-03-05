@@ -840,6 +840,87 @@ button:hover {
   border-radius: 4px;
   padding: 5px;
 }
+/* Container & Header */
+.analytics-container {
+  padding: 20px;
+}
+
+.analytics-header {
+  font-size: 1.75rem;
+  font-weight: 600;
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+/* General Card Styles */
+.analytics-card,
+.analytics-chart-card,
+.provider-stats-card {
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  background-color: #fff;
+  margin-bottom: 20px;
+}
+
+/* Stats Cards */
+.analytics-card .ccard-header,
+.analytics-chart-card .ccard-header,
+.provider-stats-card .ccard-header {
+  font-size: 1.2rem;
+  font-weight: 600;
+  text-align: center;
+}
+
+/* Job Chart Card */
+.analytics-chart-card .ccard-body {
+  padding: 15px;
+}
+
+/* Lists for Demand Data */
+.analytics-list {
+  list-style: none;
+  padding-left: 0;
+  margin: 0;
+}
+
+.analytics-list li {
+  padding: 8px 0;
+  border-bottom: 1px solid #eee;
+}
+
+/* Provider List Styles */
+.provider-list {
+  max-height: 200px;
+  overflow-y: auto;
+  margin-bottom: 10px;
+}
+
+.provider-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 12px;
+  border-bottom: 1px solid #eee;
+  transition: background-color 0.3s ease;
+  cursor: pointer;
+}
+
+.provider-item:hover {
+  background-color: #f5f5f5;
+}
+
+/* Table adjustments for Provider Stats */
+.provider-stats-card .table {
+  width: 100%;
+  margin-top: 10px;
+  border-collapse: collapse;
+}
+
+.provider-stats-card .table td {
+  padding: 8px;
+  border-top: 1px solid #eee;
+}
 
 
 
