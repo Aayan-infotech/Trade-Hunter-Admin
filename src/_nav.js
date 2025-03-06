@@ -19,7 +19,8 @@ import {
   cilPhone,
   cilLibraryAdd,
   cilBarChart,
-  cilBullhorn
+  cilBullhorn,
+  cilAlarm
 } from '@coreui/icons'
 import { CNavGroup, CNavItem, CNavTitle } from '@coreui/react'
 
@@ -110,6 +111,12 @@ const _nav = [
     name: 'Content & Communication',
     to: '/contentManagement',
     icon: <CIcon icon={cilBullhorn } customClassName="nav-icon" style={{ color: 'blue' }} />,
+  },
+  {
+    component: CNavItem,
+    name: "Follow-Up",
+    to: '/followUp',
+    icon: <CIcon icon={cilAlarm } customClassName="nav-icon" style={{ color: 'blue' }} />,
   },
 
 
