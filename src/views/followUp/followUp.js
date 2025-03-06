@@ -47,7 +47,7 @@ const followUp = () => {
     <CContainer className="jobs-container">
       <CCard>
         <CCardHeader className="service-card-header">
-          <h4>Contacts Management</h4>
+          <h4>Follow Ups</h4>
         </CCardHeader>
         <CCardBody className="card-body-custom">
           {error && <p className="error-text">{error}</p>}
