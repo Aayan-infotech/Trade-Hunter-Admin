@@ -118,6 +118,8 @@ const _nav = [
     to: '/followUp',
     icon: <CIcon icon={cilAlarm } customClassName="nav-icon" style={{ color: 'blue' }} />,
   },
+  
+
 
 
 ]
