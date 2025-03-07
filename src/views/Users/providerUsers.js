@@ -362,6 +362,7 @@ const Provider = () => {
                         <span onClick={() => handleDelete(user._id)} className="hunter-action-icon">
                           <CIcon icon={cilTrash} size="lg" />
                         </span>
+                        
                       </CTableDataCell>
                     </CTableRow>
                   ))}

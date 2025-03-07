@@ -139,15 +139,31 @@ const JobsManagement = () => {
           .map((item) => item.trim())
           .filter((item) => item),
       };
-      await axios.put(`http://54.236.98.193:7777/api/jobs/${editJob._id}`, updatedJob);
+  
+      if (updatedJob.provider) {
+        delete updatedJob.provider;
+      }
+  
+      console.log("Updated job payload:", updatedJob);
+  
+      const response = await axios.put(
+        `http://54.236.98.193:7777/api/jobs/${editJob._id}`,
+        updatedJob
+      );
+      console.log("Update response:", response.data);
+  
       fetchJobs();
       setShowEditModal(false);
       setEditJob(null);
     } catch (error) {
-      console.error("Error updating job:", error);
+      console.error(
+        "Error updating job:",
+        error.response ? error.response.data : error.message
+      );
       alert("Failed to update job.");
     }
   };
+  
 
   return (
     <CContainer className="jobs-container">
@@ -195,7 +211,7 @@ const JobsManagement = () => {
                     <CTableRow key={job._id}>
                       <CTableDataCell>{job.title}</CTableDataCell>
                       <CTableDataCell>{job.user?.name}</CTableDataCell>
-                      <CTableDataCell>{job.providerName}</CTableDataCell>
+                      <CTableDataCell>{job.provider?.contactName}</CTableDataCell>
                       <CTableDataCell>{job.jobLocation?.jobAddressLine}</CTableDataCell>
                       <CTableDataCell>{formatDate(job.createdAt)}</CTableDataCell>
                       <CTableDataCell>{formatDate(job.updatedAt)}</CTableDataCell>
@@ -305,16 +321,25 @@ const JobsManagement = () => {
                 <strong>Requirements:</strong> {viewJob.requirements}
               </p>
               <p>
-                <strong>Client id:</strong> {viewJob.user?._id}
+                <strong>Hunters ID:</strong> {viewJob.user?._id}
               </p>
               <p>
-                <strong>Client Name:</strong> {viewJob.user?.name}
+                <strong>Hunters Name:</strong> {viewJob.user?.name}
               </p>
               <p>
-                <strong>Client email:</strong> {viewJob.user?.email}
+                <strong>Hunters email:</strong> {viewJob.user?.email}
               </p>
               <p>
                 <strong>Job Status:</strong> {viewJob.jobStatus}
+              </p>
+              <p>
+                <strong>Providers ID:</strong> {viewJob.provider?._id}
+              </p>
+              <p>
+                <strong>Provider Name:</strong> {viewJob.provider?.contactName}
+              </p>
+              <p>
+                <strong>Provider email:</strong> {viewJob.provider?.email}
               </p>
               <p>
                 <strong>JobPosted Date:</strong> {formatDate(viewJob.createdAt)}
