@@ -30,7 +30,11 @@ const followUp = () => {
     setError(null);
     try {
       const response = await axios.get("http://54.236.98.193:7777/api/contact/getAll");
-      setContacts(response.data.contacts || []);
+      const fetchedContacts = response.data.contacts || [];
+      const sortedContacts = fetchedContacts.sort(
+        (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+      );
+      setContacts(sortedContacts);
     } catch (error) {
       console.error("Error fetching contacts:", error);
       setError("Failed to load contacts. Please try again.");
@@ -54,34 +58,36 @@ const followUp = () => {
           {loading ? (
             <div>Loading...</div>
           ) : (
-            <CTable hover responsive className="jobs-table">
-              <CTableHead>
-                <CTableRow>
-                  <CTableHeaderCell>Name</CTableHeaderCell>
-                  <CTableHeaderCell>Email</CTableHeaderCell>
-                  <CTableHeaderCell>Message</CTableHeaderCell>
-                  <CTableHeaderCell>Created At</CTableHeaderCell>
-                </CTableRow>
-              </CTableHead>
-              <CTableBody>
-                {contacts.length > 0 ? (
-                  contacts.map((contact) => (
-                    <CTableRow key={contact._id}>
-                      <CTableDataCell>{contact.name}</CTableDataCell>
-                      <CTableDataCell>{contact.email}</CTableDataCell>
-                      <CTableDataCell>{contact.message}</CTableDataCell>
-                      <CTableDataCell>{formatDate(contact.createdAt)}</CTableDataCell>
-                    </CTableRow>
-                  ))
-                ) : (
+            <div style={{ maxHeight: "500px", overflowY: "auto" }}>
+              <CTable hover responsive className="jobs-table">
+                <CTableHead>
                   <CTableRow>
-                    <CTableDataCell colSpan={4} className="text-center">
-                      No contacts available.
-                    </CTableDataCell>
+                    <CTableHeaderCell>Name</CTableHeaderCell>
+                    <CTableHeaderCell>Email</CTableHeaderCell>
+                    <CTableHeaderCell>Message</CTableHeaderCell>
+                    <CTableHeaderCell>Date</CTableHeaderCell>
                   </CTableRow>
-                )}
-              </CTableBody>
-            </CTable>
+                </CTableHead>
+                <CTableBody>
+                  {contacts.length > 0 ? (
+                    contacts.map((contact) => (
+                      <CTableRow key={contact._id}>
+                        <CTableDataCell>{contact.name}</CTableDataCell>
+                        <CTableDataCell>{contact.email}</CTableDataCell>
+                        <CTableDataCell>{contact.message}</CTableDataCell>
+                        <CTableDataCell>{formatDate(contact.createdAt)}</CTableDataCell>
+                      </CTableRow>
+                    ))
+                  ) : (
+                    <CTableRow>
+                      <CTableDataCell colSpan={4} className="text-center">
+                        No contacts available.
+                      </CTableDataCell>
+                    </CTableRow>
+                  )}
+                </CTableBody>
+              </CTable>
+            </div>
           )}
         </CCardBody>
       </CCard>

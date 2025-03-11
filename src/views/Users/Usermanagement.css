@@ -922,6 +922,102 @@ button:hover {
   border-top: 1px solid #eee;
 }
 
+.voucher-container {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #ffffff, #d0d1da);
+  padding: 40px;
+}
+
+.voucher-card {
+  width: 100%;
+  max-width: 700px;
+  border-radius: 15px;
+  overflow: hidden;
+  background: #dddddd;
+}
+
+.voucher-card-header {
+  background: linear-gradient(90deg, #1a73e8, #062455);
+  color: #fff;
+  font-size: 1.5rem;
+  font-weight: bold;
+  /* padding: 20px; */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.custom-input {
+  border-radius: 5px;
+  padding: 10px;
+  border: 1px solid #ccc;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  margin-bottom: 10px;
+}
+
+.custom-input:focus {
+  border-color: #1a73e8;
+  box-shadow: 0 0 5px rgba(26, 115, 232, 0.5);
+}
+
+.voucher-button {
+  padding: 10px 20px;
+  font-size: 1rem;
+  border-radius: 5px;
+}
+
+.coupon-code-section {
+  background: #fff;
+  border: 1px dashed #1a73e8;
+  padding: 15px 20px;
+  border-radius: 5px;
+  font-size: 1.2rem;
+  color: #1a73e8;
+  font-weight: bold;
+  margin-top: 20px;
+}
+
+.coupon-code {
+  flex: 1;
+}
+
+.copy-icon {
+  cursor: pointer;
+  margin-left: 15px;
+  color: #1a73e8;
+  transition: color 0.3s ease;
+}
+
+.copy-icon:hover {
+  color: #4285f4;
+}
+
+.response-box {
+  background: #f1f1f1;
+  padding: 15px;
+  border-radius: 5px;
+  margin-top: 20px;
+  font-family: monospace;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.subscribers-table-section {
+  background: #fff;
+  border: 1px solid #ddd;
+  padding: 20px;
+  border-radius: 5px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  margin-top: 20px;
+}
+.subscribers-table-section {
+  background: #fff;
+  border: 1px solid #ddd;
+  padding: 20px;
+  border-radius: 5px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
 
 
 

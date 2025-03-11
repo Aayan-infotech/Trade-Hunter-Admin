@@ -20,7 +20,9 @@ import {
   cilLibraryAdd,
   cilBarChart,
   cilBullhorn,
-  cilAlarm
+  cilAlarm,
+  cilCart,
+  cilTag
 } from '@coreui/icons'
 import { CNavGroup, CNavItem, CNavTitle } from '@coreui/react'
 
@@ -74,7 +76,7 @@ const _nav = [
     component: CNavGroup,
     name: 'Subscription Stats',
     // to: '/Usermanagement',
-    icon: <CIcon icon={cilLibraryAdd} customClassName="nav-icon" style={{ color: 'blue' }} />,  // Added cilUser here
+    icon: <CIcon icon={cilCart} customClassName="nav-icon" style={{ color: 'blue' }} />,  // Added cilUser here
     items: [
       // {
       //   component: CNavItem,
@@ -118,6 +120,14 @@ const _nav = [
     to: '/followUp',
     icon: <CIcon icon={cilAlarm } customClassName="nav-icon" style={{ color: 'blue' }} />,
   },
+  {
+    component: CNavItem,
+    name: "Promotional Vouchers",
+    to: '/promotions',
+    icon: <CIcon icon={cilTag} customClassName="nav-icon" style={{ color: 'blue' }} />,
+  },
+  
+
 
 
 ]

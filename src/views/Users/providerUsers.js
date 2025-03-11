@@ -31,7 +31,9 @@ import {
   cilInfo,
   cilEnvelopeOpen,
   cilCommentBubble,
+  cilBriefcase, // imported briefcase icon
 } from '@coreui/icons'
+import { useNavigate } from 'react-router-dom'
 import './Usermanagement.css'
 
 import { ref, push, onValue } from 'firebase/database'
@@ -66,6 +68,12 @@ const Provider = () => {
   const [newChatMessage, setNewChatMessage] = useState('')
 
   const currentUser = localStorage.getItem('adminId')
+  const navigate = useNavigate()
+
+  // Function to navigate to the ProviderAssignedJobs page, passing the provider id
+  const handleAssignedJobs = (providerId) => {
+    navigate('/ProviderAssignedJobs', { state: { providerId } })
+  }
 
   useEffect(() => {
     console.log('Firebase DB Instance:', realtimeDb)
@@ -362,7 +370,10 @@ const Provider = () => {
                         <span onClick={() => handleDelete(user._id)} className="hunter-action-icon">
                           <CIcon icon={cilTrash} size="lg" />
                         </span>
-                        
+                        {/* Added briefcase icon to navigate to ProviderAssignedJobs */}
+                        <span onClick={() => handleAssignedJobs(user._id)} className="hunter-action-icon">
+                          <CIcon icon={cilBriefcase} size="lg" />
+                        </span>
                       </CTableDataCell>
                     </CTableRow>
                   ))}
@@ -382,6 +393,7 @@ const Provider = () => {
         </CCardBody>
       </CCard>
 
+      {/* Edit Modal */}
       <CModal scrollable visible={isEditModalOpen} onClose={() => setIsEditModalOpen(false)} className="hunter-modal">
         <CModalHeader className="hunter-modal-header">
           <CModalTitle>Edit User</CModalTitle>
@@ -466,6 +478,7 @@ const Provider = () => {
         </CModalFooter>
       </CModal>
 
+      {/* View Modal */}
       <CModal scrollable visible={isViewModalOpen} onClose={() => setIsViewModalOpen(false)} className="hunter-modal">
         <CModalHeader className="hunter-modal-header">
           <CModalTitle>View User</CModalTitle>
@@ -513,6 +526,7 @@ const Provider = () => {
         </CModalFooter>
       </CModal>
 
+      {/* Notification Modal */}
       <CModal scrollable visible={isNotifModalOpen} onClose={() => setIsNotifModalOpen(false)} className="hunter-modal">
         <CModalHeader className="hunter-modal-header">
           <CModalTitle>Send Notification</CModalTitle>
@@ -569,6 +583,7 @@ const Provider = () => {
         </CModalFooter>
       </CModal>
 
+      {/* Chat Modal */}
       <CModal visible={isChatModalOpen} onClose={() => setIsChatModalOpen(false)} size="md" className="hunter-modal">
         <CModalHeader onClose={() => setIsChatModalOpen(false)}>
           <CModalTitle>Chat with {chatUser?.contactName || chatUser?.name}</CModalTitle>
