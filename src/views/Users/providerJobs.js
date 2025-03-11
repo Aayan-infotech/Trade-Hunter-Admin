@@ -10,6 +10,7 @@ import {
   CCardText,
   CRow,
   CCol,
+  CButton,
 } from "@coreui/react";
 import "./Usermanagement.css";
 
@@ -61,6 +62,7 @@ const ProviderAssignedJobs = () => {
   }
 
   const assignedJobs = provider.assignedJobs || [];
+
   return (
     <CContainer className="jobs-hunter-wrapper mt-4">
       <CCard className="mb-4 shadow-sm">
@@ -68,58 +70,78 @@ const ProviderAssignedJobs = () => {
           <h2>Assigned Jobs</h2>
         </CCardHeader>
       </CCard>
-      {assignedJobs.length > 0 ? (
-        <CRow>
-          {assignedJobs.map((job) => (
-            <CCol md={6} key={job._id} className="mb-3">
-              <CCard className="shadow-sm">
-                <CCardHeader className="bg-secondary text-white">
-                  {job.title}
-                </CCardHeader>
-                <CCardBody>
-                  <CCardTitle>Location</CCardTitle>
-                  <CCardText>
-                    {job.jobLocation?.jobAddressLine || "N/A"}
-                  </CCardText>
-                  <CCardTitle>Estimated Budget</CCardTitle>
-                  <CCardText>${job.estimatedBudget}</CCardText>
-                  <CCardTitle>Business Type</CCardTitle>
-                  <CCardText>
-                    {Array.isArray(job.businessType)
-                      ? job.businessType.join(", ")
-                      : job.businessType}
-                  </CCardText>
-                  <CCardTitle>Requirements</CCardTitle>
-                  <CCardText>{job.requirements}</CCardText>
-                  <CCardTitle>Job Status</CCardTitle>
-                  <CCardText>{job.jobStatus}</CCardText>
-                  <CCardTitle>Timeframe</CCardTitle>
-                  <CCardText>
-                    {job.timeframe
-                      ? `${new Date(
-                          job.timeframe.from * 1000
-                        ).toLocaleString()} - ${new Date(
-                          job.timeframe.to * 1000
-                        ).toLocaleString()}`
-                      : "N/A"}
-                  </CCardText>
-                  {/* Display the populated user details */}
-                  <CCardTitle>Assigned By</CCardTitle>
-                  <CCardText>
-                    {job.user ? job.user.name : "N/A"}
-                  </CCardText>
-                  <CCardTitle>User Email</CCardTitle>
-                  <CCardText>
-                    {job.user ? job.user.email : "N/A"}
-                  </CCardText>
-                </CCardBody>
-              </CCard>
-            </CCol>
-          ))}
-        </CRow>
-      ) : (
-        <div className="text-center">No assigned jobs found.</div>
-      )}
+
+      {/* Scrollable container for job cards */}
+      <div style={{ maxHeight: "600px", overflowY: "auto", paddingRight: "15px" }}>
+        {assignedJobs.length > 0 ? (
+          <CRow className="g-4">
+            {assignedJobs.map((job) => (
+              <CCol md={6} key={job._id}>
+                <CCard className="shadow-sm h-100">
+                  <CCardHeader className="bg-secondary text-white">
+                    <h5 className="mb-0">{job.title}</h5>
+                  </CCardHeader>
+                  <CCardBody>
+                    <div className="mb-3">
+                      <CCardTitle className="small text-muted">Location</CCardTitle>
+                      <CCardText>{job.jobLocation?.jobAddressLine || "N/A"}</CCardText>
+                    </div>
+                    <div className="mb-3">
+                      <CCardTitle className="small text-muted">Estimated Budget</CCardTitle>
+                      <CCardText>${job.estimatedBudget}</CCardText>
+                    </div>
+                    <div className="mb-3">
+                      <CCardTitle className="small text-muted">Business Type</CCardTitle>
+                      <CCardText>
+                        {Array.isArray(job.businessType)
+                          ? job.businessType.join(", ")
+                          : job.businessType}
+                      </CCardText>
+                    </div>
+                    <div className="mb-3">
+                      <CCardTitle className="small text-muted">Requirements</CCardTitle>
+                      <CCardText>{job.requirements}</CCardText>
+                    </div>
+                    <div className="mb-3">
+                      <CCardTitle className="small text-muted">Job Status</CCardTitle>
+                      <CCardText>{job.jobStatus}</CCardText>
+                    </div>
+                    <div className="mb-3">
+                      <CCardTitle className="small text-muted">Timeframe</CCardTitle>
+                      <CCardText>
+                        {job.timeframe
+                          ? `${new Date(
+                              job.timeframe.from * 1000
+                            ).toLocaleString()} - ${new Date(
+                              job.timeframe.to * 1000
+                            ).toLocaleString()}`
+                          : "N/A"}
+                      </CCardText>
+                    </div>
+                    <div className="mb-3">
+                      <CCardTitle className="small text-muted">Assigned By</CCardTitle>
+                      <CCardText>{job.user ? job.user.name || job.user.contactName : "N/A"}</CCardText>
+                    </div>
+                    <div>
+                      <CCardTitle className="small text-muted">User Email</CCardTitle>
+                      <CCardText>{job.user ? job.user.email : "N/A"}</CCardText>
+                    </div>
+                  </CCardBody>
+                </CCard>
+              </CCol>
+            ))}
+          </CRow>
+        ) : (
+          <div className="text-center">No assigned jobs found.</div>
+        )}
+      </div>
+
+      {/* Optional: Add a Back button */}
+      <div className="mt-4 text-center">
+        <CButton color="secondary" onClick={() => window.history.back()}>
+          &larr; Back
+        </CButton>
+      </div>
     </CContainer>
   );
 };
