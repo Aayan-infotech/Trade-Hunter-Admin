@@ -206,7 +206,7 @@ const JobsManagement = () => {
             className="search-container"
             style={{ display: "flex", gap: "10px", alignItems: "center" }}
           >
-            <select
+            {/* <select
               value={jobStatusFilter}
               onChange={handleStatusFilter}
               className="form-control"
@@ -218,7 +218,7 @@ const JobsManagement = () => {
               <option value="InProgress">InProgress</option>
               <option value="Completed">Completed</option>
               <option value="deleted">Deleted</option>
-            </select>
+            </select> */}
             <CFormInput
               type="text"
               placeholder="Search by Hunters name or Providers name"
@@ -406,6 +406,12 @@ const JobsManagement = () => {
                 <strong>JobPosted Date:</strong> {formatDate(viewJob.createdAt)}
               </p>
               <p>
+                <strong>Deleted By - Name:</strong> {viewJob.deleteBy?.name}
+              </p>
+              <p>
+                <strong>Deleted By - Email:</strong> {viewJob.deleteBy?.email}
+              </p>
+              <p>
                 <strong>Completion Date:</strong>{" "}
                 {formatDate(viewJob.updatedAt)}
               </p>
@@ -522,6 +528,7 @@ const JobsManagement = () => {
                 }
                 className="form-control mb-2"
               >
+                <option value="">Change Status</option>
                 <option value="Pending">Pending</option>
                 <option value="Assigned">Assigned</option>
                 <option value="InProgress">InProgress</option>

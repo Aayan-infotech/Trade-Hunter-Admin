@@ -122,7 +122,7 @@ const Provider = () => {
   const handleDelete = async (id) => {
     if (window.confirm('Are you sure you want to delete this user?')) {
       try {
-        await axios.delete(`http://54.236.98.193:7777/api/Prvdr/${id}`)
+        await axios.delete(`http://54.236.98.193:7777/api/DeleteAccount/provider/${id}`)
         fetchUsers()
       } catch (error) {
         console.error('Error deleting user:', error)
@@ -325,6 +325,7 @@ const Provider = () => {
                     <CTableHeaderCell>Admin Verified</CTableHeaderCell>
                     <CTableHeaderCell>Business Name</CTableHeaderCell>
                     <CTableHeaderCell>Document Status</CTableHeaderCell>
+                    <CTableHeaderCell>Account Status</CTableHeaderCell>
                     <CTableHeaderCell>Subscription Status</CTableHeaderCell>
                     <CTableHeaderCell>Actions</CTableHeaderCell>
                   </CTableRow>
@@ -352,7 +353,9 @@ const Provider = () => {
                       </CTableDataCell>
                       <CTableDataCell>{user.adminVerified}</CTableDataCell>
                       <CTableDataCell>{user.businessName}</CTableDataCell>
+                      
                       <CTableDataCell>{user.documentStatus ? 'Approved' : 'Pending'}</CTableDataCell>
+                      <CTableDataCell>{user.accountStatus}</CTableDataCell>
                       <CTableDataCell>{user.subscriptionStatus ? 'Active' : 'Inactive'}</CTableDataCell>
                       <CTableDataCell className="hunter-actions-cell">
                         <span onClick={() => handleView(user)} className="hunter-action-icon">
@@ -496,6 +499,7 @@ const Provider = () => {
               <p><strong>Phone Number:</strong> {viewUser.phoneNo}</p>
               <p><strong>User Type:</strong> {viewUser.userType}</p>
               <p><strong>User Status:</strong> {viewUser.userStatus || 'N/A'}</p>
+              <p><strong>Account Status:</strong> {viewUser.accountStatus || 'N/A'}</p>
               <p><strong>Email Verified:</strong> {viewUser.emailVerified ? 'Yes' : 'No'}</p>
               <p><strong>ABN number: </strong> {viewUser.ABN_Number}</p>
               <p><strong>Address: </strong> {viewUser.address?.addressLine}</p>
