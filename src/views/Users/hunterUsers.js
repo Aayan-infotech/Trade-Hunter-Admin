@@ -126,7 +126,7 @@ const Hunter = () => {
   const handleDelete = async (id) => {
     if (window.confirm("Are you sure you want to delete this user?")) {
       try {
-        await axios.delete(`http://54.236.98.193:7777/api/users/${id}`)
+        await axios.delete(`http://54.236.98.193:7777/api/DeleteAccount/hunter/${id}`)
         fetchUsers()
       } catch (error) {
         console.error('Error deleting user:', error)
@@ -318,6 +318,7 @@ const Hunter = () => {
                     <CTableHeaderCell>Email</CTableHeaderCell>
                     <CTableHeaderCell>Contact</CTableHeaderCell>
                     <CTableHeaderCell>User Status</CTableHeaderCell>
+                    <CTableHeaderCell>Account Status</CTableHeaderCell>
                     <CTableHeaderCell>Email Verified</CTableHeaderCell>
                     <CTableHeaderCell>Actions</CTableHeaderCell>
                   </CTableRow>
@@ -335,6 +336,7 @@ const Hunter = () => {
                           {user.userStatus}
                         </CBadge>
                       </CTableDataCell>
+                      <CTableDataCell>{user.accountStatus}</CTableDataCell>
                       <CTableDataCell>{user.emailVerified ? 'Yes' : 'No'}</CTableDataCell>
                       <CTableDataCell className="hunter-actions-cell">
                         <span onClick={() => handleView(user)} className="hunter-action-icon">
@@ -442,6 +444,7 @@ const Hunter = () => {
               <p><strong>Phone Number:</strong> {viewUser.phoneNo}</p>
               <p><strong>User Type:</strong> {viewUser.userType}</p>
               <p><strong>User Status:</strong> {viewUser.userStatus || 'N/A'}</p>
+              <p><strong>Account Status:</strong> {viewUser.accountStatus || 'N/A'}</p>
               <p><strong>Email Verified:</strong> {viewUser.emailVerified ? 'Yes' : 'No'}</p>
               <p><strong>Joining Date:</strong> {formatDate(viewUser.insDate)}</p>
               <p><strong>Address:</strong>{viewUser?.address?.addressLine}</p>
