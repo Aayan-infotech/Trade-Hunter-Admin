@@ -206,7 +206,7 @@ const JobsManagement = () => {
             className="search-container"
             style={{ display: "flex", gap: "10px", alignItems: "center" }}
           >
-            {/* <select
+            <select
               value={jobStatusFilter}
               onChange={handleStatusFilter}
               className="form-control"
@@ -217,8 +217,8 @@ const JobsManagement = () => {
               <option value="Assigned">Assigned</option>
               <option value="InProgress">InProgress</option>
               <option value="Completed">Completed</option>
-              <option value="deleted">Deleted</option>
-            </select> */}
+              <option value="Deleted">Deleted</option>
+            </select>
             <CFormInput
               type="text"
               placeholder="Search by Hunters name or Providers name"

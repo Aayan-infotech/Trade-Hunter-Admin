@@ -93,12 +93,12 @@ const followUp = () => {
                         <CTableDataCell>{contact.message}</CTableDataCell>
                         <CTableDataCell>{formatDate(contact.createdAt)}</CTableDataCell>
                         <CTableDataCell>
-                          {/* <CIcon
+                          <CIcon
                             icon={cilTrash}
                             size="lg"
                             style={{ color: "red", cursor: "pointer" }}
                             onClick={() => handleDelete(contact._id)}
-                          /> */}
+                          />
                         </CTableDataCell>
                       </CTableRow>
                     ))

@@ -215,13 +215,13 @@ const GuestUsers = () => {
                         icon={cilEnvelopeOpen}
                         size="lg"
                       />
-                      {/* <CIcon
+                      <CIcon
                         className="action-icon delete-icon"
                         onClick={() => handleDeleteUser(user._id)}
                         icon={cilTrash}
                         size="lg"
                         style={{ color: 'red', cursor: 'pointer' }}
-                      /> */}
+                      />
                     </CTableDataCell>
                   </CTableRow>
                 ))}
