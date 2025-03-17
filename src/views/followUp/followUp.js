@@ -12,6 +12,8 @@ import {
   CTableBody,
   CTableDataCell,
 } from "@coreui/react";
+import CIcon from "@coreui/icons-react";
+import { cilTrash } from "@coreui/icons";
 import "../Users/Usermanagement.css";
 
 const formatDate = (dateObj) => {
@@ -47,6 +49,19 @@ const followUp = () => {
     fetchContacts();
   }, []);
 
+  const handleDelete = async (id) => {
+    if (window.confirm("Are you sure you want to delete this contact?")) {
+      try {
+        await axios.delete(`http://54.236.98.193:7777/api/contact/delete/${id}`);
+        alert("Contact deleted successfully.");
+        setContacts((prevContacts) => prevContacts.filter((contact) => contact._id !== id));
+      } catch (error) {
+        console.error("Error deleting contact:", error);
+        alert("Failed to delete contact.");
+      }
+    }
+  };
+
   return (
     <CContainer className="jobs-container">
       <CCard>
@@ -66,6 +81,7 @@ const followUp = () => {
                     <CTableHeaderCell>Email</CTableHeaderCell>
                     <CTableHeaderCell>Message</CTableHeaderCell>
                     <CTableHeaderCell>Date</CTableHeaderCell>
+                    <CTableHeaderCell>Actions</CTableHeaderCell>
                   </CTableRow>
                 </CTableHead>
                 <CTableBody>
@@ -76,11 +92,19 @@ const followUp = () => {
                         <CTableDataCell>{contact.email}</CTableDataCell>
                         <CTableDataCell>{contact.message}</CTableDataCell>
                         <CTableDataCell>{formatDate(contact.createdAt)}</CTableDataCell>
+                        <CTableDataCell>
+                          <CIcon
+                            icon={cilTrash}
+                            size="lg"
+                            style={{ color: "red", cursor: "pointer" }}
+                            onClick={() => handleDelete(contact._id)}
+                          />
+                        </CTableDataCell>
                       </CTableRow>
                     ))
                   ) : (
                     <CTableRow>
-                      <CTableDataCell colSpan={4} className="text-center">
+                      <CTableDataCell colSpan={5} className="text-center">
                         No contacts available.
                       </CTableDataCell>
                     </CTableRow>

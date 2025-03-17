@@ -44,6 +44,7 @@ const JobsManagement = () => {
   const [loading, setLoading] = useState(false);
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
+  const [jobStatusFilter, setJobStatusFilter] = useState("All");
   const [totalPages, setTotalPages] = useState(1);
   const [error, setError] = useState(null);
   const [sortOrder, setSortOrder] = useState("asc");
@@ -56,9 +57,18 @@ const JobsManagement = () => {
     setLoading(true);
     setError(null);
     try {
-      const response = await axios.get(
-        `http://54.236.98.193:7777/api/jobs/?page=${page}&limit=10&search=${search}`
-      );
+      let response;
+      // If a job status filter is applied (not "All"), use the filter API
+      if (jobStatusFilter !== "All") {
+        response = await axios.get(
+          `http://54.236.98.193:7777/api/jobs/filter?status=${jobStatusFilter}&page=${page}&limit=10`
+        );
+      } else {
+        // Otherwise, use the default endpoint with search parameter
+        response = await axios.get(
+          `http://54.236.98.193:7777/api/jobs/?page=${page}&limit=10&search=${search}`
+        );
+      }
       setJobs(response.data.data.jobPosts || []);
       setTotalPages(response.data.data.pagination.totalPages || 1);
     } catch (error) {
@@ -71,9 +81,10 @@ const JobsManagement = () => {
 
   useEffect(() => {
     fetchJobs();
-  }, [page, search]);
+  }, [page, search, jobStatusFilter]);
 
   useEffect(() => {
+    // Default sort by createdAt (recent first)
     const sortedByRecent = [...jobs].sort(
       (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
     );
@@ -82,6 +93,11 @@ const JobsManagement = () => {
 
   const handleSearch = (e) => {
     setSearch(e.target.value);
+    setPage(1);
+  };
+
+  const handleStatusFilter = (e) => {
+    setJobStatusFilter(e.target.value);
     setPage(1);
   };
 
@@ -105,7 +121,19 @@ const JobsManagement = () => {
   const handleDeleteJob = async (jobId) => {
     if (window.confirm("Are you sure you want to delete this job?")) {
       try {
-        await axios.delete(`http://54.236.98.193:7777/api/jobs/${jobId}`);
+        console.log("Initiating deletion for job id:", jobId);
+        const token = localStorage.getItem("token");
+        console.log("Retrieved token:", token);
+        if (!token) {
+          alert("Authentication token not found. Please log in again.");
+          return;
+        }
+        const response = await axios.delete(`http://54.236.98.193:7777/api/jobPost/${jobId}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        console.log("Delete response:", response.data);
         fetchJobs();
       } catch (error) {
         console.error("Error deleting job:", error);
@@ -113,6 +141,11 @@ const JobsManagement = () => {
       }
     }
   };
+  
+  
+  
+  
+  
 
   const handleViewJob = (job) => {
     setViewJob(job);
@@ -139,19 +172,19 @@ const JobsManagement = () => {
           .map((item) => item.trim())
           .filter((item) => item),
       };
-  
+
       if (updatedJob.provider) {
         delete updatedJob.provider;
       }
-  
+
       console.log("Updated job payload:", updatedJob);
-  
+
       const response = await axios.put(
         `http://54.236.98.193:7777/api/jobs/${editJob._id}`,
         updatedJob
       );
       console.log("Update response:", response.data);
-  
+
       fetchJobs();
       setShowEditModal(false);
       setEditJob(null);
@@ -163,14 +196,29 @@ const JobsManagement = () => {
       alert("Failed to update job.");
     }
   };
-  
 
   return (
     <CContainer className="jobs-container">
       <CCard>
         <CCardHeader className="service-card-header">
           <h4>Jobs Management</h4>
-          <div className="search-container">
+          <div
+            className="search-container"
+            style={{ display: "flex", gap: "10px", alignItems: "center" }}
+          >
+            <select
+              value={jobStatusFilter}
+              onChange={handleStatusFilter}
+              className="form-control"
+              style={{ width: "200px" }}
+            >
+              <option value="All">Job Status</option>
+              <option value="Pending">Pending</option>
+              <option value="Assigned">Assigned</option>
+              <option value="InProgress">InProgress</option>
+              <option value="Completed">Completed</option>
+              <option value="deleted">Deleted</option>
+            </select>
             <CFormInput
               type="text"
               placeholder="Search by Hunters name or Providers name"
@@ -178,7 +226,11 @@ const JobsManagement = () => {
               onChange={handleSearch}
               className="search-input"
             />
-            <CButton color="primary" onClick={fetchJobs} className="search-button">
+            <CButton
+              color="primary"
+              onClick={fetchJobs}
+              className="search-button"
+            >
               <CIcon icon={cilSearch} /> Search
             </CButton>
           </div>
@@ -197,9 +249,15 @@ const JobsManagement = () => {
                   <CTableHeaderCell>Job Address</CTableHeaderCell>
                   <CTableHeaderCell>JobPosted Date</CTableHeaderCell>
                   <CTableHeaderCell>Completion Date</CTableHeaderCell>
-                  <CTableHeaderCell onClick={toggleSortOrder} style={{ cursor: "pointer" }}>
+                  <CTableHeaderCell
+                    onClick={toggleSortOrder}
+                    style={{ cursor: "pointer" }}
+                  >
                     Business Type
-                    <CIcon icon={sortOrder === "asc" ? cilArrowBottom : cilArrowTop} className="ms-2" />
+                    <CIcon
+                      icon={sortOrder === "asc" ? cilArrowBottom : cilArrowTop}
+                      className="ms-2"
+                    />
                   </CTableHeaderCell>
                   <CTableHeaderCell>Status</CTableHeaderCell>
                   <CTableHeaderCell>Actions</CTableHeaderCell>
@@ -212,7 +270,9 @@ const JobsManagement = () => {
                       <CTableDataCell>{job.title}</CTableDataCell>
                       <CTableDataCell>{job.user?.name}</CTableDataCell>
                       <CTableDataCell>{job.provider?.contactName}</CTableDataCell>
-                      <CTableDataCell>{job.jobLocation?.jobAddressLine}</CTableDataCell>
+                      <CTableDataCell>
+                        {job.jobLocation?.jobAddressLine}
+                      </CTableDataCell>
                       <CTableDataCell>{formatDate(job.createdAt)}</CTableDataCell>
                       <CTableDataCell>{formatDate(job.updatedAt)}</CTableDataCell>
                       <CTableDataCell>
@@ -303,7 +363,8 @@ const JobsManagement = () => {
                 {viewJob.jobLocation?.jobAddressLine || "N/A"}
               </p>
               <p>
-                <strong>Job Radius:</strong> {viewJob.jobLocation?.jobRadius} meters
+                <strong>Job Radius:</strong> {viewJob.jobLocation?.jobRadius}{" "}
+                meters
               </p>
               <p>
                 <strong>Estimated Budget:</strong> ${viewJob.estimatedBudget}
@@ -345,7 +406,8 @@ const JobsManagement = () => {
                 <strong>JobPosted Date:</strong> {formatDate(viewJob.createdAt)}
               </p>
               <p>
-                <strong>Completion Date:</strong> {formatDate(viewJob.updatedAt)}
+                <strong>Completion Date:</strong>{" "}
+                {formatDate(viewJob.updatedAt)}
               </p>
               <p>
                 <strong>Timeframe:</strong>
@@ -368,7 +430,11 @@ const JobsManagement = () => {
                   <ul>
                     {viewJob.documents.map((doc, index) => (
                       <li key={index}>
-                        <a href={doc} target="_blank" rel="noopener noreferrer">
+                        <a
+                          href={doc}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
                           Document {index + 1}
                         </a>
                       </li>

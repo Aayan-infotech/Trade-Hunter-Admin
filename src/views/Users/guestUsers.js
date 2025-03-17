@@ -21,7 +21,7 @@ import {
   CModalFooter,
 } from '@coreui/react';
 import CIcon from '@coreui/icons-react';
-import { cilSearch, cilInfo, cilEnvelopeOpen, cilTrash, cilViewColumn } from '@coreui/icons';
+import { cilSearch, cilEnvelopeOpen, cilTrash, cilViewColumn } from '@coreui/icons';
 import '../Users/Usermanagement.css';
 
 // Helper function to display only the date portion
@@ -143,6 +143,19 @@ const GuestUsers = () => {
     }
   };
 
+  const handleDeleteUser = async (userId) => {
+    if (window.confirm('Are you sure you want to delete this guest user?')) {
+      try {
+        await axios.delete(`http://54.236.98.193:7777/api/Prvdr/${userId}`);
+        alert('User deleted successfully.');
+        fetchGuestUsers();
+      } catch (error) {
+        console.error('Error deleting user:', error);
+        alert('Failed to delete user.');
+      }
+    }
+  };
+
   return (
     <CContainer className="hunter-container">
       <CCard className="hunter-card">
@@ -186,7 +199,6 @@ const GuestUsers = () => {
                     <CTableDataCell className="text-left">{user.email}</CTableDataCell>
                     <CTableDataCell className="text-left">{user.phoneNo}</CTableDataCell>
                     <CTableDataCell className="text-left">{user.businessName || 'N/A'}</CTableDataCell>
-                   
                     <CTableDataCell
                       className="text-left"
                       style={{ display: 'flex', gap: '10px', alignItems: 'center' }}
@@ -202,6 +214,13 @@ const GuestUsers = () => {
                         onClick={() => handleNotification(user)}
                         icon={cilEnvelopeOpen}
                         size="lg"
+                      />
+                      <CIcon
+                        className="action-icon delete-icon"
+                        onClick={() => handleDeleteUser(user._id)}
+                        icon={cilTrash}
+                        size="lg"
+                        style={{ color: 'red', cursor: 'pointer' }}
                       />
                     </CTableDataCell>
                   </CTableRow>
@@ -258,10 +277,10 @@ const GuestUsers = () => {
                 <strong>Email Verified:</strong> {viewUser.emailVerified === 1 ? 'Yes' : 'No'}
               </p>
               <p>
-                <strong>businessName: </strong> {viewUser.businessName}
+                <strong>Business Name:</strong> {viewUser.businessName}
               </p>
               <p>
-                <strong>ABN Number: </strong> {viewUser.ABN_Number}
+                <strong>ABN Number:</strong> {viewUser.ABN_Number}
               </p>
             </div>
           )}
