@@ -8,8 +8,8 @@ import {
   CCardBody,
   CProgress,
   CBadge,
-  CFormInput,
 } from '@coreui/react'
+import { CChartPie } from '@coreui/react-chartjs'
 import axios from 'axios'
 import '../Users/Usermanagement.css'
 
@@ -25,12 +25,8 @@ const Dashboard = () => {
   })
   const [subscriptionRevenue, setSubscriptionRevenue] = useState(0)
   const [recentJobActivity, setRecentJobActivity] = useState([])
-  const [providerSearch, setProviderSearch] = useState('')
-  const [providerPage, setProviderPage] = useState(1)
-  const [providerList, setProviderList] = useState([])
-  const [selectedProvider, setSelectedProvider] = useState(null)
 
-  // Color mapping for each job posting status.
+  // Color mapping for job posting statuses.
   const jobPostingColors = {
     Pending: 'danger',
     Assigned: 'primary',
@@ -56,7 +52,7 @@ const Dashboard = () => {
         }
 
         if (results[1].status === 'fulfilled') {
-          // Expected API response structure: { success, message, data: { status: { ... }, totalJobs } }
+          // Expected API response: { success, message, data: { status: { ... }, totalJobs } }
           const jobData = results[1].value.data.data || { status: {}, totalJobs: 0 }
           setJobPostings(jobData)
         }
@@ -76,59 +72,88 @@ const Dashboard = () => {
     fetchDashboardData()
   }, [])
 
+  const jobStatusLabels = Object.keys(jobPostings.status)
+  const jobStatusValues = Object.values(jobPostings.status)
+  const jobStatusColors = jobStatusLabels.map((status) => {
+    switch (status) {
+      case 'Pending':
+        return '#dc3545' // danger
+      case 'Assigned':
+        return '#007bff' // primary
+      case 'InProgress':
+        return '#ffc107' // warning
+      case 'Completed':
+        return '#28a745' // success
+      default:
+        return '#17a2b8' // info
+    }
+  })
+
+  const jobStatusData = {
+    labels: jobStatusLabels,
+    datasets: [
+      {
+        data: jobStatusValues,
+        backgroundColor: jobStatusColors,
+      },
+    ],
+  }
+
+  const jobStatusOptions = {
+    maintainAspectRatio: false,
+    responsive: true,
+    plugins: {
+      legend: {
+        position: 'bottom',
+      },
+    },
+  }
+
   return (
     <CContainer fluid className="dashboard-container">
-      <CRow className="mb-4">
-        <CCol md={4} className="">
-          <CCard className="dashboard-card hover-effect ">
-            <CCardHeader className="service-card-header">User Insights</CCardHeader>
-            <CCard className="dashboard-card hover-effect d-flex flex-column h-100">
-              <CCardBody className="flex-grow-1">
-                <h2 className="text-center">{totalUsers}</h2>
-                <p className="text-muted text-center">Total Users</p>
-                <CRow>
-                  <CCol>
-                    <CBadge color="info">Hunters: {hunter}</CBadge>
-                  </CCol>
-                  <CCol>
-                    <CBadge color="success">Providers: {provider}</CBadge>
-                  </CCol>
-                  <CCol>
-                    <CBadge color="secondary">Guests: {guest}</CBadge>
-                  </CCol>
-                </CRow>
-              </CCardBody>
-            </CCard>
-          </CCard>
-        </CCol>
-
+      <CRow className="mb-4 d-flex">
+        {/* User Insights Card */}
         <CCol md={4}>
-          <CCard className="dashboard-card hover-effect">
-            <CCardHeader className="service-card-header">Job Postings</CCardHeader>
-            <CCardBody>
-              <div className="text-center mb-3">
-                <strong>Total Jobs: {jobPostings.totalJobs}</strong>
-              </div>
+          <CCard className="dashboard-card hover-effect h-100 d-flex flex-column">
+            <CCardHeader className="service-card-header">User Insights</CCardHeader>
+            <CCardBody className="flex-grow-1 d-flex flex-column justify-content-center">
+              <h2 className="text-center">{totalUsers}</h2>
+              <p className="text-muted text-center">Total Users</p>
               <CRow>
-                {Object.keys(jobPostings.status).map((status, index) => (
-                  <CCol md={6} key={index} className="mb-2">
-                    <strong>{status}:</strong> {jobPostings.status[status] || 0}
-                    <CProgress
-                      color={jobPostingColors[status] || 'info'}
-                      value={(jobPostings.status[status] / (totalUsers || 1)) * 100}
-                      className="mt-1"
-                    />
-                  </CCol>
-                ))}
+                <CCol>
+                  <CBadge color="info">Hunters: {hunter}</CBadge>
+                </CCol>
+                <CCol>
+                  <CBadge color="success">Providers: {provider}</CBadge>
+                </CCol>
+                <CCol>
+                  <CBadge color="secondary">Guests: {guest}</CBadge>
+                </CCol>
               </CRow>
             </CCardBody>
           </CCard>
         </CCol>
 
+        {/* Job Postings Card with Pie Chart */}
         <CCol md={4}>
-          <CCard className="dashboard-card hover-effect">
+          <CCard className="dashboard-card hover-effect h-100 d-flex flex-column">
+            <CCardHeader className="service-card-header">Job Postings</CCardHeader>
+            <CCardBody className="flex-grow-1 d-flex flex-column">
+              <div className="text-center mb-3">
+                <strong>Total Jobs: {jobPostings.totalJobs}</strong>
+              </div>
+              <div style={{ flexGrow: 1, position: 'relative' }}>
+                <CChartPie data={jobStatusData} options={jobStatusOptions} />
+              </div>
+            </CCardBody>
+          </CCard>
+        </CCol>
+
+        {/* Subscription Revenue Card */}
+        <CCol md={4}>
+          <CCard className="dashboard-card hover-effect h-100 d-flex flex-column">
             <CCardHeader className="service-card-header">Subscription Revenue</CCardHeader>
-            <CCardBody className="text-center">
+            <CCardBody className="flex-grow-1 d-flex flex-column justify-content-center text-center">
               <h1 className="text-success">${subscriptionRevenue}</h1>
               <p className="text-muted">Total Earnings</p>
             </CCardBody>

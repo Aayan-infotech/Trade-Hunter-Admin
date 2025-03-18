@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react'
 import {
   CContainer,
   CRow,
@@ -16,53 +16,130 @@ import {
   CTableRow,
   CTableHeaderCell,
   CTableDataCell,
-} from '@coreui/react';
-import { FaTicketAlt, FaCopy } from 'react-icons/fa';
-import '../Users/Usermanagement.css';
+  CModal,
+  CModalHeader,
+  CModalTitle,
+  CModalBody,
+  CModalFooter,
+} from '@coreui/react'
+import { FaTicketAlt } from 'react-icons/fa'
+import CIcon from '@coreui/icons-react'
+import { cilTrash, cilPencil } from '@coreui/icons'
+import '../Users/Usermanagement.css'
 
-const API_ENDPOINT = "https://your-api-endpoint.com/api/vouchers";
+const API_CREATE = "http://54.236.98.193:7777/api/voucher/create"
+const API_GET = "http://54.236.98.193:7777/api/voucher"
+const API_DELETE = "http://54.236.98.193:7777/api/voucher" // DELETE: /:id
+const API_UPDATE = "http://54.236.98.193:7777/api/voucher/update" // PUT: /:id
 
 const CreateVoucher = () => {
-  const [voucherName, setVoucherName] = useState('');
-  const [validFrom, setValidFrom] = useState('');
-  const [validTo, setValidTo] = useState('');
-  const [couponCode, setCouponCode] = useState(null);
-  const [response, setResponse] = useState(null);
-  const [loading, setLoading] = useState(false);
-  const [subscribedUsers] = useState([]);
+  // Create voucher state
+  const [code, setCode] = useState('')
+  const [startDate, setStartDate] = useState('')
+  const [endDate, setEndDate] = useState('')
+  const [usageLimit, setUsageLimit] = useState('')
+  const [vouchers, setVouchers] = useState([])
+  const [loading, setLoading] = useState(false)
 
-  const handleVoucherNameChange = (e) => {
-    setVoucherName(e.target.value.toUpperCase());
-  };
+  // Edit voucher state
+  const [showEditModal, setShowEditModal] = useState(false)
+  const [editVoucher, setEditVoucher] = useState(null)
 
+  // Handler for create voucher code change
+  const handleCodeChange = (e) => {
+    setCode(e.target.value.toUpperCase())
+  }
+
+  // Create voucher submission
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    const data = { voucherName, validFrom, validTo };
+    e.preventDefault()
+    setLoading(true)
+    const data = { code, startDate, endDate, usageLimit: Number(usageLimit) }
     try {
-      const res = await fetch(API_ENDPOINT, {
+      await fetch(API_CREATE, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data),
-      });
-      const result = await res.json();
-      setResponse(result);
-      if (result.couponCode) {
-        setCouponCode(result.couponCode);
-      }
+      })
+      fetchVouchers()
+      setCode('')
+      setStartDate('')
+      setEndDate('')
+      setUsageLimit('')
     } catch (error) {
-      console.error("Error creating voucher:", error);
-      setResponse({ error: "Failed to create voucher." });
+      console.error("Error creating voucher:", error)
     }
-    setLoading(false);
-  };
+    setLoading(false)
+  }
 
-  const handleCopyCouponCode = () => {
-    if (couponCode) {
-      navigator.clipboard.writeText(couponCode);
-      alert("Coupon code copied to clipboard!");
+  // Fetch vouchers from API
+  const fetchVouchers = async () => {
+    try {
+      const res = await fetch(API_GET)
+      const result = await res.json()
+      setVouchers(result.data || [])
+    } catch (error) {
+      console.error("Error fetching vouchers:", error)
     }
-  };
+  }
+
+  // Delete voucher by id
+  const handleDeleteVoucher = async (id) => {
+    if (window.confirm("Are you sure you want to delete this voucher?")) {
+      try {
+        await fetch(`${API_DELETE}/${id}`, {
+          method: 'DELETE'
+        })
+        fetchVouchers()
+      } catch (error) {
+        console.error("Error deleting voucher:", error)
+      }
+    }
+  }
+
+  // Open edit modal and prefill with voucher details
+  const openEditModal = (voucher) => {
+    setEditVoucher({ ...voucher })
+    setShowEditModal(true)
+  }
+
+  // Update editVoucher state when a field changes
+  const handleEditChange = (field, value) => {
+    setEditVoucher(prev => ({ ...prev, [field]: value }))
+  }
+
+  // Save changes for edited voucher using PUT API
+  const handleSaveEditVoucher = async () => {
+    if (!editVoucher) return
+    try {
+      const res = await fetch(`${API_UPDATE}/${editVoucher._id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          code: editVoucher.code,
+          startDate: editVoucher.startDate,
+          endDate: editVoucher.endDate,
+          usageLimit: Number(editVoucher.usageLimit),
+        }),
+      })
+      const result = await res.json()
+      console.log("Update result:", result)
+      fetchVouchers()
+      setShowEditModal(false)
+      setEditVoucher(null)
+    } catch (error) {
+      console.error("Error updating voucher:", error)
+    }
+  }
+
+  // Format timestamp to only show date (locale string)
+  const formatDate = (timestamp) => {
+    return new Date(timestamp).toLocaleDateString()
+  }
+
+  useEffect(() => {
+    fetchVouchers()
+  }, [])
 
   return (
     <>
@@ -70,97 +147,113 @@ const CreateVoucher = () => {
         <CCard className="voucher-card shadow" style={{ maxWidth: '600px' }}>
           <CCardHeader className="voucher-card-header text-center">
             <FaTicketAlt size={30} className="mr-2" />
-            Create Subscription Voucher
+            Create Voucher
           </CCardHeader>
           <CCardBody>
             <CForm onSubmit={handleSubmit}>
               <CRow className="mb-3">
                 <CCol md={12}>
-                  <CFormLabel htmlFor="voucherName">Voucher Code</CFormLabel>
+                  <CFormLabel htmlFor="voucherCode">Voucher Code</CFormLabel>
                   <CFormInput
                     type="text"
-                    id="voucherName"
-                    value={voucherName}
-                    onChange={handleVoucherNameChange}
+                    id="voucherCode"
+                    value={code}
+                    onChange={handleCodeChange}
                     placeholder="ENTER VOUCHER CODE"
                     required
-                    className="custom-input"
                     style={{ textTransform: "uppercase", letterSpacing: "1px" }}
                   />
                 </CCol>
               </CRow>
               <CRow className="mb-3">
                 <CCol md={6}>
-                  <CFormLabel htmlFor="validFrom">Valid From</CFormLabel>
+                  <CFormLabel htmlFor="startDate">Valid From</CFormLabel>
                   <CFormInput
                     type="date"
-                    id="validFrom"
-                    value={validFrom}
-                    onChange={(e) => setValidFrom(e.target.value)}
+                    id="startDate"
+                    value={startDate}
+                    onChange={(e) => setStartDate(e.target.value)}
                     required
-                    className="custom-input"
                   />
                 </CCol>
                 <CCol md={6}>
-                  <CFormLabel htmlFor="validTo">Valid To</CFormLabel>
+                  <CFormLabel htmlFor="endDate">Valid To</CFormLabel>
                   <CFormInput
                     type="date"
-                    id="validTo"
-                    value={validTo}
-                    onChange={(e) => setValidTo(e.target.value)}
+                    id="endDate"
+                    value={endDate}
+                    onChange={(e) => setEndDate(e.target.value)}
                     required
-                    className="custom-input"
+                  />
+                </CCol>
+              </CRow>
+              <CRow className="mb-3">
+                <CCol md={12}>
+                  <CFormLabel htmlFor="usageLimit">Usage Limit</CFormLabel>
+                  <CFormInput
+                    type="number"
+                    id="usageLimit"
+                    value={usageLimit}
+                    onChange={(e) => setUsageLimit(e.target.value)}
+                    placeholder="Enter usage limit"
+                    required
                   />
                 </CCol>
               </CRow>
               <div className="text-center mb-3">
-                <CButton type="submit" color="primary" disabled={loading} className="voucher-button">
+                <CButton type="submit" color="primary" disabled={loading}>
                   {loading ? "Creating..." : "Create Voucher"}
                 </CButton>
               </div>
             </CForm>
-            {couponCode && (
-              <div className="coupon-code-section mt-4 d-flex align-items-center justify-content-between">
-                <span className="coupon-code">{couponCode}</span>
-                <FaCopy className="copy-icon" onClick={handleCopyCouponCode} />
-              </div>
-            )}
-            {response && !couponCode && (
-              <div className="mt-4 response-box">
-                <pre>{JSON.stringify(response, null, 2)}</pre>
-              </div>
-            )}
           </CCardBody>
         </CCard>
       </CContainer>
       
       <CContainer fluid className="mt-5">
-        <div className="subscribers-table-section">
+        <div className="vouchers-table-section">
           <CTable>
             <CTableHead>
               <CTableRow>
-                <CTableHeaderCell>User ID</CTableHeaderCell>
-                <CTableHeaderCell>Provider Name</CTableHeaderCell>
-                <CTableHeaderCell>Email Id</CTableHeaderCell>
-                <CTableHeaderCell>Subscribed At</CTableHeaderCell>
-                <CTableHeaderCell>Subscription Type</CTableHeaderCell>
+                <CTableHeaderCell>Voucher Code</CTableHeaderCell>
+                <CTableHeaderCell>Valid From</CTableHeaderCell>
+                <CTableHeaderCell>Valid To</CTableHeaderCell>
+                <CTableHeaderCell>Usage Limit</CTableHeaderCell>
+                <CTableHeaderCell>Used Count</CTableHeaderCell>
+                <CTableHeaderCell>Actions</CTableHeaderCell>
               </CTableRow>
             </CTableHead>
             <CTableBody>
-              {subscribedUsers && subscribedUsers.length > 0 ? (
-                subscribedUsers.map((user) => (
-                  <CTableRow key={user.id}>
-                    <CTableDataCell>{user.id}</CTableDataCell>
-                    <CTableDataCell>{user.userName}</CTableDataCell>
-                    <CTableDataCell>{user.userEmail}</CTableDataCell>
-                    <CTableDataCell>{user.subscribedAt}</CTableDataCell>
-                    <CTableDataCell>{user.type}</CTableDataCell>
+              {vouchers && vouchers.length > 0 ? (
+                vouchers.map((voucher) => (
+                  <CTableRow key={voucher._id}>
+                    <CTableDataCell>{voucher.code}</CTableDataCell>
+                    <CTableDataCell>{formatDate(voucher.startDate)}</CTableDataCell>
+                    <CTableDataCell>{formatDate(voucher.endDate)}</CTableDataCell>
+                    <CTableDataCell>{voucher.usageLimit}</CTableDataCell>
+                    <CTableDataCell>{voucher.usedCount}</CTableDataCell>
+                    <CTableDataCell>
+                      <CIcon
+                        icon={cilPencil}
+                        size="lg"
+                        className="text-success me-2"
+                        style={{ cursor: 'pointer' }}
+                        onClick={() => openEditModal(voucher)}
+                      />
+                      <CIcon
+                        icon={cilTrash}
+                        size="lg"
+                        className="text-danger"
+                        style={{ cursor: 'pointer' }}
+                        onClick={() => handleDeleteVoucher(voucher._id)}
+                      />
+                    </CTableDataCell>
                   </CTableRow>
                 ))
               ) : (
                 <CTableRow>
-                  <CTableDataCell colSpan="5" className="text-center">
-                    No data available
+                  <CTableDataCell colSpan="6" className="text-center">
+                    No vouchers available
                   </CTableDataCell>
                 </CTableRow>
               )}
@@ -168,8 +261,76 @@ const CreateVoucher = () => {
           </CTable>
         </div>
       </CContainer>
-    </>
-  );
-};
 
-export default CreateVoucher;
+      {/* Edit Voucher Modal */}
+      {showEditModal && editVoucher && (
+        <CModal scrollable visible={showEditModal} onClose={() => { setShowEditModal(false); setEditVoucher(null) }}>
+          <CModalHeader className="voucher-card-header text-center">
+            <CModalTitle>Edit Voucher</CModalTitle>
+          </CModalHeader>
+          <CModalBody>
+            <CForm>
+              <CRow className="mb-3">
+                <CCol md={12}>
+                  <CFormLabel htmlFor="editVoucherCode">Voucher Code</CFormLabel>
+                  <CFormInput
+                    type="text"
+                    id="editVoucherCode"
+                    value={editVoucher.code}
+                    onChange={(e) => handleEditChange('code', e.target.value.toUpperCase())}
+                    required
+                    style={{ textTransform: "uppercase", letterSpacing: "1px" }}
+                  />
+                </CCol>
+              </CRow>
+              <CRow className="mb-3">
+                <CCol md={6}>
+                  <CFormLabel htmlFor="editStartDate">Valid From</CFormLabel>
+                  <CFormInput
+                    type="date"
+                    id="editStartDate"
+                    value={editVoucher.startDate}
+                    onChange={(e) => handleEditChange('startDate', e.target.value)}
+                    required
+                  />
+                </CCol>
+                <CCol md={6}>
+                  <CFormLabel htmlFor="editEndDate">Valid To</CFormLabel>
+                  <CFormInput
+                    type="date"
+                    id="editEndDate"
+                    value={editVoucher.endDate}
+                    onChange={(e) => handleEditChange('endDate', e.target.value)}
+                    required
+                  />
+                </CCol>
+              </CRow>
+              <CRow className="mb-3">
+                <CCol md={12}>
+                  <CFormLabel htmlFor="editUsageLimit">Usage Limit</CFormLabel>
+                  <CFormInput
+                    type="number"
+                    id="editUsageLimit"
+                    value={editVoucher.usageLimit}
+                    onChange={(e) => handleEditChange('usageLimit', e.target.value)}
+                    required
+                  />
+                </CCol>
+              </CRow>
+            </CForm>
+          </CModalBody>
+          <CModalFooter>
+            <CButton color="secondary" onClick={() => { setShowEditModal(false); setEditVoucher(null) }}>
+              Cancel
+            </CButton>
+            <CButton color="primary" onClick={handleSaveEditVoucher}>
+              Save Changes
+            </CButton>
+          </CModalFooter>
+        </CModal>
+      )}
+    </>
+  )
+}
+
+export default CreateVoucher
