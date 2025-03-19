@@ -164,7 +164,7 @@ const GuestUsers = () => {
           <div className="hunter-search-container" style={{ gap: '10px', flexWrap: 'wrap' }}>
             <CFormInput
               type="text"
-              placeholder="Search by name or email"
+              placeholder="Search by name, Email or Address"
               value={search}
               onChange={handleSearchChange}
               className="guest-search-input"
