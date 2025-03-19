@@ -31,7 +31,7 @@ const followUp = () => {
     setLoading(true);
     setError(null);
     try {
-      const response = await axios.get("http://54.236.98.193:7777/api/contact/getAll");
+      const response = await axios.get("http://3.223.253.106:7777/api/contact/getAll");
       const fetchedContacts = response.data.contacts || [];
       const sortedContacts = fetchedContacts.sort(
         (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
@@ -52,7 +52,7 @@ const followUp = () => {
   const handleDelete = async (id) => {
     if (window.confirm("Are you sure you want to delete this contact?")) {
       try {
-        await axios.delete(`http://54.236.98.193:7777/api/contact/delete/${id}`);
+        await axios.delete(`http://3.223.253.106:7777/api/contact/delete/${id}`);
         alert("Contact deleted successfully.");
         setContacts((prevContacts) => prevContacts.filter((contact) => contact._id !== id));
       } catch (error) {

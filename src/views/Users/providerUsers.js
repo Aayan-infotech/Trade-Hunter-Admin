@@ -90,7 +90,7 @@ const Provider = () => {
     try {
       setLoading(true)
       const response = await axios.get(
-        `http://54.236.98.193:7777/api/Prvdr?page=${page}&limit=10&search=${search}&userStatus=${statusFilter}`
+        `http://3.223.253.106:7777/api/Prvdr?page=${page}&limit=10&search=${search}&userStatus=${statusFilter}`
       )
       const sortedProviders = (response.data.data || []).sort(
         (a, b) => new Date(b.insDate) - new Date(a.insDate)
@@ -122,7 +122,7 @@ const Provider = () => {
   const handleDelete = async (id) => {
     if (window.confirm('Are you sure you want to delete this user?')) {
       try {
-        await axios.delete(`http://54.236.98.193:7777/api/DeleteAccount/provider/${id}`)
+        await axios.delete(`http://3.223.253.106:7777/api/DeleteAccount/provider/${id}`)
         fetchUsers()
       } catch (error) {
         console.error('Error deleting user:', error)
@@ -142,7 +142,7 @@ const Provider = () => {
 
   const handleSaveEdit = async () => {
     try {
-      await axios.put(`http://54.236.98.193:7777/api/Prvdr/${editUser._id}`, editUser)
+      await axios.put(`http://3.223.253.106:7777/api/Prvdr/${editUser._id}`, editUser)
       fetchUsers()
       setIsEditModalOpen(false)
     } catch (error) {
@@ -171,7 +171,7 @@ const Provider = () => {
 
   const fetchNotifications = async (userId) => {
     try {
-      const response = await axios.get(`http://54.236.98.193:7777/api/notification/getAll/provider/${userId}`)
+      const response = await axios.get(`http://3.223.253.106:7777/api/notification/getAll/provider/${userId}`)
       setNotifications(response.data.data || [])
     } catch (error) {
       console.error('Error fetching notifications:', error)
@@ -184,7 +184,7 @@ const Provider = () => {
       return
     }
     try {
-      await axios.post(`http://54.236.98.193:7777/api/notification/send/provider/${notifUser._id}`, {
+      await axios.post(`http://3.223.253.106:7777/api/notification/send/provider/${notifUser._id}`, {
         type: notifType,
         text: notifText,
       })
@@ -202,7 +202,7 @@ const Provider = () => {
       alert('Notification user not defined')
       return
     }
-    const deleteUrl = `http://54.236.98.193:7777/api/notification/delete/provider/${notifUser._id}/${notifId}`
+    const deleteUrl = `http://3.223.253.106:7777/api/notification/delete/provider/${notifUser._id}/${notifId}`
     if (window.confirm('Are you sure you want to delete this notification?')) {
       try {
         await axios.delete(deleteUrl)

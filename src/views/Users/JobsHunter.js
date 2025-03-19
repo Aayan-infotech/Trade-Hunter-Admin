@@ -22,7 +22,7 @@ const JobsHuunter = () => {
     const fetchJobData = async () => {
       try {
         const response = await axios.get(
-          `http://54.236.98.193:7777/api/users/jobposts/${state._id}`
+          `http://3.223.253.106:7777/api/users/jobposts/${state._id}`
         );
         setJobData(response.data?.data || []);
       } catch (error) {
@@ -44,7 +44,7 @@ const JobsHuunter = () => {
     if (!confirmDelete) return;
     setDeleting(true);
     try {
-      await axios.delete(`http://54.236.98.193:7777/api/jobs/${jobId}`);
+      await axios.delete(`http://3.223.253.106:7777/api/jobs/${jobId}`);
       setJobData((prevJobs) => prevJobs.filter((job) => job._id !== jobId));
       alert("Job deleted successfully!");
     } catch (error) {

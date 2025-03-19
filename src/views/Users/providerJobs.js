@@ -27,7 +27,7 @@ const ProviderAssignedJobs = () => {
       try {
         console.log("Fetching provider data with id:", providerId);
         const response = await axios.get(
-          `http://54.236.98.193:7777/api/provider/${providerId}`
+          `http://3.223.253.106:7777/api/provider/${providerId}`
         );
         console.log("Response Data:", response.data);
         if (response.data && response.data.success) {
