@@ -19,9 +19,8 @@ const Dashboard = () => {
   const [hunter, setHunter] = useState(0)
   const [provider, setProvider] = useState(0)
   const [guest, setGuest] = useState(0)
-  // Initialize jobPostings as an object with a status sub-object and totalJobs count.
   const [jobPostings, setJobPostings] = useState({
-    status: { Pending: 0, Assigned: 0, InProgress: 0, Completed: 0 },
+    status: { Pending: 0, Assigned: 0, InProgress: 0, Completed: 0, Deleted: 0 },
     totalJobs: 0,
   })
   const [subscriptionRevenue, setSubscriptionRevenue] = useState(0)
@@ -36,19 +35,14 @@ const Dashboard = () => {
     "January", "February", "March", "April", "May", "June",
     "July", "August", "September", "October", "November", "December"
   ]
-  // Define a static list of financial years (adjust as needed)
-  const financialYears = [
-    "2023-2024",
-    "2024-2025",
-    "2025-2026",
-  ]
+  const financialYears = ["2023-2024", "2024-2025", "2025-2026"]
 
-  // Color mapping for job posting statuses.
   const jobPostingColors = {
     Pending: 'danger',
     Assigned: 'primary',
     InProgress: 'warning',
     Completed: 'success',
+    Deleted: 'secondary', // Changed color for Deleted status to grey
   }
 
   useEffect(() => {
@@ -69,7 +63,6 @@ const Dashboard = () => {
         }
 
         if (results[1].status === 'fulfilled') {
-          // Expected API response: { success, message, data: { status: { ... }, totalJobs } }
           const jobData = results[1].value.data.data || { status: {}, totalJobs: 0 }
           setJobPostings(jobData)
         }
@@ -94,15 +87,17 @@ const Dashboard = () => {
   const jobStatusColors = jobStatusLabels.map((status) => {
     switch (status) {
       case 'Pending':
-        return '#dc3545' // danger
+        return '#dc3545' // Red
       case 'Assigned':
-        return '#007bff' // primary
+        return '#007bff' // Blue
       case 'InProgress':
-        return '#ffc107' // warning
+        return '#ffc107' // Yellow
       case 'Completed':
-        return '#28a745' // success
+        return '#28a745' // Green
+      case 'Deleted':
+        return '#6c757d' // Grey (New Color)
       default:
-        return '#17a2b8' // info
+        return '#17a2b8' // Default cyan color
     }
   })
 
@@ -137,15 +132,9 @@ const Dashboard = () => {
               <h2 className="text-center">{totalUsers}</h2>
               <p className="text-muted text-center">Total Users</p>
               <CRow>
-                <CCol>
-                  <CBadge color="info">Hunters: {hunter}</CBadge>
-                </CCol>
-                <CCol>
-                  <CBadge color="success">Providers: {provider}</CBadge>
-                </CCol>
-                <CCol>
-                  <CBadge color="secondary">Guests: {guest}</CBadge>
-                </CCol>
+                <CCol><CBadge color="info">Hunters: {hunter}</CBadge></CCol>
+                <CCol><CBadge color="success">Providers: {provider}</CBadge></CCol>
+                <CCol><CBadge color="secondary">Guests: {guest}</CBadge></CCol>
               </CRow>
             </CCardBody>
           </CCard>
@@ -156,9 +145,7 @@ const Dashboard = () => {
           <CCard className="dashboard-card hover-effect h-100 d-flex flex-column">
             <CCardHeader className="service-card-header">Job Postings</CCardHeader>
             <CCardBody className="flex-grow-1 d-flex flex-column">
-              <div className="text-center mb-3">
-                <strong>Total Jobs: {jobPostings.totalJobs}</strong>
-              </div>
+              <div className="text-center mb-3"><strong>Total Jobs: {jobPostings.totalJobs}</strong></div>
               <div style={{ flexGrow: 1, position: 'relative' }}>
                 <CChartPie data={jobStatusData} options={jobStatusOptions} />
               </div>
@@ -169,90 +156,21 @@ const Dashboard = () => {
         {/* Subscription Revenue Card with Filters */}
         <CCol md={4}>
           <CCard className="dashboard-card hover-effect h-100 d-flex flex-column">
-            <CCardHeader className="service-card-header">
-              Subscription Revenue
-            </CCardHeader>
+            <CCardHeader className="service-card-header">Subscription Revenue</CCardHeader>
             <CCardBody className="flex-grow-1 d-flex flex-column justify-content-center text-center">
               {/* Filters for revenue */}
               <div className="d-flex justify-content-center mb-3">
-                <CFormSelect
-                  value={revenueMonth}
-                  onChange={(e) => setRevenueMonth(e.target.value)}
-                  className="me-2"
-                  style={{ maxWidth: '150px' }}
-                >
+                <CFormSelect value={revenueMonth} onChange={(e) => setRevenueMonth(e.target.value)} className="me-2" style={{ maxWidth: '150px' }}>
                   <option value="">All Months</option>
-                  {months.map((m, index) => (
-                    <option key={index} value={index + 1}>
-                      {m}
-                    </option>
-                  ))}
+                  {months.map((m, index) => (<option key={index} value={index + 1}>{m}</option>))}
                 </CFormSelect>
-                <CFormSelect
-                  value={financialYear}
-                  onChange={(e) => setFinancialYear(e.target.value)}
-                  style={{ maxWidth: '150px' }}
-                >
+                <CFormSelect value={financialYear} onChange={(e) => setFinancialYear(e.target.value)} style={{ maxWidth: '150px' }}>
                   <option value="">All Financial Years</option>
-                  {financialYears.map((fy, index) => (
-                    <option key={index} value={fy}>
-                      {fy}
-                    </option>
-                  ))}
+                  {financialYears.map((fy, index) => (<option key={index} value={fy}>{fy}</option>))}
                 </CFormSelect>
               </div>
               <h1 className="text-success">${subscriptionRevenue}</h1>
               <p className="text-muted">Total Earnings</p>
-            </CCardBody>
-          </CCard>
-        </CCol>
-      </CRow>
-
-      <CRow>
-        <CCol md={12}>
-          <CCard className="dashboard-card">
-            <CCardHeader className="service-card-header">Recent Job Activities</CCardHeader>
-            <CCardBody>
-              {recentJobActivity.length > 0 ? (
-                <div className="table-responsive">
-                  <table className="table table-hover custom-table">
-                    <thead className="thead-light">
-                      <tr>
-                        <th>Title</th>
-                        <th>Hunters Name</th>
-                        <th>Providers Name</th>
-                        <th>Location</th>
-                        <th>Business Type</th>
-                        <th>Status</th>
-                        <th>Budget</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {recentJobActivity.map((job, index) => (
-                        <tr key={index}>
-                          <td>{job.title}</td>
-                          <td>{job.user.name}</td>
-                          <td>{job.providername}</td>
-                          <td>{job.jobLocation?.jobAddressLine}</td>
-                          <td>
-                            {Array.isArray(job.businessType)
-                              ? job.businessType.join(', ')
-                              : job.businessType}
-                          </td>
-                          <td>
-                            <CBadge color={jobPostingColors[job.jobStatus] || 'warning'}>
-                              {job.jobStatus}
-                            </CBadge>
-                          </td>
-                          <td>${job.estimatedBudget}</td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              ) : (
-                <p className="service-card-header">No recent job activities.</p>
-              )}
             </CCardBody>
           </CCard>
         </CCol>
