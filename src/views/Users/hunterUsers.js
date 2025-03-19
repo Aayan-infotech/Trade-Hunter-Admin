@@ -92,6 +92,10 @@ const Hunter = () => {
         `http://3.223.253.106:7777/api/users/type/hunter/pagelimit/10?page=${page}&search=${search}&userStatus=${statusFilter}`
       )
       // Sort the fetched users by insDate in descending order (latest joining first)
+
+
+
+      
       const sortedUsers = (response.data.users || []).sort(
         (a, b) => new Date(b.insDate) - new Date(a.insDate)
       )
