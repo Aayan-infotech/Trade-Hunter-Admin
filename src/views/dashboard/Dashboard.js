@@ -8,6 +8,7 @@ import {
   CCardBody,
   CProgress,
   CBadge,
+  CFormSelect,
 } from '@coreui/react'
 import { CChartPie } from '@coreui/react-chartjs'
 import axios from 'axios'
@@ -26,6 +27,22 @@ const Dashboard = () => {
   const [subscriptionRevenue, setSubscriptionRevenue] = useState(0)
   const [recentJobActivity, setRecentJobActivity] = useState([])
 
+  // Filter states for subscription revenue
+  const [revenueMonth, setRevenueMonth] = useState('')
+  const [financialYear, setFinancialYear] = useState('')
+
+  // Arrays for filter options
+  const months = [
+    "January", "February", "March", "April", "May", "June",
+    "July", "August", "September", "October", "November", "December"
+  ]
+  // Define a static list of financial years (adjust as needed)
+  const financialYears = [
+    "2023-2024",
+    "2024-2025",
+    "2025-2026",
+  ]
+
   // Color mapping for job posting statuses.
   const jobPostingColors = {
     Pending: 'danger',
@@ -40,7 +57,7 @@ const Dashboard = () => {
         const results = await Promise.allSettled([
           axios.get('http://3.223.253.106:7777/api/count/totalUsers'),
           axios.get('http://3.223.253.106:7777/api/jobs/getCount'),
-          axios.get('http://3.223.253.106:7777/api/payment/totalRevenue'),
+          axios.get('http://3.223.253.106:7777/api/payment/totalRevenue', { params: { month: revenueMonth, financialYear: financialYear } }),
           axios.get('http://3.223.253.106:7777/api/jobs/getRecentJobs'),
         ])
 
@@ -57,7 +74,7 @@ const Dashboard = () => {
           setJobPostings(jobData)
         }
 
-        if (results[2].status === 'fulfilled' && results[2].value.data?.data?.totalRevenue) {
+        if (results[2].status === 'fulfilled' && results[2].value.data?.data?.totalRevenue !== undefined) {
           setSubscriptionRevenue(results[2].value.data.data.totalRevenue)
         }
 
@@ -70,7 +87,7 @@ const Dashboard = () => {
     }
 
     fetchDashboardData()
-  }, [])
+  }, [revenueMonth, financialYear])
 
   const jobStatusLabels = Object.keys(jobPostings.status)
   const jobStatusValues = Object.values(jobPostings.status)
@@ -149,11 +166,41 @@ const Dashboard = () => {
           </CCard>
         </CCol>
 
-        {/* Subscription Revenue Card */}
+        {/* Subscription Revenue Card with Filters */}
         <CCol md={4}>
           <CCard className="dashboard-card hover-effect h-100 d-flex flex-column">
-            <CCardHeader className="service-card-header">Subscription Revenue</CCardHeader>
+            <CCardHeader className="service-card-header">
+              Subscription Revenue
+            </CCardHeader>
             <CCardBody className="flex-grow-1 d-flex flex-column justify-content-center text-center">
+              {/* Filters for revenue */}
+              <div className="d-flex justify-content-center mb-3">
+                <CFormSelect
+                  value={revenueMonth}
+                  onChange={(e) => setRevenueMonth(e.target.value)}
+                  className="me-2"
+                  style={{ maxWidth: '150px' }}
+                >
+                  <option value="">All Months</option>
+                  {months.map((m, index) => (
+                    <option key={index} value={index + 1}>
+                      {m}
+                    </option>
+                  ))}
+                </CFormSelect>
+                <CFormSelect
+                  value={financialYear}
+                  onChange={(e) => setFinancialYear(e.target.value)}
+                  style={{ maxWidth: '150px' }}
+                >
+                  <option value="">All Financial Years</option>
+                  {financialYears.map((fy, index) => (
+                    <option key={index} value={fy}>
+                      {fy}
+                    </option>
+                  ))}
+                </CFormSelect>
+              </div>
               <h1 className="text-success">${subscriptionRevenue}</h1>
               <p className="text-muted">Total Earnings</p>
             </CCardBody>
