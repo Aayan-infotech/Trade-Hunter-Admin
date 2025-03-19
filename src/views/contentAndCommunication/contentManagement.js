@@ -55,7 +55,7 @@ const ContentAndCommunicationManagement = () => {
     try {
       setError(null);
       const endpointSection = sectionMapping[section] || section;
-      const response = await axios.get(`http://54.236.98.193:7777/api/StaticContent/${endpointSection}`);
+      const response = await axios.get(`http://3.223.253.106:7777/api/StaticContent/${endpointSection}`);
       setContentData(prev => ({ ...prev, [section]: response.data.content }));
     } catch (err) {
       console.error('Error fetching content:', err);
@@ -71,7 +71,7 @@ const ContentAndCommunicationManagement = () => {
     try {
       setError(null);
       const endpointSection = sectionMapping[activeSection] || activeSection;
-      await axios.post('http://54.236.98.193:7777/api/StaticContent', { section: endpointSection, content: contentData[activeSection] });
+      await axios.post('http://3.223.253.106:7777/api/StaticContent', { section: endpointSection, content: contentData[activeSection] });
       alert('Content saved successfully!');
     } catch (err) {
       console.error('Error saving content:', err);
@@ -86,7 +86,7 @@ const ContentAndCommunicationManagement = () => {
         subject: notificationSubject,
         message: notificationMessage,
       };
-      const response = await axios.post('http://54.236.98.193:7777/api/massNotification/', payload);
+      const response = await axios.post('http://3.223.253.106:7777/api/massNotification/', payload);
       alert('Notification sent successfully!\nResponse: ' + JSON.stringify(response.data));
       setNotificationRecipient('');
       setNotificationSubject('');

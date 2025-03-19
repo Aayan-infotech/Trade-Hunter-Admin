@@ -46,7 +46,7 @@ const Login = () => {
 
     try {
       // Attempt to login
-      const response = await fetch('http://54.236.98.193:7777/api/authAdmin/login', {
+      const response = await fetch('http://3.223.253.106:7777/api/authAdmin/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password })

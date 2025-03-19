@@ -62,7 +62,7 @@ const SubscriptionManagement = () => {
     setLoading(true)
     try {
       const response = await axios.get(
-        'http://54.236.98.193:7777/api/SubscriptionNew/subscription-plans',
+        'http://3.223.253.106:7777/api/SubscriptionNew/subscription-plans',
       )
       setSubscriptions(response.data.data || [])
     } catch (error) {
@@ -76,7 +76,7 @@ const SubscriptionManagement = () => {
   const fetchSubscriptionTypes = async () => {
     try {
       const response = await axios.get(
-        'http://54.236.98.193:7777/api/SubscriptionNew/subscription-type',
+        'http://3.223.253.106:7777/api/SubscriptionNew/subscription-type',
       )
       setSubscriptionTypes(response.data.data || response.data)
     } catch (error) {
@@ -105,7 +105,7 @@ const SubscriptionManagement = () => {
     }
 
     try {
-      await axios.post('http://54.236.98.193:7777/api/SubscriptionNew/subscription-plan', payload)
+      await axios.post('http://3.223.253.106:7777/api/SubscriptionNew/subscription-plan', payload)
       fetchSubscriptions()
       setShowAddModal(false)
       setNewTitle('')
@@ -127,7 +127,7 @@ const SubscriptionManagement = () => {
   const handleSaveEditSubscription = async () => {
     try {
       await axios.put(
-        `http://54.236.98.193:7777/api/SubscriptionNew/subscription-plan/${editSubscription._id}`,
+        `http://3.223.253.106:7777/api/SubscriptionNew/subscription-plan/${editSubscription._id}`,
         editSubscription,
       )
       fetchSubscriptions()
@@ -142,7 +142,7 @@ const SubscriptionManagement = () => {
     if (window.confirm('Delete Subscription?')) {
       try {
         await axios.delete(
-          `http://54.236.98.193:7777/api/SubscriptionNew/subscription-plan/${subscriptionId}`,
+          `http://3.223.253.106:7777/api/SubscriptionNew/subscription-plan/${subscriptionId}`,
         )
         fetchSubscriptions()
       } catch (error) {
@@ -161,7 +161,7 @@ const SubscriptionManagement = () => {
       type: newSubscriptionType,
     }
     try {
-      await axios.post('http://54.236.98.193:7777/api/SubscriptionNew/subscription-type', payload)
+      await axios.post('http://3.223.253.106:7777/api/SubscriptionNew/subscription-type', payload)
       setShowAddTypeModal(false)
       setNewSubscriptionType('')
       fetchSubscriptionTypes()
@@ -173,7 +173,7 @@ const SubscriptionManagement = () => {
   const handleDeleteSubscriptionType = async (id) => {
     if (window.confirm('Are you sure you want to delete this subscription type?')) {
       try {
-        await axios.delete(`http://54.236.98.193:7777/api/SubscriptionNew/subscription-type/${id}`)
+        await axios.delete(`http://3.223.253.106:7777/api/SubscriptionNew/subscription-type/${id}`)
         fetchSubscriptionTypes()
       } catch (error) {
         console.error('Error deleting subscription type:', error)

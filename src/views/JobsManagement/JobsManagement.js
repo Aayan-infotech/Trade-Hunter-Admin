@@ -61,12 +61,12 @@ const JobsManagement = () => {
       // If a job status filter is applied (not "All"), use the filter API
       if (jobStatusFilter !== "All") {
         response = await axios.get(
-          `http://54.236.98.193:7777/api/jobs/filter?status=${jobStatusFilter}&page=${page}&limit=10`
+          `http://3.223.253.106:7777/api/jobs/filter?status=${jobStatusFilter}&page=${page}&limit=10`
         );
       } else {
         // Otherwise, use the default endpoint with search parameter
         response = await axios.get(
-          `http://54.236.98.193:7777/api/jobs/?page=${page}&limit=10&search=${search}`
+          `http://3.223.253.106:7777/api/jobs/?page=${page}&limit=10&search=${search}`
         );
       }
       setJobs(response.data.data.jobPosts || []);
@@ -128,7 +128,7 @@ const JobsManagement = () => {
           alert("Authentication token not found. Please log in again.");
           return;
         }
-        const response = await axios.delete(`http://54.236.98.193:7777/api/jobPost/${jobId}`, {
+        const response = await axios.delete(`http://3.223.253.106:7777/api/jobPost/${jobId}`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -180,7 +180,7 @@ const JobsManagement = () => {
       console.log("Updated job payload:", updatedJob);
 
       const response = await axios.put(
-        `http://54.236.98.193:7777/api/jobs/${editJob._id}`,
+        `http://3.223.253.106:7777/api/jobs/${editJob._id}`,
         updatedJob
       );
       console.log("Update response:", response.data);

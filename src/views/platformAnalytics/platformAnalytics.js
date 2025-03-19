@@ -41,7 +41,7 @@ const AnalyticsReports = () => {
 
   // Fetch provider list
   useEffect(() => {
-    const url = `http://54.236.98.193:7777/api/Prvdr?page=${providerPage}&limit=10&search=${providerSearch}`;
+    const url = `http://3.223.253.106:7777/api/Prvdr?page=${providerPage}&limit=10&search=${providerSearch}`;
     fetch(url)
       .then((res) => res.json())
       .then((data) => {
@@ -56,7 +56,7 @@ const AnalyticsReports = () => {
 
   // Fetch analytics data
   useEffect(() => {
-    fetch("http://54.236.98.193:7777/api/count/activeUsers")
+    fetch("http://3.223.253.106:7777/api/count/activeUsers")
       .then((res) => res.json())
       .then((data) => {
         if (data.totalActiveUsers !== undefined) {
@@ -65,7 +65,7 @@ const AnalyticsReports = () => {
       })
       .catch((err) => console.error("Error fetching active users:", err));
 
-    fetch("http://54.236.98.193:7777/api/auth/recentSignups")
+    fetch("http://3.223.253.106:7777/api/auth/recentSignups")
       .then((res) => res.json())
       .then((data) => {
         if (data.totalNewSignups !== undefined) {
@@ -74,7 +74,7 @@ const AnalyticsReports = () => {
       })
       .catch((err) => console.error("Error fetching recent signups:", err));
 
-    fetch("http://54.236.98.193:7777/api/subscription/retentionRate")
+    fetch("http://3.223.253.106:7777/api/subscription/retentionRate")
       .then((res) => res.json())
       .then((data) => {
         if (data.data && data.data.retentionRate !== undefined) {
@@ -83,7 +83,7 @@ const AnalyticsReports = () => {
       })
       .catch((err) => console.error("Error fetching retention rate:", err));
 
-    fetch("http://54.236.98.193:7777/api/jobPost/getJobTrends")
+    fetch("http://3.223.253.106:7777/api/jobPost/getJobTrends")
       .then((res) => res.json())
       .then((data) => {
         setJobTrends({
@@ -94,7 +94,7 @@ const AnalyticsReports = () => {
       })
       .catch((err) => console.error("Error fetching job trends:", err));
 
-    fetch("http://54.236.98.193:7777/api/jobPost/getTopBusinessCount")
+    fetch("http://3.223.253.106:7777/api/jobPost/getTopBusinessCount")
       .then((res) => res.json())
       .then((data) => {
         if (data.data && Array.isArray(data.data)) {
@@ -105,7 +105,7 @@ const AnalyticsReports = () => {
         console.error("Error fetching top business count:", err)
       );
 
-    fetch("http://54.236.98.193:7777/api/jobpost/topLocation")
+    fetch("http://3.223.253.106:7777/api/jobpost/topLocation")
       .then((res) => res.json())
       .then((data) => {
         if (data.data && Array.isArray(data.data)) {

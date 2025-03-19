@@ -53,7 +53,7 @@ const GuestUsers = () => {
     setLoading(true);
     try {
       const response = await axios.get(
-        `http://54.236.98.193:7777/api/Prvdr/GuestMode/?page=${page}&limit=10&search=${search}`
+        `http://3.223.253.106:7777/api/Prvdr/GuestMode/?page=${page}&limit=10&search=${search}`
       );
       // Sort users by insDate (joining date) in descending order (latest joining first)
       const sortedUsers = (response.data.data || []).sort(
@@ -99,7 +99,7 @@ const GuestUsers = () => {
   const fetchNotifications = async (userId) => {
     try {
       const response = await axios.get(
-        `http://54.236.98.193:7777/api/notification/getAll/provider/${userId}`
+        `http://3.223.253.106:7777/api/notification/getAll/provider/${userId}`
       );
       setNotifications(response.data.data || []);
     } catch (error) {
@@ -114,7 +114,7 @@ const GuestUsers = () => {
     }
     try {
       await axios.post(
-        `http://54.236.98.193:7777/api/notification/send/provider/${notifUser._id}`,
+        `http://3.223.253.106:7777/api/notification/send/provider/${notifUser._id}`,
         { type: notifType, text: notifText }
       );
       alert('Notification sent successfully!');
@@ -131,7 +131,7 @@ const GuestUsers = () => {
       alert('Notification user not defined');
       return;
     }
-    const deleteUrl = `http://54.236.98.193:7777/api/notification/delete/provider/${notifUser._id}/${notifId}`;
+    const deleteUrl = `http://3.223.253.106:7777/api/notification/delete/provider/${notifUser._id}/${notifId}`;
     if (window.confirm('Are you sure you want to delete this notification?')) {
       try {
         await axios.delete(deleteUrl);
@@ -146,7 +146,7 @@ const GuestUsers = () => {
   const handleDeleteUser = async (userId) => {
     if (window.confirm('Are you sure you want to delete this guest user?')) {
       try {
-        await axios.delete(`http://54.236.98.193:7777/api/Prvdr/${userId}`);
+        await axios.delete(`http://3.223.253.106:7777/api/Prvdr/${userId}`);
         alert('User deleted successfully.');
         fetchGuestUsers();
       } catch (error) {

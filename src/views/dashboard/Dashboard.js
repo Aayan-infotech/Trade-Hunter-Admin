@@ -38,10 +38,10 @@ const Dashboard = () => {
     const fetchDashboardData = async () => {
       try {
         const results = await Promise.allSettled([
-          axios.get('http://54.236.98.193:7777/api/count/totalUsers'),
-          axios.get('http://54.236.98.193:7777/api/jobs/getCount'),
-          axios.get('http://54.236.98.193:7777/api/payment/totalRevenue'),
-          axios.get('http://54.236.98.193:7777/api/jobs/getRecentJobs'),
+          axios.get('http://3.223.253.106:7777/api/count/totalUsers'),
+          axios.get('http://3.223.253.106:7777/api/jobs/getCount'),
+          axios.get('http://3.223.253.106:7777/api/payment/totalRevenue'),
+          axios.get('http://3.223.253.106:7777/api/jobs/getRecentJobs'),
         ])
 
         if (results[0].status === 'fulfilled') {
