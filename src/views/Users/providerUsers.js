@@ -285,7 +285,7 @@ const Provider = () => {
           <div className="hunter-search-container">
             <CFormInput
               type="text"
-              placeholder="Search by name or email"
+              placeholder="Search by name , Email or Address"
               value={search}
               onChange={handleSearch}
               className="hunter-search-input"

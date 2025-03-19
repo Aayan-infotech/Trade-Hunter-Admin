@@ -89,13 +89,13 @@ const Hunter = () => {
     setLoading(true)
     try {
       const response = await axios.get(
-        `http://3.223.253.106:7777/api/users/type/hunter/pagelimit/10?page=${page}&search=${search}&userStatus=${statusFilter}`
+        `http://localhost:7777/api/users/type/hunter/pagelimit/10?page=${page}&search=${search}&userStatus=${statusFilter}`
       )
       // Sort the fetched users by insDate in descending order (latest joining first)
 
 
 
-      
+
       const sortedUsers = (response.data.users || []).sort(
         (a, b) => new Date(b.insDate) - new Date(a.insDate)
       )
@@ -288,7 +288,7 @@ const Hunter = () => {
           <div className="hunter-search-container">
             <CFormInput
               type="text"
-              placeholder="Search by name, email or location"
+              placeholder="Search by name, email or Address"
               value={search}
               onChange={handleSearch}
               className="hunter-search-input"
