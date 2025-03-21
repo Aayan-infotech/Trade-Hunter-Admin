@@ -130,7 +130,7 @@ const Hunter = () => {
   const handleDelete = async (id) => {
     if (window.confirm("Are you sure you want to delete this user?")) {
       try {
-        await axios.delete(`http://3.223.253.106:7777/api/DeleteAccount/hunter/${id}`)
+        await axios.delete(`http://3.223.253.106:7777/api/DeleteAccount/delete/${id}`)
         fetchUsers()
       } catch (error) {
         console.error('Error deleting user:', error)
