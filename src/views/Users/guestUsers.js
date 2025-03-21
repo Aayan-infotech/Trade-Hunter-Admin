@@ -55,12 +55,10 @@ const GuestUsers = () => {
       const response = await axios.get(
         `http://3.223.253.106:7777/api/Prvdr/GuestMode/?page=${page}&limit=10&search=${search}`
       );
-      // Sort users by insDate (joining date) in descending order (latest joining first)
-      const sortedUsers = (response.data.data || []).sort(
-        (a, b) => new Date(b.insDate) - new Date(a.insDate)
-      );
-      setUsers(sortedUsers);
-      setHasMoreData((response.data.data || []).length === 10);
+      // Directly set users from API response without additional sorting
+      const fetchedUsers = response.data.data || [];
+      setUsers(fetchedUsers);
+      setHasMoreData(fetchedUsers.length === 10);
     } catch (error) {
       console.error('Error fetching guest users:', error);
     } finally {
