@@ -87,6 +87,10 @@ const _nav = [
         component: CNavItem,
         name: "Subscription plans",
         to: '/subscriptions',
+      },{
+        component: CNavItem,
+        name: "Subscribed Users",
+        to: '/subscribedUsers',
       },
       {
         component: CNavItem,
