@@ -99,7 +99,7 @@ const Dashboard = () => {
       case 'Completed':
         return '#28a745' // Green
       case 'Deleted':
-        return '#6c757d' // Grey (New Color)
+        return '#6c757d' // Grey
       default:
         return '#17a2b8' // Default cyan color
     }
@@ -229,21 +229,21 @@ const Dashboard = () => {
                     <tbody>
                       {recentJobActivity.map((job, index) => (
                         <tr key={index}>
-                          <td>{job.title}</td>
-                          <td>{job.user.name}</td>
-                          <td>{job.providername}</td>
-                          <td>{job.jobLocation?.jobAddressLine}</td>
+                          <td>{job.title || 'N/A'}</td>
+                          <td>{job.user?.name || 'N/A'}</td>
+                          <td>{job.providername || 'N/A'}</td>
+                          <td>{job.jobLocation?.jobAddressLine || 'N/A'}</td>
                           <td>
                             {Array.isArray(job.businessType)
                               ? job.businessType.join(', ')
-                              : job.businessType}
+                              : job.businessType || 'N/A'}
                           </td>
                           <td>
                             <CBadge color={jobPostingColors[job.jobStatus] || 'warning'}>
-                              {job.jobStatus}
+                              {job.jobStatus || 'N/A'}
                             </CBadge>
                           </td>
-                          <td>${job.estimatedBudget}</td>
+                          <td>${job.estimatedBudget || '0.00'}</td>
                         </tr>
                       ))}
                     </tbody>
@@ -260,4 +260,4 @@ const Dashboard = () => {
   )
 }
 
-export default Dashboard
+export default Dashboard;

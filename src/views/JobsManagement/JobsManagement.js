@@ -26,8 +26,6 @@ import {
   cilTrash,
   cilPencil,
   cilViewColumn,
-  cilArrowBottom,
-  cilArrowTop,
   cilSearch,
 } from "@coreui/icons";
 import "../Users/Usermanagement.css";
@@ -40,14 +38,12 @@ const formatDate = (dateObj) => {
 
 const JobsManagement = () => {
   const [jobs, setJobs] = useState([]);
-  const [sortedJobs, setSortedJobs] = useState([]);
   const [loading, setLoading] = useState(false);
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
   const [jobStatusFilter, setJobStatusFilter] = useState("All");
   const [totalPages, setTotalPages] = useState(1);
   const [error, setError] = useState(null);
-  const [sortOrder, setSortOrder] = useState("asc");
   const [viewJob, setViewJob] = useState(null);
   const [showViewModal, setShowViewModal] = useState(false);
   const [editJob, setEditJob] = useState(null);
@@ -83,14 +79,6 @@ const JobsManagement = () => {
     fetchJobs();
   }, [page, search, jobStatusFilter]);
 
-  useEffect(() => {
-    // Default sort by createdAt (recent first)
-    const sortedByRecent = [...jobs].sort(
-      (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
-    );
-    setSortedJobs(sortedByRecent);
-  }, [jobs]);
-
   const handleSearch = (e) => {
     setSearch(e.target.value);
     setPage(1);
@@ -101,39 +89,19 @@ const JobsManagement = () => {
     setPage(1);
   };
 
-  const toggleSortOrder = () => {
-    const newOrder = sortOrder === "asc" ? "desc" : "asc";
-    setSortOrder(newOrder);
-    sortJobs(newOrder);
-  };
-
-  const sortJobs = (order) => {
-    const sorted = [...jobs].sort((a, b) => {
-      if (order === "asc") {
-        return a.businessType.localeCompare(b.businessType);
-      } else {
-        return b.businessType.localeCompare(a.businessType);
-      }
-    });
-    setSortedJobs(sorted);
-  };
-
   const handleDeleteJob = async (jobId) => {
     if (window.confirm("Are you sure you want to delete this job?")) {
       try {
-        console.log("Initiating deletion for job id:", jobId);
         const token = localStorage.getItem("token");
-        console.log("Retrieved token:", token);
         if (!token) {
           alert("Authentication token not found. Please log in again.");
           return;
         }
-        const response = await axios.delete(`http://3.223.253.106:7777/api/jobPost/${jobId}`, {
+        await axios.delete(`http://3.223.253.106:7777/api/jobPost/${jobId}`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         });
-        console.log("Delete response:", response.data);
         fetchJobs();
       } catch (error) {
         console.error("Error deleting job:", error);
@@ -141,11 +109,6 @@ const JobsManagement = () => {
       }
     }
   };
-  
-  
-  
-  
-  
 
   const handleViewJob = (job) => {
     setViewJob(job);
@@ -177,13 +140,10 @@ const JobsManagement = () => {
         delete updatedJob.provider;
       }
 
-      console.log("Updated job payload:", updatedJob);
-
-      const response = await axios.put(
+      await axios.put(
         `http://3.223.253.106:7777/api/jobs/${editJob._id}`,
         updatedJob
       );
-      console.log("Update response:", response.data);
 
       fetchJobs();
       setShowEditModal(false);
@@ -249,23 +209,14 @@ const JobsManagement = () => {
                   <CTableHeaderCell>Job Address</CTableHeaderCell>
                   <CTableHeaderCell>JobPosted Date</CTableHeaderCell>
                   <CTableHeaderCell>Completion Date</CTableHeaderCell>
-                  <CTableHeaderCell
-                    onClick={toggleSortOrder}
-                    style={{ cursor: "pointer" }}
-                  >
-                    Business Type
-                    <CIcon
-                      icon={sortOrder === "asc" ? cilArrowBottom : cilArrowTop}
-                      className="ms-2"
-                    />
-                  </CTableHeaderCell>
+                  <CTableHeaderCell>Business Type</CTableHeaderCell>
                   <CTableHeaderCell>Status</CTableHeaderCell>
                   <CTableHeaderCell>Actions</CTableHeaderCell>
                 </CTableRow>
               </CTableHead>
               <CTableBody>
-                {sortedJobs.length > 0 ? (
-                  sortedJobs.map((job) => (
+                {jobs.length > 0 ? (
+                  jobs.map((job) => (
                     <CTableRow key={job._id}>
                       <CTableDataCell>{job.title}</CTableDataCell>
                       <CTableDataCell>{job.user?.name}</CTableDataCell>

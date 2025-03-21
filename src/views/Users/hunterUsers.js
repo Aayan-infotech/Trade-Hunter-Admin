@@ -91,16 +91,9 @@ const Hunter = () => {
       const response = await axios.get(
         `http://3.223.253.106:7777/api/users/type/hunter/pagelimit/10?page=${page}&search=${search}&userStatus=${statusFilter}`
       )
-      // Sort the fetched users by insDate in descending order (latest joining first)
-
-
-
-
-      const sortedUsers = (response.data.users || []).sort(
-        (a, b) => new Date(b.insDate) - new Date(a.insDate)
-      )
-      setUsers(sortedUsers)
-      setHasMoreData(sortedUsers.length === 10)
+      const fetchedUsers = response.data.users || []
+      setUsers(fetchedUsers)
+      setHasMoreData(fetchedUsers.length === 10)
     } catch (error) {
       console.error('Error fetching users:', error)
     } finally {
@@ -412,7 +405,6 @@ const Hunter = () => {
             <option value="true">Yes</option>
             <option value="false">No</option>
           </CFormSelect>
-    
         </CModalBody>
         <CModalFooter className="hunter-modal-footer">
           <CButton color="secondary" onClick={() => setIsEditModalOpen(false)} className="hunter-modal-btn">

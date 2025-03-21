@@ -31,7 +31,7 @@ import {
   cilInfo,
   cilEnvelopeOpen,
   cilCommentBubble,
-  cilBriefcase, // imported briefcase icon
+  cilBriefcase,
 } from '@coreui/icons'
 import { useNavigate } from 'react-router-dom'
 import './Usermanagement.css'
@@ -92,11 +92,9 @@ const Provider = () => {
       const response = await axios.get(
         `http://3.223.253.106:7777/api/Prvdr?page=${page}&limit=10&search=${search}&userStatus=${statusFilter}`
       )
-      const sortedProviders = (response.data.data || []).sort(
-        (a, b) => new Date(b.insDate) - new Date(a.insDate)
-      )
-      setUsers(sortedProviders)
-      setHasMoreData(sortedProviders.length === 10)
+      const fetchedProviders = response.data.data || []
+      setUsers(fetchedProviders)
+      setHasMoreData(fetchedProviders.length === 10)
     } catch (error) {
       console.error('Error fetching users:', error)
     } finally {
@@ -353,7 +351,6 @@ const Provider = () => {
                       </CTableDataCell>
                       <CTableDataCell>{user.adminVerified}</CTableDataCell>
                       <CTableDataCell>{user.businessName}</CTableDataCell>
-                      
                       <CTableDataCell>{user.documentStatus ? 'Approved' : 'Pending'}</CTableDataCell>
                       <CTableDataCell>{user.accountStatus}</CTableDataCell>
                       <CTableDataCell>{user.subscriptionStatus ? 'Active' : 'Inactive'}</CTableDataCell>
@@ -373,7 +370,6 @@ const Provider = () => {
                         <span onClick={() => handleDelete(user._id)} className="hunter-action-icon">
                           <CIcon icon={cilTrash} size="lg" />
                         </span>
-                        {/* Added briefcase icon to navigate to ProviderAssignedJobs */}
                         <span onClick={() => handleAssignedJobs(user._id)} className="hunter-action-icon">
                           <CIcon icon={cilBriefcase} size="lg" />
                         </span>
