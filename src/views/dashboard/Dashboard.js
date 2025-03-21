@@ -6,7 +6,6 @@ import {
   CCard,
   CCardHeader,
   CCardBody,
-  CProgress,
   CBadge,
   CFormSelect,
 } from '@coreui/react'
@@ -55,7 +54,7 @@ const Dashboard = () => {
         const results = await Promise.allSettled([
           axios.get('http://3.223.253.106:7777/api/count/totalUsers'),
           axios.get('http://3.223.253.106:7777/api/jobs/getCount'),
-          axios.get('http://3.223.253.106:7777/api/payment/totalRevenue', { params: { month: revenueMonth, financialYear: financialYear } }),
+          axios.get('http://3.223.253.106:7777/api/demoTransaction/totalRevenue', { params: { month: revenueMonth, financialYear: financialYear } }),
           axios.get('http://3.223.253.106:7777/api/jobs/getRecentJobs'),
         ])
 
@@ -135,17 +134,12 @@ const Dashboard = () => {
             <CCardBody className="flex-grow-1 d-flex flex-column justify-content-center">
               <h2 className="text-center">{totalUsers}</h2>
               <p className="text-muted text-center">Total Users</p>
-              <CRow>
-                <CCol>
-                  <CBadge color="info">Hunters: {hunter}</CBadge>
-                </CCol>
-                <CCol>
-                  <CBadge color="success">Providers: {provider}</CBadge>
-                </CCol>
-                <CCol>
-                  <CBadge color="secondary">Guests: {guest}</CBadge>
-                </CCol>
-              </CRow>
+              {/* Updated container for badges */}
+              <div className="d-flex justify-content-around align-items-center" style={{ whiteSpace: 'nowrap' }}>
+                <CBadge color="info" className="mx-1">Hunters: {hunter}</CBadge>
+                <CBadge color="success" className="mx-1">Providers: {provider}</CBadge>
+                <CBadge color="secondary" className="mx-1">Guests: {guest}</CBadge>
+              </div>
             </CCardBody>
           </CCard>
         </CCol>
