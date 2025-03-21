@@ -17,6 +17,7 @@ const GuestUsers = React.lazy(() => import('./views/Users/guestUsers.js'))
 const followUp = React.lazy(() => import('./views/followUp/followUp.js'))
 const providerAssignedJobs = React.lazy(() => import('./views/Users/providerJobs.js'))
 const SubscriptionVouchers = React.lazy(() => import('./views/subscriptions/SubscriptionVouchers.js'))
+const SubscribedUsers = React.lazy(() => import('./views/subscriptions/SubscribedUsers.js'))
 
 
 
@@ -37,6 +38,7 @@ const routes = [
   {path: '/followUp', name:"Follow Up", element:followUp},
   { path: '/providerAssignedJobs', name: 'Provider Assigned Jobs', element: providerAssignedJobs },
   { path: '/promotions', name: 'Subscription Vouchers', element: SubscriptionVouchers },
+  { path: '/subscribedUsers', name: 'Subscribed Users', element: SubscribedUsers },
 
 
   // { path: '/JobsManagement', name: 'JobsManagement', element: JobsManagement },

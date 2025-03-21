@@ -89,7 +89,7 @@ const Hunter = () => {
     setLoading(true)
     try {
       const response = await axios.get(
-        `http://localhost:7777/api/users/type/hunter/pagelimit/10?page=${page}&search=${search}&userStatus=${statusFilter}`
+        `http://3.223.253.106:7777/api/users/type/hunter/pagelimit/10?page=${page}&search=${search}&userStatus=${statusFilter}`
       )
       // Sort the fetched users by insDate in descending order (latest joining first)
 
@@ -412,14 +412,7 @@ const Hunter = () => {
             <option value="true">Yes</option>
             <option value="false">No</option>
           </CFormSelect>
-          <CFormSelect name="documentStatus" label="Document Status" value={editUser?.documentStatus === 1 ? 'true' : 'false'} onChange={handleChange} className="hunter-modal-select">
-            <option value="true">Approved</option>
-            <option value="false">Pending</option>
-          </CFormSelect>
-          <CFormSelect name="subscriptionStatus" label="Subscription Status" value={editUser?.subscriptionStatus === 1 ? 'true' : 'false'} onChange={handleChange} className="hunter-modal-select">
-            <option value="true">Active</option>
-            <option value="false">Inactive</option>
-          </CFormSelect>
+    
         </CModalBody>
         <CModalFooter className="hunter-modal-footer">
           <CButton color="secondary" onClick={() => setIsEditModalOpen(false)} className="hunter-modal-btn">
