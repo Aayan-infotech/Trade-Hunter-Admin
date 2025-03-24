@@ -37,7 +37,7 @@ const PaymentManagement = () => {
     setLoading(true);
     setError(null);
     try {
-      const response = await axios.get("http://3.223.253.106:7777/api/payment/getAllPayment");
+      const response = await axios.get("http://3.223.253.106:7777/api/demoTransaction/transactions");
       const sortedPayments = (response.data.data || []).sort(
         (a, b) => new Date(b.transactionDate) - new Date(a.transactionDate)
       );
@@ -76,7 +76,7 @@ const PaymentManagement = () => {
                   <CTableHeaderCell>Transaction Amount</CTableHeaderCell>
                   <CTableHeaderCell>Status</CTableHeaderCell>
                   <CTableHeaderCell>Mode</CTableHeaderCell>
-                  <CTableHeaderCell>Subscription Type</CTableHeaderCell>
+                  <CTableHeaderCell>Subscription Plan</CTableHeaderCell>
                   <CTableHeaderCell>Action</CTableHeaderCell>
                 </CTableRow>
               </CTableHead>
@@ -85,12 +85,12 @@ const PaymentManagement = () => {
                   Payment.map((payment) => (
                     <CTableRow key={payment._id}>
                       <CTableDataCell>{payment.transactionId}</CTableDataCell>
-                      <CTableDataCell>{payment.transactionDate}</CTableDataCell>
+                      <CTableDataCell>{payment.createdAt}</CTableDataCell>
                       <CTableDataCell>{payment?.userId?.contactName}</CTableDataCell>
-                      <CTableDataCell>${payment.transactionAmount}</CTableDataCell>
-                      <CTableDataCell>{payment.transactionStatus}</CTableDataCell>
-                      <CTableDataCell>{payment.transactionMode}</CTableDataCell>
-                      <CTableDataCell>{payment.type}</CTableDataCell>
+                      <CTableDataCell>${payment.amount}</CTableDataCell>
+                      <CTableDataCell>{payment.status}</CTableDataCell>
+                      <CTableDataCell>{payment.paymentMethod}</CTableDataCell>
+                      <CTableDataCell>{payment?.subscriptionPlanId?.planName}</CTableDataCell>
                       <CTableDataCell>
                         <CIcon
                           className="me-2 text-primary cursor-pointer"
@@ -125,22 +125,22 @@ const PaymentManagement = () => {
                 <strong>Transaction ID:</strong> {viewPayment.transactionId}
               </p>
               <p>
-                <strong>Date:</strong> {viewPayment.transactionDate}
+                <strong>Date:</strong> {viewPayment.createdAt}
               </p>
               <p>
-                <strong>Status:</strong> {viewPayment.transactionStatus}
+                <strong>Status:</strong> {viewPayment.status}
               </p>
               <p>
-                <strong>Amount:</strong> ${viewPayment.transactionAmount}
+                <strong>Amount:</strong> ${viewPayment.amount}
               </p>
               <p>
-                <strong>Mode:</strong> {viewPayment.transactionMode}
+                <strong>Mode:</strong> {viewPayment.paymentMethod}
               </p>
               <p>
-                <strong>Subscription ID:</strong> {viewPayment.SubscriptionId || "N/A"}
+                <strong>Subscription Type Id:</strong> {viewPayment?.subscriptionPlanId?.type || "N/A"}
               </p>
               <p>
-                <strong>Subscription Amount:</strong> ${viewPayment.SubscriptionAmount || "0.00"}
+                <strong>Subscription plan Name</strong> {viewPayment?.subscriptionPlanId?.planName || "0.00"}
               </p>
               <p>
                 <strong>User ID:</strong> {viewPayment?.userId?._id}
