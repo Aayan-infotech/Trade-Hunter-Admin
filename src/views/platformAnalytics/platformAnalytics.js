@@ -74,7 +74,7 @@ const AnalyticsReports = () => {
       })
       .catch((err) => console.error("Error fetching recent signups:", err));
 
-    fetch("http://3.223.253.106:7777/api/subscription/retentionRate")
+    fetch("http://3.223.253.106:7777/api/SubscriptionNew/retentionRate")
       .then((res) => res.json())
       .then((data) => {
         if (data.data && data.data.retentionRate !== undefined) {

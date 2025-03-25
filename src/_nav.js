@@ -22,7 +22,8 @@ import {
   cilBullhorn,
   cilAlarm,
   cilCart,
-  cilTag
+  cilTag,
+  cilPen
 } from '@coreui/icons'
 import { CNavGroup, CNavItem, CNavTitle } from '@coreui/react'
 
@@ -129,6 +130,12 @@ const _nav = [
     name: "Promotional Vouchers",
     to: '/promotions',
     icon: <CIcon icon={cilTag} customClassName="nav-icon" style={{ color: 'blue' }} />,
+  },
+  {
+    component: CNavItem,
+    name: "Blogs Management",
+    to: '/blogsManagement',
+    icon: <CIcon icon={cilPen} customClassName="nav-icon" style={{ color: 'blue' }} />,
   },
   
 
