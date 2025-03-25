@@ -16,6 +16,7 @@ import {
   CModalTitle,
   CModalBody,
   CModalFooter,
+  CSpinner,
 } from '@coreui/react'
 import ReactQuill from 'react-quill'
 import 'react-quill/dist/quill.snow.css'
@@ -28,139 +29,157 @@ const API_DELETE = "http://3.223.253.106:7777/api/blog/delete" // DELETE: /:id
 const API_UPDATE = "http://3.223.253.106:7777/api/blog/update"   // PUT: /:id
 const API_GET_BY_ID = "http://3.223.253.106:7777/api/blog/getById" // GET: /:id
 
+const stripHtml = (html) => html.replace(/<[^>]+>/g, '');
+
 const BlogManagement = () => {
-  const [title, setTitle] = useState('')
-  const [content, setContent] = useState('')
-  const [image, setImage] = useState(null)
-  const [blogs, setBlogs] = useState([])
-  const [loading, setLoading] = useState(false)
+  // State for creating blog posts
+  const [title, setTitle] = useState('');
+  const [content, setContent] = useState('');
+  const [image, setImage] = useState(null);
+  const [blogs, setBlogs] = useState([]);
+  const [loading, setLoading] = useState(false);
 
-  const [showEditModal, setShowEditModal] = useState(false)
-  const [editBlog, setEditBlog] = useState(null)
+  // State for editing blog posts
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [editBlog, setEditBlog] = useState(null);
 
-  const [showReadModal, setShowReadModal] = useState(false)
-  const [readBlog, setReadBlog] = useState(null)
+  // State for reading full blog post
+  const [showReadModal, setShowReadModal] = useState(false);
+  const [readBlog, setReadBlog] = useState(null);
+  const [readLoading, setReadLoading] = useState(false);
 
-  // Utility to strip HTML tags
-  const stripHtml = (html) => html.replace(/<[^>]+>/g, '')
-
+  // Create a new blog post
   const handleSubmit = async (e) => {
-    e.preventDefault()
-    setLoading(true)
-    const formData = new FormData()
-    formData.append('title', title)
-    formData.append('content', content)
-    if (image) formData.append('image', image)
+    e.preventDefault();
+    setLoading(true);
+    const formData = new FormData();
+    formData.append('title', title);
+    formData.append('content', content);
+    if (image) {
+      formData.append('image', image);
+    }
     try {
       const res = await fetch(API_CREATE, {
         method: 'POST',
         body: formData,
-      })
-      const result = await res.json()
+      });
+      const result = await res.json();
       if (res.ok) {
-        window.alert("Blog post created successfully!")
-        fetchBlogs()
-        setTitle('')
-        setContent('')
-        setImage(null)
+        window.alert("Blog post created successfully!");
+        fetchBlogs();
+        setTitle('');
+        setContent('');
+        setImage(null);
       } else {
-        window.alert(result.error || "Error creating blog post.")
+        window.alert(result.error || "Error creating blog post.");
       }
     } catch (error) {
-      window.alert("Error creating blog post.")
-      console.error("Error creating blog:", error)
+      window.alert("Error creating blog post.");
+      console.error("Error creating blog:", error);
     }
-    setLoading(false)
-  }
+    setLoading(false);
+  };
 
+  // Fetch all blog posts from the API
   const fetchBlogs = async () => {
     try {
-      const res = await fetch(API_GET)
-      const result = await res.json()
+      const res = await fetch(API_GET);
+      const result = await res.json();
       if (Array.isArray(result)) {
-        setBlogs(result)
+        setBlogs(result);
       } else if (result.data && Array.isArray(result.data)) {
-        setBlogs(result.data)
+        setBlogs(result.data);
       } else {
-        setBlogs([])
+        setBlogs([]);
       }
     } catch (error) {
-      console.error("Error fetching blogs:", error)
+      console.error("Error fetching blogs:", error);
     }
-  }
+  };
 
+  // Delete a blog post by id
   const handleDeleteBlog = async (id, e) => {
-    e.stopPropagation()
+    e.stopPropagation();
     if (window.confirm("Are you sure you want to delete this blog post?")) {
       try {
-        const res = await fetch(`${API_DELETE}/${id}`, { method: 'DELETE' })
-        const result = await res.json()
+        const res = await fetch(`${API_DELETE}/${id}`, { method: 'DELETE' });
+        const result = await res.json();
         if (res.ok) {
-          window.alert("Blog post deleted successfully!")
-          fetchBlogs()
+          window.alert("Blog post deleted successfully!");
+          fetchBlogs();
         } else {
-          window.alert(result.error || "Error deleting blog post.")
+          window.alert(result.error || "Error deleting blog post.");
         }
       } catch (error) {
-        window.alert("Error deleting blog post.")
-        console.error("Error deleting blog:", error)
+        window.alert("Error deleting blog post.");
+        console.error("Error deleting blog:", error);
       }
     }
-  }
+  };
 
+  // Open edit modal and load blog data into state
   const openEditModal = (blog, e) => {
-    e.stopPropagation()
-    setEditBlog({ ...blog })
-    setShowEditModal(true)
-  }
+    e.stopPropagation();
+    setEditBlog({ ...blog });
+    setShowEditModal(true);
+  };
 
   const handleEditChange = (field, value) => {
-    setEditBlog(prev => ({ ...prev, [field]: value }))
-  }
+    setEditBlog(prev => ({ ...prev, [field]: value }));
+  };
 
+  // Save changes for the edited blog post
   const handleSaveEditBlog = async () => {
-    if (!editBlog) return
+    if (!editBlog) return;
     try {
-      const formData = new FormData()
-      formData.append('title', editBlog.title)
-      formData.append('content', editBlog.content)
-      if (editBlog.newImage) formData.append('image', editBlog.newImage)
-      const res = await fetch(`${API_UPDATE}/${editBlog._id}`, { method: 'PUT', body: formData })
-      const result = await res.json()
+      const formData = new FormData();
+      formData.append('title', editBlog.title);
+      formData.append('content', editBlog.content);
+      if (editBlog.newImage) {
+        formData.append('image', editBlog.newImage);
+      }
+      const res = await fetch(`${API_UPDATE}/${editBlog._id}`, {
+        method: 'PUT',
+        body: formData,
+      });
+      const result = await res.json();
       if (res.ok) {
-        window.alert("Blog post updated successfully!")
-        fetchBlogs()
-        setShowEditModal(false)
-        setEditBlog(null)
+        window.alert("Blog post updated successfully!");
+        fetchBlogs();
+        setShowEditModal(false);
+        setEditBlog(null);
       } else {
-        window.alert(result.error || "Error updating blog post.")
+        window.alert(result.error || "Error updating blog post.");
       }
     } catch (error) {
-      window.alert("Error updating blog post.")
-      console.error("Error updating blog:", error)
+      window.alert("Error updating blog post.");
+      console.error("Error updating blog:", error);
     }
-  }
+  };
 
+  // Handle card click to fetch full blog details
   const handleCardClick = async (id) => {
+    setReadLoading(true);
     try {
-      const res = await fetch(`${API_GET_BY_ID}/${id}`)
-      const result = await res.json()
-      const blogData = result.data || result
+      const res = await fetch(`${API_GET_BY_ID}/${id}`);
+      const result = await res.json();
+      const blogData = result.data || result;
       if (res.ok && blogData) {
-        setReadBlog(blogData)
-        setShowReadModal(true)
+        setReadBlog(blogData);
+        setShowReadModal(true);
       } else {
-        window.alert(result.error || "Error fetching blog details.")
+        window.alert(result.error || "Error fetching blog details.");
       }
     } catch (error) {
-      window.alert("Error fetching blog details.")
-      console.error("Error fetching blog by ID:", error)
+      window.alert("Error fetching blog details.");
+      console.error("Error fetching blog by ID:", error);
     }
-  }
+    setReadLoading(false);
+  };
 
   useEffect(() => {
-    fetchBlogs()
-  }, [])
+    fetchBlogs();
+  }, []);
 
   return (
     <>
@@ -287,28 +306,36 @@ const BlogManagement = () => {
       </CContainer>
 
       {/* Read Blog Modal */}
-      {showReadModal && readBlog && (
+      {showReadModal && (
         <CModal
           scrollable
           visible={showReadModal}
           onClose={() => { setShowReadModal(false); setReadBlog(null) }}
         >
           <CModalHeader className="voucher-card-header text-center">
-            <CModalTitle>{readBlog.title}</CModalTitle>
+            <CModalTitle>{readBlog?.title}</CModalTitle>
           </CModalHeader>
           <CModalBody>
-            <div dangerouslySetInnerHTML={{ __html: readBlog.content }} />
-            {readBlog.image && (
-              <img
-                src={readBlog.image}
-                alt={readBlog.title}
-                style={{
-                  width: '100%',
-                  height: '200px',
-                  objectFit: 'cover',
-                  marginTop: '10px',
-                }}
-              />
+            {readLoading ? (
+              <div className="d-flex justify-content-center align-items-center" style={{ height: '200px' }}>
+                <CSpinner color="primary" />
+              </div>
+            ) : (
+              <>
+                <div dangerouslySetInnerHTML={{ __html: readBlog?.content }} />
+                {readBlog?.image && (
+                  <img
+                    src={readBlog.image}
+                    alt={readBlog.title}
+                    style={{
+                      width: '100%',
+                      height: '200px',
+                      objectFit: 'cover',
+                      marginTop: '10px',
+                    }}
+                  />
+                )}
+              </>
             )}
           </CModalBody>
           <CModalFooter>
@@ -349,7 +376,7 @@ const BlogManagement = () => {
                   <ReactQuill
                     value={editBlog.content}
                     onChange={(value) => handleEditChange('content', value)}
-                    style={{ height: '150px', marginBottom: '30px' }}
+                    style={{ height: '125px', marginBottom: '30px' }}
                   />
                 </CCol>
               </CRow>
