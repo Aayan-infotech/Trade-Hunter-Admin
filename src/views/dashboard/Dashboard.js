@@ -225,7 +225,7 @@ const Dashboard = () => {
                         <tr key={index}>
                           <td>{job.title || 'N/A'}</td>
                           <td>{job.user?.name || 'N/A'}</td>
-                          <td>{job.providername || 'N/A'}</td>
+                          <td>{job.provider?.contactName || 'N/A'}</td>
                           <td>{job.jobLocation?.jobAddressLine || 'N/A'}</td>
                           <td>
                             {Array.isArray(job.businessType)
