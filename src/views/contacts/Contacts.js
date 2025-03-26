@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react'
 import {
   CContainer,
   CCard,
@@ -10,102 +10,114 @@ import {
   CButton,
   CListGroup,
   CListGroupItem,
-} from '@coreui/react';
-import '../Users/Usermanagement.css';
-import { ref, push, set, onValue, query, orderByChild, limitToLast } from "firebase/database";
-import { realtimeDb } from "../chat/firestore";
-import Hunter from '../Users/hunterUsers';
+  CModal,
+  CModalHeader,
+  CModalTitle,
+  CModalBody,
+  CModalFooter,
+} from '@coreui/react'
+import '../Users/Usermanagement.css'
+import { ref, push, set, onValue, query, orderByChild, limitToLast } from "firebase/database"
+import { realtimeDb } from "../chat/firestore"
 
 const Contact = () => {
-  const [recentChats, setRecentChats] = useState([]);
-  const [selectedChat, setSelectedChat] = useState(null);
-  const [messages, setMessages] = useState([]);
-  const [text, setText] = useState("");
+  const [recentChats, setRecentChats] = useState([])
+  const [selectedChat, setSelectedChat] = useState(null)
+  const [messages, setMessages] = useState([])
+  const [text, setText] = useState("")
+  const [chatId, setChatId] = useState("")
+  const [receiverId, setReceiverId] = useState("")
+  const [limit, setLimit] = useState(10)
+  // Use a fixed admin ID – if localStorage is missing, fall back to a hard-coded email.
+  const adminId = localStorage.getItem("adminId") || "aayaninfotech@gmail.com"
 
-  const [chatId, setChatId] = useState("");
-  const [receiverId, setReceiverId] = useState("");
-
-  // Pagination state: number of chats to load from Firebase
-  const [limit, setLimit] = useState(10);
-
-  const currentUser = localStorage.getItem("adminId");
+  // Fetch recent chats from "chatsAdmin"
   useEffect(() => {
-    if (!currentUser) return;
-    const chatsRef = ref(realtimeDb, "chats");
-    const chatsQuery = query(chatsRef, orderByChild("lastMessageTime"), limitToLast(limit));
+    if (!adminId) return
+    const chatsRef = ref(realtimeDb, "chatsAdmin")
+    const chatsQuery = query(chatsRef, orderByChild("lastMessageTime"), limitToLast(limit))
     const unsubscribe = onValue(chatsQuery, (snapshot) => {
-      const data = snapshot.val();
+      const data = snapshot.val()
       if (data) {
-        const chatsArray = [];
+        const chatsArray = []
         Object.entries(data).forEach(([channelId, channelData]) => {
-          if (channelId.includes(currentUser)) {
-            const messagesObj = channelData.messages || {};
-            const messagesArray = Object.values(messagesObj);
-            messagesArray.sort((a, b) => a.createdAt - b.createdAt);
+          // Check if the channel ID includes the admin's identifier
+          if (channelId.includes(adminId)) {
+            const messagesObj = channelData.messages || {}
+            const messagesArray = Object.values(messagesObj)
+            // Sort by timeStamp
+            messagesArray.sort((a, b) => a.timeStamp - b.timeStamp)
             const lastMessage = messagesArray.length
-              ? messagesArray[messagesArray.length - 1].text
-              : "";
+              ? messagesArray[messagesArray.length - 1].msg
+              : ""
             const lastMessageTime = messagesArray.length
-              ? messagesArray[messagesArray.length - 1].createdAt
-              : 0;
-            const firstMessage = Object.values(messagesObj)[0];
+              ? messagesArray[messagesArray.length - 1].timeStamp
+              : 0
+            const firstMessage = Object.values(messagesObj)[0]
             chatsArray.push({
               id: channelId,
               name: firstMessage ? (firstMessage.name || firstMessage.receiverName) : "Unknown",
               type: firstMessage ? (firstMessage.type || firstMessage.userType) : "Unknown",
               lastMessage,
               lastMessageTime,
-            });
+            })
           }
-        });
-        chatsArray.sort((a, b) => b.lastMessageTime - a.lastMessageTime);
-        setRecentChats(chatsArray);
+        })
+        chatsArray.sort((a, b) => b.lastMessageTime - a.lastMessageTime)
+        setRecentChats(chatsArray)
       } else {
-        setRecentChats([]);
+        setRecentChats([])
       }
-    });
-    return () => unsubscribe();
-  }, [currentUser, limit]);
+    })
+    return () => unsubscribe()
+  }, [adminId, limit])
 
   useEffect(() => {
-    if (!chatId) return;
-    const chatMessagesRef = ref(realtimeDb, `chats/${chatId}/messages`);
+    if (!chatId) return
+    const chatMessagesRef = ref(realtimeDb, `chatsAdmin/${chatId}/messages`)
     const unsubscribe = onValue(chatMessagesRef, (snapshot) => {
-      const data = snapshot.val();
+      const data = snapshot.val()
       if (data) {
-        const messagesArray = Object.values(data).sort((a, b) => a.createdAt - b.createdAt);
-        setMessages(messagesArray);
+        const messagesArray = Object.values(data).sort((a, b) => a.timeStamp - b.timeStamp)
+        setMessages(messagesArray)
       } else {
-        setMessages([]);
+        setMessages([])
       }
-    });
-    return () => unsubscribe();
-  }, [chatId]);
+    })
+    return () => unsubscribe()
+  }, [chatId])
+
+  const generateChatId = (otherUserId) => {
+    const chatId = [adminId, otherUserId].sort().join('_chat_')
+    console.log("Generated Chat ID:", chatId)
+    return chatId
+  }
 
   const openChatPanel = (chat) => {
-    setSelectedChat(chat);
-    setChatId(chat.id);
-    const participants = chat.id.split('_');
-    const otherId = participants.find((id) => id !== currentUser);
-    setReceiverId(otherId);
-  };
+    setSelectedChat(chat)
+    setChatId(chat.id)
+    const participants = chat.id.split('_chat_')
+    const otherId = participants.find((id) => id !== adminId)
+    setReceiverId(otherId)
+  }
 
   const handleSend = async () => {
-    if (text.trim() === "" || !chatId) return;
+    if (text.trim() === "" || !chatId) return
     try {
-      const chatMessagesRef = ref(realtimeDb, `chats/${chatId}/messages`);
-      const newMessageRef = push(chatMessagesRef);
+      const chatMessagesRef = ref(realtimeDb, `chatsAdmin/${chatId}/messages`)
+      const newMessageRef = push(chatMessagesRef)
       await set(newMessageRef, {
-        senderId: currentUser,
+        senderId: adminId,
         receiverId: receiverId,
-        text,
-        createdAt: Date.now(),
-      });
-      setText("");
+        msg: text,
+        timeStamp: Date.now(),
+        type: "text",
+      })
+      setText("")
     } catch (err) {
-      console.log("Error sending message:", err);
+      console.log("Error sending message:", err)
     }
-  };
+  }
 
   return (
     <CContainer fluid className="contact-module-container" style={{ padding: '20px' }}>
@@ -124,8 +136,8 @@ const Contact = () => {
                       onClick={() => openChatPanel(chat)}
                     >
                       <div>
-                        <div className="ABC" style={{ fontSize: 'small', width: '100%' }}>
-                          <span className="XYZ" style={{ fontWeight: 'bold' }}>{chat.name}</span> <code>({chat.type})</code>
+                        <div style={{ fontSize: 'small', width: '100%' }}>
+                          <span style={{ fontWeight: 'bold' }}>{chat.name}</span> <code>({chat.type})</code>
                         </div>
                         <p className="mb-0 text-muted" style={{ fontSize: '10px' }}>{chat.lastMessage}</p>
                       </div>
@@ -172,21 +184,20 @@ const Contact = () => {
                   <div
                     key={index}
                     style={{
-                      textAlign: msg.senderId === currentUser ? 'right' : 'left',
+                      textAlign: msg.senderId === adminId ? 'right' : 'left',
                       marginBottom: '10px',
                     }}
                   >
-                    <span
-                      style={{
-                        display: 'inline-block',
-                        maxWidth: '70%',
-                        backgroundColor: msg.senderId === currentUser ? '#007bff' : '#e9ecef',
-                        color: msg.senderId === currentUser ? '#fff' : '#333',
-                        padding: '10px 15px',
-                        borderRadius: '20px',
-                      }}
-                    >
-                      {msg.text}
+                    <span style={{
+                      display: 'inline-block',
+                      maxWidth: '70%',
+                      backgroundColor: msg.senderId === adminId ? '#007bff' : '#f1f1f1',
+                      color: msg.senderId === adminId ? '#fff' : '#333',
+                      padding: '10px 15px',
+                      borderRadius: '20px',
+                      wordBreak: 'break-word',
+                    }}>
+                      {msg.msg}
                     </span>
                   </div>
                 ))
@@ -229,7 +240,7 @@ const Contact = () => {
         </CCol>
       </CRow>
     </CContainer>
-  );
-};
+  )
+}
 
 export default Contact;

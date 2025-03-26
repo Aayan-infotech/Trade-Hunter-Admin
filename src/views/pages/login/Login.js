@@ -16,22 +16,6 @@ import {
 import CIcon from '@coreui/icons-react';
 import { cilLockLocked, cilUser } from '@coreui/icons';
 
-import {
-  createUserWithEmailAndPassword,
-  signInWithEmailAndPassword,
-} from "firebase/auth";
-import { ref, set } from "firebase/database";
-
-import { auth, db } from "../../chat/firestore";
-import {
-  collection,
-  query,
-  where,
-  getDocs,
-  setDoc,
-  doc,
-} from "firebase/firestore";
-import { realtimeDb } from "../../chat/firestore";
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -42,10 +26,8 @@ const Login = () => {
   const handleSubmit = async (e, userType) => {
     e.preventDefault();
     setError('');
-    // setLoading(true);
 
     try {
-      // Attempt to login
       const response = await fetch('http://3.223.253.106:7777/api/authAdmin/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -56,15 +38,13 @@ const Login = () => {
         const data = await response.json();
         localStorage.setItem('token', data.token);
         console.log('Login successful');
-        const firebaseUser = await signInWithEmailAndPassword(auth, email, password);
-        const userId = firebaseUser.user.uid;
-        localStorage.setItem("adminId" , userId)
-        console.log("User login id", userId)
+        const AdminId = data.adminId;
+        localStorage.setItem("adminId" , AdminId)
+        console.log("User login id", AdminId)
         navigate('/dashboard');
         return;
       }
 
-      // If login fails, attempt signup
 
 
 
@@ -74,7 +54,6 @@ const Login = () => {
       console.error('Authentication Error:', error);
       setError('Failed to authenticate. Please check credentials.');
     } finally {
-      // setLoading(false);
     }
   };
 
