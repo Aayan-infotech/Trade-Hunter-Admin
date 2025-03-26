@@ -35,13 +35,11 @@ const AnalyticsReports = () => {
   const [topBusinessCount, setTopBusinessCount] = useState([]);
   const [topLocations, setTopLocations] = useState([]);
   const [providerSearch, setProviderSearch] = useState("");
-  const [providerPage, setProviderPage] = useState(1);
   const [providerList, setProviderList] = useState([]);
   const [selectedProvider, setSelectedProvider] = useState(null);
 
-  // Fetch provider list
   useEffect(() => {
-    const url = `http://3.223.253.106:7777/api/Prvdr?page=${providerPage}&limit=10&search=${providerSearch}`;
+    const url = `http://3.223.253.106:7777/api/Prvdr?search=${providerSearch}`;
     fetch(url)
       .then((res) => res.json())
       .then((data) => {
@@ -52,9 +50,8 @@ const AnalyticsReports = () => {
         }
       })
       .catch((err) => console.error("Error fetching providers:", err));
-  }, [providerSearch, providerPage]);
+  }, [providerSearch]);
 
-  // Fetch analytics data
   useEffect(() => {
     fetch("http://3.223.253.106:7777/api/count/activeUsers")
       .then((res) => res.json())
@@ -117,6 +114,94 @@ const AnalyticsReports = () => {
       );
   }, []);
 
+  // Handler for provider click
+  const handleProviderClick = (provider) => {
+    const providerId = provider._id || provider.id;
+    setSelectedProvider({
+      ...provider,
+      acceptanceCount: provider.jobAcceptCount,
+      completionCount: provider.jobCompleteCount,
+      responseTime: provider.responseTime || "2 hrs",
+      name: provider.name || provider.contactName,
+    });
+    fetch(`http://localhost:7777/api/provider/completionRate/${providerId}`)
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.completionRate !== undefined) {
+          setSelectedProvider((prev) => ({
+            ...prev,
+            completionRate: data.completionRate,
+          }));
+        }
+      })
+      .catch((err) =>
+        console.error("Error fetching provider completion rate:", err)
+      );
+  };
+
+  let providerStatsChartData = null;
+  let providerStatsChartOptions = null;
+  if (selectedProvider) {
+    const acceptanceCount = parseInt(selectedProvider.acceptanceCount) || 0;
+    const completionCount = parseInt(selectedProvider.completionCount) || 0;
+    const completionRate = parseFloat(selectedProvider.completionRate) || 0;
+
+    providerStatsChartData = {
+      labels: ["Acceptance Count", "Completion Count", "Completion Rate"],
+      datasets: [
+        {
+          label: "Provider Stats",
+          data: [acceptanceCount, completionCount, completionRate],
+          backgroundColor: [
+            "rgba(75, 192, 192, 0.6)",
+            "rgba(153, 102, 255, 0.6)",
+            "rgba(255, 159, 64, 0.6)",
+          ],
+          borderColor: [
+            "rgba(75, 192, 192, 1)",
+            "rgba(153, 102, 255, 1)",
+            "rgba(255, 159, 64, 1)",
+          ],
+          borderWidth: 1,
+        },
+      ],
+    };
+
+    providerStatsChartOptions = {
+      indexAxis: "y",
+      scales: {
+        x: {
+          ticks: {
+            callback: (value, index) => {
+              if (index === 2) {
+                return value + "%";
+              }
+              return value;
+            },
+          },
+        },
+      },
+      plugins: {
+        legend: {
+          display: false,
+        },
+        tooltip: {
+          callbacks: {
+            label: (context) => {
+              const label = providerStatsChartData.labels[context.dataIndex];
+              let value = context.parsed.x;
+              if (context.dataIndex === 2) {
+                return `${label}: ${value}%`;
+              }
+              return `${label}: ${value}`;
+            },
+          },
+        },
+      },
+      maintainAspectRatio: false,
+    };
+  }
+
   const jobPostingData = {
     labels: ["Daily", "Weekly", "Monthly"],
     datasets: [
@@ -142,59 +227,16 @@ const AnalyticsReports = () => {
     ],
   };
 
-  let providerStatsChartData = null;
-  let providerStatsChartOptions = null;
-  if (selectedProvider) {
-    const acceptanceRate = parseFloat(selectedProvider.acceptanceRate) || 75;
-    const completionRate = parseFloat(selectedProvider.completionRate) || 80;
-
-    providerStatsChartData = {
-      labels: ["Acceptance Rate", "Completion Rate"],
-      datasets: [
-        {
-          label: "Percentage",
-          data: [acceptanceRate, completionRate],
-          backgroundColor: [
-            "rgba(75, 192, 192, 0.6)",
-            "rgba(153, 102, 255, 0.6)",
-          ],
-          borderColor: [
-            "rgba(75, 192, 192, 1)",
-            "rgba(153, 102, 255, 1)",
-          ],
-          borderWidth: 1,
-        },
-      ],
-    };
-
-    providerStatsChartOptions = {
-      indexAxis: "y",
-      scales: {
-        x: {
-          max: 100,
-          ticks: {
-            callback: (value) => value + "%",
-          },
-        },
-      },
-      plugins: {
-        legend: {
-          display: false,
-        },
-      },
-      maintainAspectRatio: false,
-    };
-  }
-
   return (
     <CContainer className="mt-4 analytics-container">
       <h4 className="mb-4 analytics-header">Platform Analytics &amp; Reports</h4>
 
-      {/* Stats Cards */}
       <CRow className="mb-4">
         <CCol md={4}>
           <CCard className="text-center mb-3 analytics-card">
-            <CCardHeader className="service-card-header">Active Users</CCardHeader>
+            <CCardHeader className="service-card-header">
+              Active Users
+            </CCardHeader>
             <CCardBody>
               <h3>{activeUsers}</h3>
               <CIcon icon={cilUser} size="xl" />
@@ -203,7 +245,9 @@ const AnalyticsReports = () => {
         </CCol>
         <CCol md={4}>
           <CCard className="text-center mb-3 analytics-card">
-            <CCardHeader className="service-card-header">New Sign-ups</CCardHeader>
+            <CCardHeader className="service-card-header">
+              New Sign-ups
+            </CCardHeader>
             <CCardBody>
               <h3>{newSignups}</h3>
               <CIcon icon={cilCalendar} size="xl" />
@@ -212,7 +256,9 @@ const AnalyticsReports = () => {
         </CCol>
         <CCol md={4}>
           <CCard className="text-center mb-3 analytics-card">
-            <CCardHeader className="service-card-header">Retention Rate</CCardHeader>
+            <CCardHeader className="service-card-header">
+              Retention Rate
+            </CCardHeader>
             <CCardBody>
               <h3>{retentionRate}%</h3>
               <CIcon icon={cilCalendar} size="xl" />
@@ -221,19 +267,24 @@ const AnalyticsReports = () => {
         </CCol>
       </CRow>
 
-      {/* Job Posting Trends Chart */}
       <CCard className="mb-4 analytics-chart-card">
-        <CCardHeader className="service-card-header">Job Posting Trends</CCardHeader>
+        <CCardHeader className="service-card-header">
+          Job Posting Trends
+        </CCardHeader>
         <CCardBody style={{ height: "300px" }}>
           <Bar data={jobPostingData} options={{ maintainAspectRatio: false }} />
         </CCardBody>
       </CCard>
 
-      {/* Service and Location Demand */}
       <CRow className="mb-4">
         <CCol md={6}>
-          <CCard className="mb-3 analytics-card">
-            <CCardHeader className="service-card-header">Service Demand</CCardHeader>
+          <CCard
+            className="mb-3 analytics-card"
+            style={{ height: "300px" }}
+          >
+            <CCardHeader className="service-card-header">
+              Service Demand
+            </CCardHeader>
             <CCardBody>
               <p>Top Demanded Services:</p>
               <ul className="analytics-list">
@@ -249,7 +300,10 @@ const AnalyticsReports = () => {
           </CCard>
         </CCol>
         <CCol md={6}>
-          <CCard className="text-center mb-3 analytics-card">
+          <CCard
+            className="text-center analytics-card"
+            style={{ height: "300px" }}
+          >
             <CCardHeader className="service-card-header">
               Geographical Demand
             </CCardHeader>
@@ -269,34 +323,27 @@ const AnalyticsReports = () => {
         </CCol>
       </CRow>
 
-      {/* Provider Performance Section */}
       <CCard className="mb-4 analytics-card">
-        <CCardHeader className="service-card-header">Provider Performance</CCardHeader>
+        <CCardHeader className="service-card-header">
+          Provider Performance
+        </CCardHeader>
         <CCardBody>
           <CFormInput
             type="text"
             placeholder="Search providers..."
             value={providerSearch}
-            onChange={(e) => {
-              setProviderSearch(e.target.value);
-              setProviderPage(1);
-            }}
+            onChange={(e) => setProviderSearch(e.target.value)}
             className="mb-3"
           />
-          <div className="provider-list" style={{ maxHeight: "200px", overflowY: "auto" }}>
+          <div
+            className="provider-list"
+            style={{ maxHeight: "200px", overflowY: "auto" }}
+          >
             {providerList.map((provider) => (
               <div
                 key={provider.id}
                 className="provider-item"
-                onClick={() =>
-                  setSelectedProvider({
-                    ...provider,
-                    acceptanceRate: provider.acceptanceRate || "75",
-                    completionRate: provider.completionRate || "80",
-                    responseTime: provider.responseTime || "2 hrs",
-                    name: provider.name || provider.contactName,
-                  })
-                }
+                onClick={() => handleProviderClick(provider)}
               >
                 <div>
                   <strong>{provider.contactName}</strong>
@@ -313,20 +360,18 @@ const AnalyticsReports = () => {
               <CCardHeader className="service-card-header">
                 Provider Stats: {selectedProvider.name || selectedProvider.contactName}
               </CCardHeader>
-              <CCardBody>
-                <div style={{ height: "200px" }}>
-                  <Bar
-                    data={providerStatsChartData}
-                    options={providerStatsChartOptions}
-                  />
-                </div>
+              <CCardBody style={{ height: "200px" }}>
+                <Bar
+                  data={providerStatsChartData}
+                  options={providerStatsChartOptions}
+                />
                 <table className="table mt-3">
                   <tbody>
                     <tr>
                       <td>
                         <strong>Response Time</strong>
                       </td>
-                      <td>{selectedProvider.responseTime || "2 hrs"}</td>
+                      <td>{selectedProvider.responseTime}</td>
                     </tr>
                   </tbody>
                 </table>
