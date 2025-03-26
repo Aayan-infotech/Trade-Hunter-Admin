@@ -124,7 +124,7 @@ const AnalyticsReports = () => {
       responseTime: provider.responseTime || "2 hrs",
       name: provider.name || provider.contactName,
     });
-    fetch(`http://localhost:7777/api/provider/completionRate/${providerId}`)
+    fetch(`http://3.223.253.106:7777/api/provider/completionRate/${providerId}`)
       .then((res) => res.json())
       .then((data) => {
         if (data.completionRate !== undefined) {
