@@ -39,7 +39,7 @@ const PaymentManagement = () => {
     try {
       const response = await axios.get("http://3.223.253.106:7777/api/demoTransaction/transactions");
       const sortedPayments = (response.data.data || []).sort(
-        (a, b) => new Date(b.transactionDate) - new Date(a.transactionDate)
+        (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
       );
       console.log(sortedPayments);
       setPayment(sortedPayments);
@@ -140,7 +140,7 @@ const PaymentManagement = () => {
                 <strong>Subscription Type Id:</strong> {viewPayment?.subscriptionPlanId?.type || "N/A"}
               </p>
               <p>
-                <strong>Subscription plan Name</strong> {viewPayment?.subscriptionPlanId?.planName || "0.00"}
+                <strong>Subscription plan Name:</strong> {viewPayment?.subscriptionPlanId?.planName || "0.00"}
               </p>
               <p>
                 <strong>User ID:</strong> {viewPayment?.userId?._id}
