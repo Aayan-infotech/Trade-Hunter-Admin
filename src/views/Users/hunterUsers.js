@@ -22,6 +22,8 @@ import {
   CBadge,
   CRow,
   CCol,
+  CListGroup,
+  CListGroupItem,
 } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
 import {
@@ -36,10 +38,9 @@ import {
 import { useNavigate } from 'react-router-dom'
 import './Usermanagement.css'
 
-import { ref, push, onValue } from "firebase/database"
+import { ref, push, onValue, orderByChild, limitToLast } from "firebase/database"
 import { realtimeDb } from "../chat/firestore"
 
-// Updated formatDate returns only the date portion (no time)
 const formatDate = (dateObj) => {
   if (!dateObj) return 'N/A'
   const date = new Date(dateObj)
@@ -76,7 +77,7 @@ const Hunter = () => {
   }, [currentUser])
 
   const generateChatId = (otherUserId) => {
-    const chatId = [currentUser, otherUserId].sort().join('_')
+    const chatId = [currentUser, otherUserId].sort().join('_chat_')
     console.log("Generated Chat ID:", chatId)
     return chatId
   }
@@ -219,14 +220,14 @@ const Hunter = () => {
   useEffect(() => {
     if (chatUser) {
       const chatChannelId = generateChatId(chatUser._id)
-      const chatMessagesRef = ref(realtimeDb, `chats/${chatChannelId}/messages`)
-      console.log("Subscribing to Firebase chat messages at:", `chats/${chatChannelId}/messages`)
+      const chatMessagesRef = ref(realtimeDb, `chatsAdmin/${chatChannelId}/messages`)
+      console.log("Subscribing to Firebase chat messages at:", `chatsAdmin/${chatChannelId}/messages`)
 
       const unsubscribe = onValue(chatMessagesRef, (snapshot) => {
         const data = snapshot.val()
         if (data) {
-          const messagesArray = Object.values(data).sort((a, b) => a.createdAt - b.createdAt)
-          console.log(" messages:", messagesArray)
+          const messagesArray = Object.values(data).sort((a, b) => a.timeStamp - b.timeStamp)
+          console.log("Chat messages:", messagesArray)
           setChatMessages(messagesArray)
         } else {
           console.log("No messages found at this channel.")
@@ -250,17 +251,17 @@ const Hunter = () => {
     }
 
     const chatChannelId = generateChatId(chatUser._id)
-    const chatRef = ref(realtimeDb, `chats/${chatChannelId}/messages`)
-    console.log("Sending message to path:", `chats/${chatChannelId}/messages`)
+    const chatRef = ref(realtimeDb, `chatsAdmin/${chatChannelId}/messages`)
+    console.log("Sending message to path:", `chatsAdmin/${chatChannelId}/messages`)
     console.log("Current User:", currentUser, "Chat User:", chatUser)
 
     const message = {
       senderId: currentUser,
       receiverId: chatUser._id,
       receiverName: chatUser.name,
-      type: chatUser.userType,
-      text: newChatMessage,
-      createdAt: Date.now(),
+      type: "hunter",
+      msg: newChatMessage,
+      timeStamp: Date.now(),
     }
 
     push(chatRef, message)
@@ -539,7 +540,7 @@ const Hunter = () => {
                     maxWidth: '70%',
                     wordBreak: 'break-word'
                   }}>
-                    {msg.text}
+                    {msg.msg}
                   </span>
                 </div>
               ))
@@ -566,4 +567,4 @@ const Hunter = () => {
   )
 }
 
-export default Hunter
+export default Hunter;

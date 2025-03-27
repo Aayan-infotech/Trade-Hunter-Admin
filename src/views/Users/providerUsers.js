@@ -70,7 +70,6 @@ const Provider = () => {
   const currentUser = localStorage.getItem('adminId')
   const navigate = useNavigate()
 
-  // Function to navigate to the ProviderAssignedJobs page, passing the provider id
   const handleAssignedJobs = (providerId) => {
     navigate('/ProviderAssignedJobs', { state: { providerId } })
   }
@@ -81,7 +80,7 @@ const Provider = () => {
   }, [currentUser])
 
   const generateChatId = (otherUserId) => {
-    const chatId = [currentUser, otherUserId].sort().join('_')
+    const chatId = [currentUser, otherUserId].sort().join('_chat_')
     console.log('Generated Chat ID:', chatId)
     return chatId
   }
@@ -120,7 +119,7 @@ const Provider = () => {
   const handleDelete = async (id) => {
     if (window.confirm('Are you sure you want to delete this user?')) {
       try {
-        await axios.delete(`http://3.223.253.106:7777/api/DeleteAccount/provider/${id}`)
+        await axios.delete(`http://3.223.253.106:7777/api/prvdr//${id}`)
         fetchUsers()
       } catch (error) {
         console.error('Error deleting user:', error)
@@ -221,13 +220,13 @@ const Provider = () => {
   useEffect(() => {
     if (chatUser) {
       const chatChannelId = generateChatId(chatUser._id)
-      const chatMessagesRef = ref(realtimeDb, `chats/${chatChannelId}/messages`)
-      console.log('Subscribing to Firebase chat messages at:', `chats/${chatChannelId}/messages`)
+      const chatMessagesRef = ref(realtimeDb, `chatsAdmin/${chatChannelId}/messages`)
+      console.log('Subscribing to Firebase chat messages at:', `chatsAdmin/${chatChannelId}/messages`)
 
       const unsubscribe = onValue(chatMessagesRef, (snapshot) => {
         const data = snapshot.val()
         if (data) {
-          const messagesArray = Object.values(data).sort((a, b) => a.createdAt - b.createdAt)
+          const messagesArray = Object.values(data).sort((a, b) => a.timeStamp - b.timeStamp)
           console.log('Received messages:', messagesArray)
           setChatMessages(messagesArray)
         } else {
@@ -252,17 +251,17 @@ const Provider = () => {
     }
 
     const chatChannelId = generateChatId(chatUser._id)
-    const chatRef = ref(realtimeDb, `chats/${chatChannelId}/messages`)
-    console.log('Sending message to:', `chats/${chatChannelId}/messages`)
+    const chatRef = ref(realtimeDb, `chatsAdmin/${chatChannelId}/messages`)
+    console.log('Sending message to:', `chatsAdmin/${chatChannelId}/messages`)
     console.log('Current Admin (Sender):', currentUser, 'Chat Provider (Receiver):', chatUser)
 
     const message = {
       senderId: currentUser, 
       receiverId: chatUser._id,
       receiverName: chatUser.contactName,
-      type: chatUser.userType,
-      text: newChatMessage,
-      createdAt: Date.now(),
+      type: "provider",
+      msg: newChatMessage,
+      timeStamp: Date.now(),
     }
 
     push(chatRef, message)
@@ -392,7 +391,6 @@ const Provider = () => {
         </CCardBody>
       </CCard>
 
-      {/* Edit Modal */}
       <CModal scrollable visible={isEditModalOpen} onClose={() => setIsEditModalOpen(false)} className="hunter-modal">
         <CModalHeader className="hunter-modal-header">
           <CModalTitle>Edit User</CModalTitle>
@@ -477,7 +475,6 @@ const Provider = () => {
         </CModalFooter>
       </CModal>
 
-      {/* View Modal */}
       <CModal scrollable visible={isViewModalOpen} onClose={() => setIsViewModalOpen(false)} className="hunter-modal">
         <CModalHeader className="hunter-modal-header">
           <CModalTitle>View User</CModalTitle>
@@ -526,7 +523,6 @@ const Provider = () => {
         </CModalFooter>
       </CModal>
 
-      {/* Notification Modal */}
       <CModal scrollable visible={isNotifModalOpen} onClose={() => setIsNotifModalOpen(false)} className="hunter-modal">
         <CModalHeader className="hunter-modal-header">
           <CModalTitle>Send Notification</CModalTitle>
@@ -583,7 +579,6 @@ const Provider = () => {
         </CModalFooter>
       </CModal>
 
-      {/* Chat Modal */}
       <CModal visible={isChatModalOpen} onClose={() => setIsChatModalOpen(false)} size="md" className="hunter-modal">
         <CModalHeader onClose={() => setIsChatModalOpen(false)}>
           <CModalTitle>Chat with {chatUser?.contactName || chatUser?.name}</CModalTitle>
@@ -604,7 +599,7 @@ const Provider = () => {
                     maxWidth: '70%',
                     wordBreak: 'break-word'
                   }}>
-                    {msg.text}
+                    {msg.msg}
                   </span>
                 </div>
               ))

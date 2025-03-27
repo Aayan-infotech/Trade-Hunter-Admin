@@ -31,16 +31,27 @@ import { AppHeaderDropdown } from './header/index'
 const AppHeader = () => {
   const headerRef = useRef()
   const { colorMode, setColorMode } = useColorModes('coreui-free-react-admin-template-theme')
-
   const dispatch = useDispatch()
   const sidebarShow = useSelector((state) => state.sidebarShow)
 
+  // Toggle shadow on scroll
   useEffect(() => {
     document.addEventListener('scroll', () => {
-      headerRef.current &&
+      if (headerRef.current) {
         headerRef.current.classList.toggle('shadow-sm', document.documentElement.scrollTop > 0)
+      }
     })
   }, [])
+
+  // Update the document's class based on the selected color mode.
+  // This is useful if you want to override or supplement the media query-based approach.
+  useEffect(() => {
+    if (colorMode === 'dark') {
+      document.documentElement.classList.add('dark-mode')
+    } else {
+      document.documentElement.classList.remove('dark-mode')
+    }
+  }, [colorMode])
 
   return (
     <CHeader position="sticky" className="mb-4 p-0" ref={headerRef}>
@@ -54,14 +65,12 @@ const AppHeader = () => {
         <CHeaderNav className="d-none d-md-flex">
           <CNavItem>
             <CNavLink to="/dashboard" as={NavLink}>
-            Trade Hunters
+              Trade Hunters
             </CNavLink>
           </CNavItem>
-
         </CHeaderNav>
  
         <CHeaderNav>
-         
           <CDropdown variant="nav-item" placement="bottom-end">
             <CDropdownToggle caret={false}>
               {colorMode === 'dark' ? (

@@ -143,8 +143,17 @@ const CreateVoucher = () => {
 
   return (
     <>
+      {/* Voucher Creation Section */}
       <CContainer fluid className="d-flex align-items-center justify-content-center mt-5">
-        <CCard className="voucher-card shadow" style={{ maxWidth: '600px' }}>
+        <CCard
+          className="voucher-card shadow"
+          style={{ 
+            maxWidth: '600px', 
+            backgroundColor: 'var(--container-bg)',
+            border: '1px solid var(--table-border-color)',
+            boxShadow: '0 2px 10px var(--shadow-color)'
+          }}
+        >
           <CCardHeader className="voucher-card-header text-center">
             <FaTicketAlt size={30} className="mr-2" />
             Create Voucher
@@ -210,8 +219,9 @@ const CreateVoucher = () => {
         </CCard>
       </CContainer>
       
+      {/* Vouchers Table Section */}
       <CContainer fluid className="mt-5">
-        <div className="vouchers-table-section">
+        <div className="vouchers-table-section" style={{ backgroundColor: 'var(--container-bg)', border: '1px solid var(--table-border-color)', borderRadius: '5px', padding: '10px' }}>
           <CTable>
             <CTableHead>
               <CTableRow>
@@ -264,11 +274,15 @@ const CreateVoucher = () => {
 
       {/* Edit Voucher Modal */}
       {showEditModal && editVoucher && (
-        <CModal scrollable visible={showEditModal} onClose={() => { setShowEditModal(false); setEditVoucher(null) }}>
+        <CModal
+          scrollable
+          visible={showEditModal}
+          onClose={() => { setShowEditModal(false); setEditVoucher(null) }}
+        >
           <CModalHeader className="voucher-card-header text-center">
             <CModalTitle>Edit Voucher</CModalTitle>
           </CModalHeader>
-          <CModalBody>
+          <CModalBody style={{ backgroundColor: 'var(--container-bg)' }}>
             <CForm>
               <CRow className="mb-3">
                 <CCol md={12}>
@@ -319,7 +333,7 @@ const CreateVoucher = () => {
               </CRow>
             </CForm>
           </CModalBody>
-          <CModalFooter>
+          <CModalFooter style={{ backgroundColor: 'var(--container-bg)', borderTop: '1px solid var(--table-border-color)' }}>
             <CButton color="secondary" onClick={() => { setShowEditModal(false); setEditVoucher(null) }}>
               Cancel
             </CButton>
@@ -334,5 +348,3 @@ const CreateVoucher = () => {
 }
 
 export default CreateVoucher
-
-//voucher page
