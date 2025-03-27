@@ -185,7 +185,16 @@ const BlogManagement = () => {
     <>
       {/* Create Blog Section */}
       <CContainer fluid className="d-flex align-items-center justify-content-center mt-5">
-        <CCard className="voucher-card shadow" style={{ maxWidth: '800px', width: '100%' }}>
+        <CCard
+          className="voucher-card shadow"
+          style={{ 
+            maxWidth: '800px', 
+            width: '100%',
+            backgroundColor: 'var(--container-bg)',
+            border: '1px solid var(--table-border-color)',
+            boxShadow: '0 2px 10px var(--shadow-color)'
+          }}
+        >
           <CCardHeader className="voucher-card-header text-center">
             Create Blog Post
           </CCardHeader>
@@ -244,7 +253,11 @@ const BlogManagement = () => {
                 <CCard
                   className="voucher-card shadow"
                   onClick={() => handleCardClick(blog._id)}
-                  style={{ cursor: 'pointer' }}
+                  style={{ 
+                    cursor: 'pointer',
+                    backgroundColor: 'var(--container-bg)',
+                    border: '1px solid var(--table-border-color)'
+                  }}
                 >
                   <CCardHeader className="voucher-card-header">
                     {blog.title}

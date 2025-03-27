@@ -1,48 +1,89 @@
+/* Updated Usermanagement.css with Enhanced Dark Mode Support */
 
-/* Usermanagement.css */
+/* Light mode defaults */
+:root {
+  --background-color: #ffffff;
+  --primary-text-color: #333333;
+  --secondary-text-color: #555555;
+  --card-header-bg: #a3c5e7;
+  --table-border-color: #dee2e6;
+  --table-header-bg: #f1f1f1;
+  --modal-bg: #9fc3e9;
+  --modal-header-bg: #007bff;
+  --btn-primary-bg: #007bff;
+  --btn-primary-hover-bg: #0056b3;
+  --container-bg: #ffffff;
+  --shadow-color: rgba(0, 0, 0, 0.1);
+  --unread-bg: #e6f7ff;
+}
+
+.dark-mode {
+  --background-color: #121212;
+  --primary-text-color: #eeeeee;
+  --secondary-text-color: #cccccc;
+  --card-header-bg: #333333;
+  --table-border-color: #444444;
+  --table-header-bg: #2a2a2a;
+  --modal-bg: #2c2c2c;
+  --modal-header-bg: #0056b3;
+  --btn-primary-bg: #0056b3;
+  --btn-primary-hover-bg: #004085;
+  --container-bg: #121212;
+  --shadow-color: rgba(0, 0, 0, 0.5);
+  --unread-bg: #1f2a40;
+}
+
+
+
+html,
+body {
+  background-color: var(--background-color);
+  color: var(--primary-text-color);
+}
 
 /* Style for the card */
 .card-header {
-    background-color: #a3c5e7;
-    font-size: 1.5rem;
-    font-weight: bold;
-    padding: 1rem;
-    text-align: center;
-  }
-  
-  /* Table styles */
-  .table {
-    margin: 1rem 0;
-    border-collapse: collapse;
-    width: 100%;
-    border: 1px solid #dee2e6;
-  }
-  
-  .table th, .table td {
-    border: 1px solid #dee2e6;
-    padding: 0.75rem;
-    text-align: center;
-  }
-  
-  .table th {
-    background-color: #f1f1f1;
-    font-weight: bold;
-  }
-  
-  /* Button styles */
-  .table .btn {
-    font-size: 0.875rem;
-    padding: 0.375rem 0.75rem;
-  }
-  
-  /* Container styles */
-  .container {
-    padding: 2rem;
-    background-color: #ffffff;
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  }
- 
+  background-color: var(--card-header-bg);
+  font-size: 1.5rem;
+  font-weight: bold;
+  padding: 1rem;
+  text-align: center;
+}
+
+/* Table styles */
+.table {
+  margin: 1rem 0;
+  border-collapse: collapse;
+  width: 100%;
+  border: 1px solid var(--table-border-color);
+}
+
+.table th,
+.table td {
+  border: 1px solid var(--table-border-color);
+  padding: 0.75rem;
+  text-align: center;
+  background-color: var(--container-bg); /* Ensure table cells follow theme */
+}
+
+.table th {
+  background-color: var(--table-header-bg);
+  font-weight: bold;
+}
+
+/* Button styles */
+.table .btn {
+  font-size: 0.875rem;
+  padding: 0.375rem 0.75rem;
+}
+
+/* Container styles */
+.container {
+  padding: 2rem;
+  background-color: var(--container-bg);
+  border-radius: 8px;
+  box-shadow: 0 0 10px var(--shadow-color);
+}
 
 /* Center the modal in the viewport */
 .c-modal {
@@ -51,7 +92,7 @@
   width: 885px;
   margin: 0 auto;
   border-radius: 8px;
-  background-color: #9fc3e9;
+  background-color: var(--modal-bg);
   position: fixed;
   top: 56%;
   left: 55%;
@@ -63,7 +104,7 @@
 
 /* Center the modal header and add a background color */
 .c-modal-header {
-  background-color: #007bff;
+  background-color: var(--modal-header-bg);
   color: #fff;
   font-size: 1.25rem;
   padding: 16px;
@@ -77,9 +118,9 @@
 .c-modal-body {
   padding: 20px;
   font-size: 1rem;
-  color: #333;
-  max-height: 60vh; /* Limit height for better scrolling */
-  overflow-y: auto; /* Add scrolling if content overflows */
+  color: var(--primary-text-color);
+  max-height: 60vh;
+  overflow-y: auto;
 }
 
 /* Footer with action buttons aligned to the right */
@@ -93,9 +134,9 @@
 
 .c-modal-footer .btn {
   border-radius: 5px;
-  padding: 8px 16px; /* Add padding for larger buttons */
+  padding: 8px 16px;
   font-size: 1rem;
-  transition: background-color 0.3s ease; /* Smooth button hover effect */
+  transition: background-color 0.3s ease;
 }
 
 .c-modal-footer .btn-success {
@@ -125,7 +166,7 @@
 .c-form-label {
   font-size: 1rem;
   font-weight: bold;
-  color: #333;
+  color: var(--primary-text-color);
   margin-bottom: 8px;
 }
 
@@ -142,7 +183,7 @@
 
 .c-form-input:focus,
 .c-form-check:focus {
-  border-color: #007bff;
+  border-color: var(--modal-header-bg);
   outline: none;
 }
 
@@ -154,7 +195,7 @@
   border: 1px solid #ccc;
   border-radius: 5px;
   min-height: 100px;
-  resize: vertical; /* Allow user to resize vertically */
+  resize: vertical;
 }
 
 /* File preview styling */
@@ -173,7 +214,7 @@
 }
 
 .file-preview-container a {
-  color: #007bff;
+  color: var(--modal-header-bg);
   font-size: 1rem;
   text-decoration: none;
   margin-top: 5px;
@@ -187,20 +228,20 @@
 .modal-text {
   margin-bottom: 10px;
   font-size: 1rem;
-  color: #555;
+  color: var(--secondary-text-color);
 }
 
 .modal-text strong {
-  color: #007bff;
+  color: var(--modal-header-bg);
 }
 
-/* Button styling */
+/* Global button styling */
 button {
   padding: 10px 15px;
   border-radius: 5px;
   font-size: 1rem;
   cursor: pointer;
-  background-color: #007bff;
+  background-color: var(--btn-primary-bg);
   color: #fff;
   border: none;
   transition: opacity 0.2s ease, background-color 0.3s ease;
@@ -208,58 +249,55 @@ button {
 
 button:hover {
   opacity: 0.9;
-  background-color: #0056b3;
+  background-color: var(--btn-primary-hover-bg);
 }
 
-/* Ensure the modal content is responsive on small screens */
+/* Responsive modal adjustments */
 @media (max-width: 768px) {
   .c-modal {
-    width: 90%; /* Increase modal width on smaller screens */
-    max-width: 100%; /* Allow full width on smaller devices */
+    width: 90%;
+    max-width: 100%;
   }
-
   .c-modal-header,
   .c-modal-footer {
     font-size: 1.1rem;
   }
-
   .c-form-label,
   .c-form-input,
   .c-form-check,
   .c-form-textarea {
-    font-size: 0.9rem; /* Smaller font for mobile */
+    font-size: 0.9rem;
   }
 }
 
-
-/* Table Styling */
+/* Compact table styling */
 .ctable {
-  font-size: 0.875rem; /* Reduce font size for compactness */
+  font-size: 0.875rem;
   border-collapse: collapse;
   width: 100%;
 }
 
 .ctable th,
 .ctable td {
-  padding: 0.5rem; /* Reduce padding for smaller rows */
+  padding: 0.5rem;
   text-align: center;
+  background-color: var(--container-bg);
 }
 
 .ctable th {
-  background-color: #f8f9fa;
-  color: #495057;
+  background-color: var(--table-header-bg);
+  color: var(--primary-text-color);
   font-weight: 600;
 }
 
 .ctable td {
-  background-color: #ffffff;
-  color: #495057;
-  border-bottom: 1px solid #dee2e6;
+  color: var(--primary-text-color);
+  border-bottom: 1px solid var(--table-border-color);
 }
 
-/* Action Buttons in Table */
+/* Action buttons in table */
 .ctable .btn {
-  font-size: 0.75rem; /* Smaller button size */
+  font-size: 0.75rem;
   padding: 0.25rem 0.5rem;
 }
 
@@ -270,87 +308,36 @@ button:hover {
   transition: background-color 0.3s ease;
 }
 
-/* Hover effects on table rows */
+/* Hover effect on table rows */
 .ctable tr:hover {
   background-color: #f1f1f1;
 }
 
-/* Modal body */
-.c-modal-body {
-  font-size: 0.9rem; /* Slightly smaller font size for modal */
-  max-height: 60vh;
-  overflow-y: auto;
-}
-
-.modal-text {
-  font-size: 0.9rem; /* Slightly smaller font for modal details */
-  margin-bottom: 8px;
-}
-
-.modal-text strong {
-  font-weight: 600;
-  color: #007bff;
-}
-
-/* Modal footer */
-.c-modal-footer {
-  padding: 0.5rem 1rem;
-}
-
-/* Pagination */
-.pagination .btn {
-  font-size: 0.875rem;
-  padding: 0.25rem 0.5rem;
-  margin: 0 5px;
-}
-
-/* File Preview Container */
-.file-preview-container {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-}
-
-.file-preview-container img,
-.file-preview-container embed {
-  max-width: 100px;
-  max-height: 100px;
-  border: 1px solid #0c0909;
-  border-radius: 5px;
-}
-
-.file-preview-container a {
-  font-size: 0.875rem;
-  color: #007bff;
-  text-decoration: none;
-}
-
-.file-preview-container a:hover {
-  text-decoration: underline;
-}
-
+/* Additional global settings for consistency */
 .custom-modal .modal-content {
-     background-color: #ffffff;
-}
-.custom-modal .modal-header {
-  background-color: #9dc6f0; /* Match the modal content background */
+  background-color: var(--container-bg);
 }
 
+.custom-modal .modal-header {
+  background-color: #9dc6f0;
+}
+
+/* Dashboard styles */
 .dashboard-container {
   min-height: 100vh;
   padding: 2rem;
-  background-color: #f8f9fa;
+  background-color: var(--background-color);
 }
 
 .dashboard-card {
   border-radius: 10px;
-  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+  box-shadow: 0px 4px 10px var(--shadow-color);
   transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
 }
 
 .hover-effect:hover {
   transform: translateY(-5px);
-  box-shadow: 0px 6px 15px rgba(0, 0, 0, 0.15);
+  box-shadow: 0px 6px 15px var(--shadow-color);
 }
 
 .revenue-text {
@@ -364,38 +351,39 @@ button:hover {
   border-collapse: collapse;
 }
 
-.custom-table th, .custom-table td {
+.custom-table th,
+.custom-table td {
   padding: 10px;
   border: 1px solid #ddd;
 }
 
 .custom-table th {
-  background-color: #007bff;
-  color: white;
+  background-color: var(--btn-primary-bg);
+  color: #fff;
 }
 
 .custom-table tr:hover {
   background-color: #f1f1f1;
 }
 
-/* Container */
+/* Jobs container */
 .jobs-container {
   padding: 20px;
-  background-color: #f5f7fa; /* Light grey background */
-  color: #333; /* Dark text color */
+  background-color: var(--background-color);
+  color: var(--primary-text-color);
 }
 
-/* Card Header */
+/* Custom card header */
 .card-header-custom {
-  background-color: #0b4786; /* Dark blue background */
-  color: #ddd; /* Light grey text (not pure white) */
+  background-color: #0b4786;
+  color: #ddd;
   padding: 15px;
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
 
-/* Search Container */
+/* Search container */
 .search-container {
   display: flex;
   gap: 10px;
@@ -410,14 +398,14 @@ button:hover {
   border-radius: 4px;
 }
 
-/* Card Body */
+/* Custom card body */
 .card-body-custom {
-  background-color: #fff;
-  color: #333;
+  background-color: var(--container-bg);
+  color: var(--primary-text-color);
   padding: 15px;
 }
 
-/* Table Styling */
+/* Jobs table */
 .jobs-table {
   font-size: 0.9rem;
 }
@@ -426,7 +414,7 @@ button:hover {
   background-color: #f2f2f2;
 }
 
-/* Actions Column */
+/* Actions column */
 .actions-cell {
   display: flex;
   gap: 10px;
@@ -441,7 +429,7 @@ button:hover {
   transform: scale(1.1);
 }
 
-/* Modal Styling */
+/* Custom modal styles */
 .custom-modal .modal-header-custom {
   background-color: #0056b3;
   color: #ddd;
@@ -449,8 +437,8 @@ button:hover {
 }
 
 .custom-modal .modal-body-custom {
-  background-color: #fff;
-  color: #333;
+  background-color: var(--container-bg);
+  color: var(--primary-text-color);
   padding: 15px;
 }
 
@@ -464,31 +452,29 @@ button:hover {
   border-radius: 4px;
 }
 
-/* Error Text */
+/* Error text */
 .error-text {
   color: #d9534f;
 }
 
-/* Pagination */
+/* Pagination item */
 .pagination-item {
   cursor: pointer;
 }
 
-/* Container Styling */
+/* Hunter section styles */
 .hunter-container {
   padding: 20px;
-  background-color: #f5f7fa;
-  color: #333;
+  background-color: var(--background-color);
+  color: var(--primary-text-color);
 }
 
-/* Card Styling */
 .hunter-card {
   margin-bottom: 20px;
   border: none;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 4px var(--shadow-color);
 }
 
-/* Card Header */
 .hunter-card-header {
   background-color: #030172;
   color: #f0f0f0;
@@ -523,20 +509,20 @@ button:hover {
   border-radius: 4px;
 }
 
-/* Card Body */
+/* Hunter card body */
 .hunter-card-body {
-  background-color: #fff;
+  background-color: var(--container-bg);
   padding: 15px;
 }
 
-/* Loading Text */
+/* Loading text */
 .loading-text {
   text-align: center;
   padding: 20px;
   font-size: 1.2rem;
 }
 
-/* Table Styling */
+/* Hunter table */
 .hunter-table-container {
   max-height: 400px;
   overflow-y: auto;
@@ -550,7 +536,7 @@ button:hover {
   background-color: #f2f2f2;
 }
 
-/* Actions Column */
+/* Hunter actions */
 .hunter-actions-cell {
   display: flex;
   gap: 10px;
@@ -567,7 +553,7 @@ button:hover {
   transform: scale(1.1);
 }
 
-/* Pagination */
+/* Hunter pagination */
 .hunter-pagination {
   display: flex;
   justify-content: center;
@@ -584,7 +570,7 @@ button:hover {
   font-weight: bold;
 }
 
-/* Modal Styling */
+/* Hunter modal */
 .hunter-modal .modal-header,
 .hunter-modal .modal-header .modal-title {
   background-color: #004085;
@@ -593,8 +579,8 @@ button:hover {
 }
 
 .hunter-modal .modal-body {
-  background-color: #fff;
-  color: #333;
+  background-color: var(--container-bg);
+  color: var(--primary-text-color);
   padding: 15px;
 }
 
@@ -607,13 +593,13 @@ button:hover {
   border-radius: 4px;
 }
 
-/* Modal Input and Select */
+/* Hunter modal inputs */
 .hunter-modal-input,
 .hunter-modal-select {
   margin-bottom: 10px;
 }
 
-/* View Modal Styling */
+/* Hunter view modal */
 .hunter-view-content {
   font-size: 0.95rem;
 }
@@ -627,7 +613,7 @@ button:hover {
   border-radius: 5px;
 }
 
-/* Notification Modal Styling */
+/* Notification modal styles */
 .hunter-notif-section {
   margin-bottom: 10px;
 }
@@ -693,9 +679,9 @@ button:hover {
   transform: scale(1.1);
 }
 
-/* Jobs Hunter Page Wrapper */
+/* Jobs Hunter Page */
 .jobs-hunter-wrapper {
-  background-color: #f0f2f5;
+  background-color: var(--background-color);
   min-height: 100vh;
   padding-top: 20px;
 }
@@ -709,7 +695,7 @@ button:hover {
 
 /* Page Header */
 .page-header .card-header {
-  background-color: #007bff;
+  background-color: var(--btn-primary-bg);
   color: #fff;
   text-align: center;
   padding: 20px;
@@ -721,12 +707,10 @@ button:hover {
   overflow: hidden;
 }
 
-/* Card Body Adjustments */
 .job-card .card-body {
   padding: 20px;
 }
 
-/* Responsive adjustments for text */
 .job-card .card-title {
   font-size: 1.25rem;
 }
@@ -736,23 +720,20 @@ button:hover {
   font-size: 0.95rem;
 }
 
-/* Delete Button */
 .btn-danger {
   font-size: 0.9rem;
   padding: 8px 16px;
 }
 
-/* Adjust spacing for rows in job details */
 .row > .col-md-6 {
   padding: 5px 0;
 }
 
 /* Service Management Styles */
-
 .service-container {
   padding: 20px;
-  background-color: #f5f7fa;
-  color: #333;
+  background-color: var(--background-color);
+  color: var(--primary-text-color);
 }
 
 .service-card {
@@ -781,7 +762,7 @@ button:hover {
 }
 
 .service-card-body {
-  background-color: #fff;
+  background-color: var(--container-bg);
   padding: 15px;
 }
 
@@ -818,8 +799,8 @@ button:hover {
 }
 
 .service-modal .modal-body {
-  background-color: #fff;
-  color: #333;
+  background-color: var(--container-bg);
+  color: var(--primary-text-color);
   padding: 20px;
 }
 
@@ -840,7 +821,8 @@ button:hover {
   border-radius: 4px;
   padding: 5px;
 }
-/* Container & Header */
+
+/* Analytics */
 .analytics-container {
   padding: 20px;
 }
@@ -852,18 +834,16 @@ button:hover {
   margin-bottom: 30px;
 }
 
-/* General Card Styles */
 .analytics-card,
 .analytics-chart-card,
 .provider-stats-card {
   border: 1px solid #ddd;
   border-radius: 4px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-  background-color: #fff;
+  background-color: var(--container-bg);
   margin-bottom: 20px;
 }
 
-/* Stats Cards */
 .analytics-card .ccard-header,
 .analytics-chart-card .ccard-header,
 .provider-stats-card .ccard-header {
@@ -872,12 +852,10 @@ button:hover {
   text-align: center;
 }
 
-/* Job Chart Card */
 .analytics-chart-card .ccard-body {
   padding: 15px;
 }
 
-/* Lists for Demand Data */
 .analytics-list {
   list-style: none;
   padding-left: 0;
@@ -889,7 +867,6 @@ button:hover {
   border-bottom: 1px solid #eee;
 }
 
-/* Provider List Styles */
 .provider-list {
   max-height: 200px;
   overflow-y: auto;
@@ -910,7 +887,6 @@ button:hover {
   background-color: #f5f5f5;
 }
 
-/* Table adjustments for Provider Stats */
 .provider-stats-card .table {
   width: 100%;
   margin-top: 10px;
@@ -922,9 +898,10 @@ button:hover {
   border-top: 1px solid #eee;
 }
 
+/* Voucher Styles */
 .voucher-container {
   min-height: 100vh;
-  background: linear-gradient(135deg, #ffffff, #d0d1da);
+  background: linear-gradient(135deg, var(--background-color), #d0d1da);
   padding: 40px;
 }
 
@@ -941,7 +918,6 @@ button:hover {
   color: #fff;
   font-size: 1.5rem;
   font-weight: bold;
-  /* padding: 20px; */
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1010,6 +986,7 @@ button:hover {
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   margin-top: 20px;
 }
+
 .subscribers-table-section {
   background: #fff;
   border: 1px solid #ddd;
@@ -1018,11 +995,30 @@ button:hover {
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
+/* NavContacts.css */
+.unreadBadge {
+  margin-left: 80px;
+  background: linear-gradient(45deg, #ff6b6b, #f06595);
+  color: white;
+  font-size: 0.75rem;
+  font-weight: bold;
+  padding: 2px 6px;
+  border-radius: 12px;
+  display: inline-block;
+  min-width: 24px;
+  text-align: center;
+}
 
-
-
-
-
-
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
 
 

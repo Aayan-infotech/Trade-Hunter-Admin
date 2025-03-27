@@ -1,5 +1,5 @@
-import React from 'react'
-import CIcon from '@coreui/icons-react'
+import React from 'react';
+import CIcon from '@coreui/icons-react';
 import {
   cilBell,
   cilCalculator,
@@ -24,22 +24,16 @@ import {
   cilCart,
   cilTag,
   cilPen
-} from '@coreui/icons'
-import { CNavGroup, CNavItem, CNavTitle } from '@coreui/react'
-
+} from '@coreui/icons';
+import { CNavGroup, CNavItem, CNavTitle } from '@coreui/react';
+import NavContacts from './navContacts'; // Adjust path as needed
 
 const _nav = [
   {
     component: CNavGroup,
     name: 'User management',
-    // to: '/Usermanagement',
-    icon: <CIcon icon={cilUser} customClassName="nav-icon" style={{ color: 'blue' }} />,  // Added cilUser here
+    icon: <CIcon icon={cilUser} customClassName="nav-icon" style={{ color: 'blue' }} />,
     items: [
-      // {
-      //   component: CNavItem,
-      //   name: 'All Users ',
-      //   to: '/Usermanagement',
-      // },
       {
         component: CNavItem,
         name: "Hunters",
@@ -55,7 +49,6 @@ const _nav = [
         name: "Guest Users",
         to:"/guestUsers"
       },
-
     ],
   },
   {
@@ -76,19 +69,14 @@ const _nav = [
   {
     component: CNavGroup,
     name: 'Subscription Stats',
-    // to: '/Usermanagement',
-    icon: <CIcon icon={cilCart} customClassName="nav-icon" style={{ color: 'blue' }} />,  // Added cilUser here
+    icon: <CIcon icon={cilCart} customClassName="nav-icon" style={{ color: 'blue' }} />,
     items: [
-      // {
-      //   component: CNavItem,
-      //   name: 'All Users ',
-      //   to: '/Usermanagement',
-      // },
       {
         component: CNavItem,
         name: "Subscription plans",
         to: '/subscriptions',
-      },{
+      },
+      {
         component: CNavItem,
         name: "Subscribed Users",
         to: '/subscribedUsers',
@@ -98,32 +86,28 @@ const _nav = [
         name: "Revenue Insights",
         to: '/payments',
       },
-
     ],
   },
   {
-    component: CNavItem,
-    name: 'Contacts',
-    to: '/contacts',
-    icon: <CIcon icon={cilPhone } customClassName="nav-icon" style={{ color: 'blue' }} />,
+    component: NavContacts,  // Dynamic Contacts item.
   },
   {
     component: CNavItem,
     name: 'Platform Analytics',
     to: '/analytics',
-    icon: <CIcon icon={cilBarChart } customClassName="nav-icon" style={{ color: 'blue' }} />,
+    icon: <CIcon icon={cilBarChart} customClassName="nav-icon" style={{ color: 'blue' }} />,
   },
   {
     component: CNavItem,
     name: 'Content & Communication',
     to: '/contentManagement',
-    icon: <CIcon icon={cilBullhorn } customClassName="nav-icon" style={{ color: 'blue' }} />,
+    icon: <CIcon icon={cilBullhorn} customClassName="nav-icon" style={{ color: 'blue' }} />,
   },
   {
     component: CNavItem,
     name: "Follow-Up",
     to: '/followUp',
-    icon: <CIcon icon={cilAlarm } customClassName="nav-icon" style={{ color: 'blue' }} />,
+    icon: <CIcon icon={cilAlarm} customClassName="nav-icon" style={{ color: 'blue' }} />,
   },
   {
     component: CNavItem,
@@ -137,12 +121,6 @@ const _nav = [
     to: '/blogsManagement',
     icon: <CIcon icon={cilPen} customClassName="nav-icon" style={{ color: 'blue' }} />,
   },
-  
+];
 
-
-
-]
-
-
-
-export default _nav
+export default _nav;

@@ -119,7 +119,7 @@ const Provider = () => {
   const handleDelete = async (id) => {
     if (window.confirm('Are you sure you want to delete this user?')) {
       try {
-        await axios.delete(`http://3.223.253.106:7777/api/DeleteAccount/provider/${id}`)
+        await axios.delete(`http://3.223.253.106:7777/api/prvdr//${id}`)
         fetchUsers()
       } catch (error) {
         console.error('Error deleting user:', error)
