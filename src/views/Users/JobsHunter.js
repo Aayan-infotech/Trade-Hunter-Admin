@@ -89,7 +89,7 @@ const JobsHuunter = () => {
                   <div className="mb-3">
                     <strong>Location:</strong>
                     <p className="text-muted mb-0">
-                      {job.location?.jobaddress || "N/A"}
+                      {job.jobLocation?.jobAddressLine || "N/A"}
                     </p>
                   </div>
                   <div className="mb-3">
@@ -101,12 +101,19 @@ const JobsHuunter = () => {
                     <p className="text-muted mb-0">{job.businessType}</p>
                   </div>
                   <div className="mb-3">
-                    <strong>Services:</strong>
-                    <p className="text-muted mb-0">{job.services}</p>
-                  </div>
-                  <div className="mb-3">
                     <strong>Requirements:</strong>
                     <p className="text-muted mb-0">{job.requirements}</p>
+                  </div>
+                  <div className="mb-3">
+                    <strong>Job Status:</strong>
+                    <p className="text-muted mb-0">{job.jobStatus}</p>
+                  </div> <div className="mb-3">
+                    <strong>Job Accept Count:</strong>
+                    <p className="text-muted mb-0">{job.jobAcceptCount}</p>
+                  </div>
+                   <div className="mb-3">
+                    <strong>Accepted Provider Name and Email:</strong>
+                    <p className="text-muted mb-0">{job.provider?.contactName || "N/A"},  {job.provider?.email || ", N/A"}  </p>
                   </div>
                   <div className="mb-3">
                     <strong>Timeframe:</strong>
