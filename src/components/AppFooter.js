@@ -5,10 +5,10 @@ const AppFooter = () => {
   return (
     <CFooter className="px-4">
       <div>
-        <a href="https://aayaninfotech.com/" target="_blank" rel="noopener noreferrer">
-        Aayan Infotech
+        <a href="http://3.223.253.106:2365/" target="_blank" rel="noopener noreferrer">
+        Trade Hunter's
         </a>
-        <span className="ms-1">&copy; 2024 AayanInfotech.</span>
+        <span className="ms-1">&copy; Trade Hunter's</span>
       </div>
       {/* <div className="ms-auto">
         <span className="me-1">Powered by</span>
