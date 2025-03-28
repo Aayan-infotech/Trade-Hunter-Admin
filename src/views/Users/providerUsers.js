@@ -37,12 +37,12 @@ import { useNavigate } from 'react-router-dom'
 import './Usermanagement.css'
 
 import { ref, push, onValue } from 'firebase/database'
-import { realtimeDb } from '../chat/firestore' 
+import { realtimeDb } from '../chat/firestore'
 
 const formatDate = (dateObj) => {
   if (!dateObj) return 'N/A'
   const date = new Date(dateObj)
-  return date.toLocaleDateString()  
+  return date.toLocaleDateString()
 }
 
 const Provider = () => {
@@ -89,7 +89,7 @@ const Provider = () => {
     try {
       setLoading(true)
       const response = await axios.get(
-        `http://3.223.253.106:7777/api/Prvdr?page=${page}&limit=10&search=${search}&userStatus=${statusFilter}`
+        `http://3.223.253.106:7777/api/Prvdr?page=${page}&limit=10&search=${search}&userStatus=${statusFilter}`,
       )
       const fetchedProviders = response.data.data || []
       setUsers(fetchedProviders)
@@ -149,11 +149,7 @@ const Provider = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target
-    if (
-      name === 'emailVerified' ||
-      name === 'documentStatus' ||
-      name === 'subscriptionStatus'
-    ) {
+    if (name === 'emailVerified' || name === 'documentStatus' || name === 'subscriptionStatus') {
       setEditUser((prev) => ({ ...prev, [name]: value === 'true' }))
     } else {
       setEditUser((prev) => ({ ...prev, [name]: value }))
@@ -168,7 +164,9 @@ const Provider = () => {
 
   const fetchNotifications = async (userId) => {
     try {
-      const response = await axios.get(`http://3.223.253.106:7777/api/notification/getAll/provider/${userId}`)
+      const response = await axios.get(
+        `http://3.223.253.106:7777/api/notification/getAll/provider/${userId}`,
+      )
       setNotifications(response.data.data || [])
     } catch (error) {
       console.error('Error fetching notifications:', error)
@@ -181,10 +179,13 @@ const Provider = () => {
       return
     }
     try {
-      await axios.post(`http://3.223.253.106:7777/api/notification/send/provider/${notifUser._id}`, {
-        type: notifType,
-        text: notifText,
-      })
+      await axios.post(
+        `http://3.223.253.106:7777/api/notification/send/provider/${notifUser._id}`,
+        {
+          type: notifType,
+          text: notifText,
+        },
+      )
       setNotifText('')
       fetchNotifications(notifUser._id)
       alert('Notification sent successfully!')
@@ -221,7 +222,10 @@ const Provider = () => {
     if (chatUser) {
       const chatChannelId = generateChatId(chatUser._id)
       const chatMessagesRef = ref(realtimeDb, `chatsAdmin/${chatChannelId}/messages`)
-      console.log('Subscribing to Firebase chat messages at:', `chatsAdmin/${chatChannelId}/messages`)
+      console.log(
+        'Subscribing to Firebase chat messages at:',
+        `chatsAdmin/${chatChannelId}/messages`,
+      )
 
       const unsubscribe = onValue(chatMessagesRef, (snapshot) => {
         const data = snapshot.val()
@@ -256,10 +260,10 @@ const Provider = () => {
     console.log('Current Admin (Sender):', currentUser, 'Chat Provider (Receiver):', chatUser)
 
     const message = {
-      senderId: currentUser, 
+      senderId: currentUser,
       receiverId: chatUser._id,
       receiverName: chatUser.contactName,
-      type: "provider",
+      type: 'provider',
       msg: newChatMessage,
       timeStamp: Date.now(),
     }
@@ -341,8 +345,8 @@ const Provider = () => {
                             user.userStatus === 'Active'
                               ? 'success'
                               : user.userStatus === 'Suspended'
-                              ? 'danger'
-                              : 'warning'
+                                ? 'danger'
+                                : 'warning'
                           }
                         >
                           {user.userStatus}
@@ -350,14 +354,21 @@ const Provider = () => {
                       </CTableDataCell>
                       <CTableDataCell>{user.adminVerified}</CTableDataCell>
                       <CTableDataCell>{user.businessName}</CTableDataCell>
-                      <CTableDataCell>{user.documentStatus ? 'Approved' : 'Pending'}</CTableDataCell>
+                      <CTableDataCell>
+                        {user.documentStatus ? 'Approved' : 'Pending'}
+                      </CTableDataCell>
                       <CTableDataCell>{user.accountStatus}</CTableDataCell>
-                      <CTableDataCell>{user.subscriptionStatus ? 'Active' : 'Inactive'}</CTableDataCell>
+                      <CTableDataCell>
+                        {user.subscriptionStatus ? 'Active' : 'Inactive'}
+                      </CTableDataCell>
                       <CTableDataCell className="hunter-actions-cell">
                         <span onClick={() => handleView(user)} className="hunter-action-icon">
                           <CIcon icon={cilInfo} size="lg" />
                         </span>
-                        <span onClick={() => handleNotification(user)} className="hunter-action-icon">
+                        <span
+                          onClick={() => handleNotification(user)}
+                          className="hunter-action-icon"
+                        >
                           <CIcon icon={cilEnvelopeOpen} size="lg" />
                         </span>
                         <span onClick={() => handleChat(user)} className="hunter-action-icon">
@@ -369,7 +380,10 @@ const Provider = () => {
                         <span onClick={() => handleDelete(user._id)} className="hunter-action-icon">
                           <CIcon icon={cilTrash} size="lg" />
                         </span>
-                        <span onClick={() => handleAssignedJobs(user._id)} className="hunter-action-icon">
+                        <span
+                          onClick={() => handleAssignedJobs(user._id)}
+                          className="hunter-action-icon"
+                        >
                           <CIcon icon={cilBriefcase} size="lg" />
                         </span>
                       </CTableDataCell>
@@ -380,18 +394,33 @@ const Provider = () => {
             </div>
           )}
           <div className="hunter-pagination">
-            <CButton color="secondary" onClick={prevPage} disabled={page === 1} className="hunter-pagination-btn">
+            <CButton
+              color="secondary"
+              onClick={prevPage}
+              disabled={page === 1}
+              className="hunter-pagination-btn"
+            >
               Previous
             </CButton>
             <span className="hunter-page-info">Page: {page}</span>
-            <CButton color="secondary" onClick={nextPage} disabled={!hasMoreData} className="hunter-pagination-btn">
+            <CButton
+              color="secondary"
+              onClick={nextPage}
+              disabled={!hasMoreData}
+              className="hunter-pagination-btn"
+            >
               Next
             </CButton>
           </div>
         </CCardBody>
       </CCard>
 
-      <CModal scrollable visible={isEditModalOpen} onClose={() => setIsEditModalOpen(false)} className="hunter-modal">
+      <CModal
+        scrollable
+        visible={isEditModalOpen}
+        onClose={() => setIsEditModalOpen(false)}
+        className="hunter-modal"
+      >
         <CModalHeader className="hunter-modal-header">
           <CModalTitle>Edit User</CModalTitle>
         </CModalHeader>
@@ -420,16 +449,34 @@ const Provider = () => {
             onChange={handleChange}
             className="hunter-modal-input"
           />
-          <CFormSelect name="userStatus" label="User Status" value={editUser?.userStatus || ''} onChange={handleChange} className="hunter-modal-select">
+          <CFormSelect
+            name="userStatus"
+            label="User Status"
+            value={editUser?.userStatus || ''}
+            onChange={handleChange}
+            className="hunter-modal-select"
+          >
             <option value="Active">Active</option>
             <option value="Suspended">Suspended</option>
             <option value="Pending">Pending</option>
           </CFormSelect>
-          <CFormSelect name="adminVerified" label="Admin Verified" value={editUser?.adminVerified || ''} onChange={handleChange} className="hunter-modal-select">
+          <CFormSelect
+            name="adminVerified"
+            label="Admin Verified"
+            value={editUser?.adminVerified || ''}
+            onChange={handleChange}
+            className="hunter-modal-select"
+          >
             <option value="Verified">Verified</option>
             <option value="Not-Verified">Not Verified</option>
           </CFormSelect>
-          <CFormSelect name="accountStatus" label="Account Status" value={editUser?.accountStatus || ''} onChange={handleChange} className="hunter-modal-select">
+          <CFormSelect
+            name="accountStatus"
+            label="Account Status"
+            value={editUser?.accountStatus || ''}
+            onChange={handleChange}
+            className="hunter-modal-select"
+          >
             <option value="Suspend">Suspend</option>
             <option value="Deactivate">Deactivate</option>
             <option value="Reactivate">Reactivate</option>
@@ -438,7 +485,9 @@ const Provider = () => {
             name="emailVerified"
             label="Email Verified"
             value={editUser?.emailVerified ? 'true' : 'false'}
-            onChange={(e) => setEditUser((prev) => ({ ...prev, emailVerified: e.target.value === 'true' }))}
+            onChange={(e) =>
+              setEditUser((prev) => ({ ...prev, emailVerified: e.target.value === 'true' }))
+            }
             className="hunter-modal-select"
           >
             <option value="true">Yes</option>
@@ -448,7 +497,9 @@ const Provider = () => {
             name="documentStatus"
             label="Document Status"
             value={editUser?.documentStatus ? 'true' : 'false'}
-            onChange={(e) => setEditUser((prev) => ({ ...prev, documentStatus: e.target.value === 'true' }))}
+            onChange={(e) =>
+              setEditUser((prev) => ({ ...prev, documentStatus: e.target.value === 'true' }))
+            }
             className="hunter-modal-select"
           >
             <option value="true">Approved</option>
@@ -458,7 +509,9 @@ const Provider = () => {
             name="subscriptionStatus"
             label="Subscription Status"
             value={editUser?.subscriptionStatus ? 'true' : 'false'}
-            onChange={(e) => setEditUser((prev) => ({ ...prev, subscriptionStatus: e.target.value === 'true' }))}
+            onChange={(e) =>
+              setEditUser((prev) => ({ ...prev, subscriptionStatus: e.target.value === 'true' }))
+            }
             className="hunter-modal-select"
           >
             <option value="true">Active</option>
@@ -466,7 +519,11 @@ const Provider = () => {
           </CFormSelect>
         </CModalBody>
         <CModalFooter className="hunter-modal-footer">
-          <CButton color="secondary" onClick={() => setIsEditModalOpen(false)} className="hunter-modal-btn">
+          <CButton
+            color="secondary"
+            onClick={() => setIsEditModalOpen(false)}
+            className="hunter-modal-btn"
+          >
             Close
           </CButton>
           <CButton color="primary" onClick={handleSaveEdit} className="hunter-modal-btn">
@@ -475,7 +532,12 @@ const Provider = () => {
         </CModalFooter>
       </CModal>
 
-      <CModal scrollable visible={isViewModalOpen} onClose={() => setIsViewModalOpen(false)} className="hunter-modal">
+      <CModal
+        scrollable
+        visible={isViewModalOpen}
+        onClose={() => setIsViewModalOpen(false)}
+        className="hunter-modal"
+      >
         <CModalHeader className="hunter-modal-header">
           <CModalTitle>View User</CModalTitle>
         </CModalHeader>
@@ -487,43 +549,84 @@ const Provider = () => {
                   <img src={viewUser.images} alt="User" className="hunter-user-image" />
                 </div>
               )}
-              <p><strong>Name:</strong> {viewUser.contactName}</p>
-              <p><strong>Email:</strong> {viewUser.email}</p>
-              <p><strong>Phone Number:</strong> {viewUser.phoneNo}</p>
-              <p><strong>User Type:</strong> {viewUser.userType}</p>
-              <p><strong>User Status:</strong> {viewUser.userStatus || 'N/A'}</p>
-              <p><strong>Account Status:</strong> {viewUser.accountStatus || 'N/A'}</p>
-              <p><strong>Email Verified:</strong> {viewUser.emailVerified ? 'Yes' : 'No'}</p>
-              <p><strong>ABN number: </strong> {viewUser.ABN_Number}</p>
-              <p><strong>Address: </strong> {viewUser.address?.addressLine}</p>
-              <p><strong>Subscription Type:  </strong> {viewUser.subscriptionType}</p>
-              <p><strong>Joining Date:</strong> {formatDate(viewUser.insDate)}</p>
-              <p><strong>Terms &amp; Conditions:</strong> {viewUser.termsAndCondition ? 'Accepted' : 'Not Accepted'}</p>
+              <p>
+                <strong>Name:</strong> {viewUser.contactName}
+              </p>
+              <p>
+                <strong>Email:</strong> {viewUser.email}
+              </p>
+              <p>
+                <strong>Phone Number:</strong> {viewUser.phoneNo}
+              </p>
+              <p>
+                <strong>User Type:</strong> {viewUser.userType}
+              </p>
+              <p>
+                <strong>User Status:</strong> {viewUser.userStatus || 'N/A'}
+              </p>
+              <p>
+                <strong>Account Status:</strong> {viewUser.accountStatus || 'N/A'}
+              </p>
+              <p>
+                <strong>Email Verified:</strong> {viewUser.emailVerified ? 'Yes' : 'No'}
+              </p>
+              <p>
+                <strong>ABN number: </strong> {viewUser.ABN_Number}
+              </p>
+              <p>
+                <strong>Address: </strong> {viewUser.address?.addressLine}
+              </p>
+              <p>
+                <strong>Subscription Type: </strong> {viewUser.subscriptionType}
+              </p>
+              <p>
+                <strong>Joining Date:</strong> {formatDate(viewUser.insDate)}
+              </p>
+              <p>
+                <strong>Terms &amp; Conditions:</strong>{' '}
+                {viewUser.termsAndCondition ? 'Accepted' : 'Not Accepted'}
+              </p>
               {viewUser.files && viewUser.files.length > 0 && (
                 <div className="hunter-files-section">
                   <strong>Files:</strong>
                   <ul>
                     {viewUser.files.map((file, idx) => (
                       <li key={idx}>
-                        {file.filename} - {file.description}
+                        <a href={file.path} target="_blank" rel="noopener noreferrer">
+                          {file.path}
+                        </a>{' '}
+                        - {file.description}
                       </li>
                     ))}
                   </ul>
                 </div>
               )}
-              <p><strong>Created At:</strong> {formatDate(viewUser.createdAt)}</p>
-              <p><strong>Updated At:</strong> {formatDate(viewUser.updatedAt)}</p>
+              <p>
+                <strong>Created At:</strong> {formatDate(viewUser.createdAt)}
+              </p>
+              <p>
+                <strong>Updated At:</strong> {formatDate(viewUser.updatedAt)}
+              </p>
             </div>
           )}
         </CModalBody>
         <CModalFooter className="hunter-modal-footer">
-          <CButton color="secondary" onClick={() => setIsViewModalOpen(false)} className="hunter-modal-btn">
+          <CButton
+            color="secondary"
+            onClick={() => setIsViewModalOpen(false)}
+            className="hunter-modal-btn"
+          >
             Close
           </CButton>
         </CModalFooter>
       </CModal>
 
-      <CModal scrollable visible={isNotifModalOpen} onClose={() => setIsNotifModalOpen(false)} className="hunter-modal">
+      <CModal
+        scrollable
+        visible={isNotifModalOpen}
+        onClose={() => setIsNotifModalOpen(false)}
+        className="hunter-modal"
+      >
         <CModalHeader className="hunter-modal-header">
           <CModalTitle>Send Notification</CModalTitle>
         </CModalHeader>
@@ -531,7 +634,9 @@ const Provider = () => {
           {notifUser && (
             <>
               <div className="mb-3">
-                <label><strong>Notification Type</strong></label>
+                <label>
+                  <strong>Notification Type</strong>
+                </label>
                 <CFormSelect value={notifType} onChange={(e) => setNotifType(e.target.value)}>
                   <option value="alert">Alert</option>
                   <option value="reminder">Reminder</option>
@@ -539,7 +644,9 @@ const Provider = () => {
                 </CFormSelect>
               </div>
               <div className="mb-3">
-                <label><strong>Notification Text</strong></label>
+                <label>
+                  <strong>Notification Text</strong>
+                </label>
                 <CFormInput
                   type="text"
                   placeholder="Enter notification text"
@@ -548,7 +655,10 @@ const Provider = () => {
                 />
               </div>
               <div className="text-center mb-3">
-                <span onClick={handleSendNotification} style={{ cursor: 'pointer', color: '#0d6efd', fontSize: '1.8rem' }}>
+                <span
+                  onClick={handleSendNotification}
+                  style={{ cursor: 'pointer', color: '#0d6efd', fontSize: '1.8rem' }}
+                >
                   <CIcon icon={cilEnvelopeOpen} />
                 </span>
                 <p style={{ margin: '0.5rem 0', fontSize: '0.9rem' }}>Send</p>
@@ -559,11 +669,17 @@ const Provider = () => {
                 <p>No notifications sent yet.</p>
               ) : (
                 notifications.map((notif) => (
-                  <div key={notif._id} className="d-flex justify-content-between align-items-center border p-2 my-1">
+                  <div
+                    key={notif._id}
+                    className="d-flex justify-content-between align-items-center border p-2 my-1"
+                  >
                     <div>
                       <strong>{notif.type.toUpperCase()}</strong>: {notif.text}
                     </div>
-                    <span onClick={() => handleDeleteNotification(notif._id)} style={{ cursor: 'pointer', color: 'red', fontSize: '1.3rem' }}>
+                    <span
+                      onClick={() => handleDeleteNotification(notif._id)}
+                      style={{ cursor: 'pointer', color: 'red', fontSize: '1.3rem' }}
+                    >
                       <CIcon icon={cilTrash} />
                     </span>
                   </div>
@@ -579,7 +695,12 @@ const Provider = () => {
         </CModalFooter>
       </CModal>
 
-      <CModal visible={isChatModalOpen} onClose={() => setIsChatModalOpen(false)} size="md" className="hunter-modal">
+      <CModal
+        visible={isChatModalOpen}
+        onClose={() => setIsChatModalOpen(false)}
+        size="md"
+        className="hunter-modal"
+      >
         <CModalHeader onClose={() => setIsChatModalOpen(false)}>
           <CModalTitle>Chat with {chatUser?.contactName || chatUser?.name}</CModalTitle>
         </CModalHeader>
@@ -589,16 +710,24 @@ const Provider = () => {
               <p>No messages yet.</p>
             ) : (
               chatMessages.map((msg, index) => (
-                <div key={index} style={{ textAlign: msg.senderId === currentUser ? 'right' : 'left', marginBottom: '10px' }}>
-                  <span style={{
-                    backgroundColor: msg.senderId === currentUser ? '#007bff' : '#f1f1f1',
-                    color: msg.senderId === currentUser ? '#fff' : '#333',
-                    padding: '10px 15px',
-                    borderRadius: '20px',
-                    display: 'inline-block',
-                    maxWidth: '70%',
-                    wordBreak: 'break-word'
-                  }}>
+                <div
+                  key={index}
+                  style={{
+                    textAlign: msg.senderId === currentUser ? 'right' : 'left',
+                    marginBottom: '10px',
+                  }}
+                >
+                  <span
+                    style={{
+                      backgroundColor: msg.senderId === currentUser ? '#007bff' : '#f1f1f1',
+                      color: msg.senderId === currentUser ? '#fff' : '#333',
+                      padding: '10px 15px',
+                      borderRadius: '20px',
+                      display: 'inline-block',
+                      maxWidth: '70%',
+                      wordBreak: 'break-word',
+                    }}
+                  >
                     {msg.msg}
                   </span>
                 </div>
@@ -616,7 +745,9 @@ const Provider = () => {
                 />
               </CCol>
               <CCol md={2}>
-                <CButton color="primary" onClick={handleSendChatMessage}>Send</CButton>
+                <CButton color="primary" onClick={handleSendChatMessage}>
+                  Send
+                </CButton>
               </CCol>
             </CRow>
           </div>
