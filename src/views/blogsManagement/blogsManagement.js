@@ -25,30 +25,26 @@ import '../Users/Usermanagement.css'
 
 const API_CREATE = "http://3.223.253.106:7777/api/blog/postBlog"
 const API_GET = "http://3.223.253.106:7777/api/blog/getAll"
-const API_DELETE = "http://3.223.253.106:7777/api/blog/delete" // DELETE: /:id
-const API_UPDATE = "http://3.223.253.106:7777/api/blog/update"   // PUT: /:id
-const API_GET_BY_ID = "http://3.223.253.106:7777/api/blog/getById" // GET: /:id
+const API_DELETE = "http://3.223.253.106:7777/api/blog/delete" 
+const API_UPDATE = "http://3.223.253.106:7777/api/blog/update"   
+const API_GET_BY_ID = "http://3.223.253.106:7777/api/blog/getById" 
 
 const stripHtml = (html) => html.replace(/<[^>]+>/g, '');
 
 const BlogManagement = () => {
-  // State for creating blog posts
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
   const [image, setImage] = useState(null);
   const [blogs, setBlogs] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  // State for editing blog posts
   const [showEditModal, setShowEditModal] = useState(false);
   const [editBlog, setEditBlog] = useState(null);
 
-  // State for reading full blog post
   const [showReadModal, setShowReadModal] = useState(false);
   const [readBlog, setReadBlog] = useState(null);
   const [readLoading, setReadLoading] = useState(false);
 
-  // Create a new blog post
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -65,7 +61,7 @@ const BlogManagement = () => {
       });
       const result = await res.json();
       if (res.ok) {
-        window.alert("Blog post created successfully!");
+        window.alert(result.message || "Blog post created successfully!");
         fetchBlogs();
         setTitle('');
         setContent('');
@@ -80,15 +76,14 @@ const BlogManagement = () => {
     setLoading(false);
   };
 
-  // Fetch all blog posts from the API
   const fetchBlogs = async () => {
     try {
       const res = await fetch(API_GET);
       const result = await res.json();
-      if (Array.isArray(result)) {
+      if (result.blog && Array.isArray(result.blog)) {
+        setBlogs(result.blog);
+      } else if (Array.isArray(result)) {
         setBlogs(result);
-      } else if (result.data && Array.isArray(result.data)) {
-        setBlogs(result.data);
       } else {
         setBlogs([]);
       }
@@ -97,7 +92,6 @@ const BlogManagement = () => {
     }
   };
 
-  // Delete a blog post by id
   const handleDeleteBlog = async (id, e) => {
     e.stopPropagation();
     if (window.confirm("Are you sure you want to delete this blog post?")) {
@@ -105,7 +99,7 @@ const BlogManagement = () => {
         const res = await fetch(`${API_DELETE}/${id}`, { method: 'DELETE' });
         const result = await res.json();
         if (res.ok) {
-          window.alert("Blog post deleted successfully!");
+          window.alert(result.message || "Blog post deleted successfully!");
           fetchBlogs();
         } else {
           window.alert(result.error || "Error deleting blog post.");
@@ -117,7 +111,6 @@ const BlogManagement = () => {
     }
   };
 
-  // Open edit modal and load blog data into state
   const openEditModal = (blog, e) => {
     e.stopPropagation();
     setEditBlog({ ...blog });
@@ -128,7 +121,6 @@ const BlogManagement = () => {
     setEditBlog(prev => ({ ...prev, [field]: value }));
   };
 
-  // Save changes for the edited blog post
   const handleSaveEditBlog = async () => {
     if (!editBlog) return;
     try {
@@ -144,7 +136,7 @@ const BlogManagement = () => {
       });
       const result = await res.json();
       if (res.ok) {
-        window.alert("Blog post updated successfully!");
+        window.alert(result.message || "Blog post updated successfully!");
         fetchBlogs();
         setShowEditModal(false);
         setEditBlog(null);
@@ -157,13 +149,12 @@ const BlogManagement = () => {
     }
   };
 
-  // Handle card click to fetch full blog details
   const handleCardClick = async (id) => {
     setReadLoading(true);
     try {
       const res = await fetch(`${API_GET_BY_ID}/${id}`);
       const result = await res.json();
-      const blogData = result.data || result;
+      const blogData = result.blog ? result.blog : result;
       if (res.ok && blogData) {
         setReadBlog(blogData);
         setShowReadModal(true);
@@ -183,7 +174,6 @@ const BlogManagement = () => {
 
   return (
     <>
-      {/* Create Blog Section */}
       <CContainer fluid className="d-flex align-items-center justify-content-center mt-5">
         <CCard
           className="voucher-card shadow"
@@ -244,7 +234,6 @@ const BlogManagement = () => {
         </CCard>
       </CContainer>
 
-      {/* Blog Listing Section */}
       <CContainer fluid className="mt-5">
         <CRow>
           {blogs && blogs.length > 0 ? (
@@ -318,7 +307,6 @@ const BlogManagement = () => {
         </CRow>
       </CContainer>
 
-      {/* Read Blog Modal */}
       {showReadModal && (
         <CModal
           scrollable
@@ -359,7 +347,6 @@ const BlogManagement = () => {
         </CModal>
       )}
 
-      {/* Edit Blog Modal */}
       {showEditModal && editBlog && (
         <CModal
           scrollable
