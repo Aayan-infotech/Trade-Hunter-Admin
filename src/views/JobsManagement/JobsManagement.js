@@ -20,6 +20,7 @@ import {
   CPagination,
   CFormInput,
   CPaginationItem,
+  CBadge,
 } from "@coreui/react";
 import CIcon from "@coreui/icons-react";
 import {
@@ -34,6 +35,24 @@ const formatDate = (dateObj) => {
   if (!dateObj) return "N/A";
   const date = new Date(dateObj);
   return date.toLocaleDateString();
+};
+
+// Helper function to get badge color based on job status
+const getJobStatusBadgeColor = (status) => {
+  switch (status) {
+    case "Pending":
+      return "warning";
+    case "Assigned":
+      return "info";
+    case "InProgress":
+      return "primary";
+    case "Completed":
+      return "success";
+    case "Deleted":
+      return "danger";
+    default:
+      return "secondary";
+  }
 };
 
 const JobsManagement = () => {
@@ -164,7 +183,11 @@ const JobsManagement = () => {
           <h4>Jobs Management</h4>
           <div
             className="search-container"
-            style={{ display: "flex", gap: "10px", alignItems: "center" }}
+            style={{
+              display: "flex",
+              gap: "10px",
+              alignItems: "center",
+            }}
           >
             <select
               value={jobStatusFilter}
@@ -231,22 +254,29 @@ const JobsManagement = () => {
                           ? job.businessType.join(", ")
                           : job.businessType}
                       </CTableDataCell>
-                      <CTableDataCell>{job.jobStatus}</CTableDataCell>
+                      <CTableDataCell>
+                        <CBadge color={getJobStatusBadgeColor(job.jobStatus)}>
+                          {job.jobStatus}
+                        </CBadge>
+                      </CTableDataCell>
                       <CTableDataCell className="actions-cell">
                         <CIcon
                           className="action-icon view-icon"
+                          title="view Job"
                           onClick={() => handleViewJob(job)}
                           icon={cilViewColumn}
                           size="lg"
                         />
                         <CIcon
                           className="action-icon edit-icon"
+                          title="edit Job"
                           onClick={() => handleEditJob(job)}
                           icon={cilPencil}
                           size="lg"
                         />
                         <CIcon
                           className="action-icon delete-icon"
+                          title="delete Job"
                           onClick={() => handleDeleteJob(job._id)}
                           icon={cilTrash}
                           size="lg"

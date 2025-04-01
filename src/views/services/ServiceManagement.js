@@ -130,18 +130,21 @@ const ServiceManagement = () => {
                     <CTableDataCell className="service-actions-cell">
                       <CIcon
                         className="action-icon view-icon me-2"
+                        title='view service'
                         onClick={() => handleViewService(service)}
                         icon={cilViewColumn}
                         size="lg"
                       />
                       <CIcon
                         className="action-icon edit-icon me-2"
+                        title='edit service'
                         onClick={() => handleEditService(service)}
                         icon={cilPencil}
                         size="lg"
                       />
                       <CIcon
                         className="action-icon delete-icon"
+                        title='delete service'
                         onClick={() => handleDeleteService(service._id)}
                         icon={cilTrash}
                         size="lg"

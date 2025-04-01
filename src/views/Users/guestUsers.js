@@ -144,7 +144,7 @@ const GuestUsers = () => {
   const handleDeleteUser = async (userId) => {
     if (window.confirm('Are you sure you want to delete this guest user?')) {
       try {
-        await axios.delete(`http://3.223.253.106:7777/api/Prvdr/${userId}`);
+        await axios.delete(`http://3.223.253.106:7777/api/Prvdr/delete/${userId}`);
         alert('User deleted successfully.');
         fetchGuestUsers();
       } catch (error) {
@@ -203,18 +203,21 @@ const GuestUsers = () => {
                     >
                       <CIcon
                         className="action-icon view-icon"
+                        title='view'
                         onClick={() => handleViewUser(user)}
                         icon={cilViewColumn}
                         size="lg"
                       />
                       <CIcon
                         className="action-icon notif-icon"
+                        title='send Notification'
                         onClick={() => handleNotification(user)}
                         icon={cilEnvelopeOpen}
                         size="lg"
                       />
                       <CIcon
                         className="action-icon delete-icon"
+                        title='delete user'
                         onClick={() => handleDeleteUser(user._id)}
                         icon={cilTrash}
                         size="lg"

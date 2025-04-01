@@ -286,14 +286,16 @@ const Hunter = () => {
               value={search}
               onChange={handleSearch}
               className="hunter-search-input"
+              title="Search by name, email or address"
             />
-            <CButton color="primary" onClick={fetchUsers} className="hunter-search-button">
+            <CButton color="primary" onClick={fetchUsers} className="hunter-search-button" title="Search">
               <CIcon icon={cilSearch} /> Search
             </CButton>
             <CFormSelect
               value={statusFilter}
               onChange={(e) => { setStatusFilter(e.target.value); setPage(1); }}
               className="hunter-status-select"
+              title="Filter by user status"
             >
               <option value="">All Status</option>
               <option value="Active">Active</option>
@@ -337,22 +339,22 @@ const Hunter = () => {
                       <CTableDataCell>{user.accountStatus}</CTableDataCell>
                       <CTableDataCell>{user.emailVerified ? 'Yes' : 'No'}</CTableDataCell>
                       <CTableDataCell className="hunter-actions-cell">
-                        <span onClick={() => handleView(user)} className="hunter-action-icon">
+                        <span onClick={() => handleView(user)} className="hunter-action-icon" title="View User">
                           <CIcon icon={cilInfo} size="lg" />
                         </span>
-                        <span onClick={() => handleNotification(user)} className="hunter-action-icon">
+                        <span onClick={() => handleNotification(user)} className="hunter-action-icon" title="Send Notification">
                           <CIcon icon={cilEnvelopeOpen} size="lg" />
                         </span>
-                        <span onClick={() => handleChat(user)} className="hunter-action-icon">
+                        <span onClick={() => handleChat(user)} className="hunter-action-icon" title="Chat">
                           <CIcon icon={cilCommentBubble} size="lg" />
                         </span>
-                        <span onClick={() => handleEdit(user)} className="hunter-action-icon">
+                        <span onClick={() => handleEdit(user)} className="hunter-action-icon" title="Edit User">
                           <CIcon icon={cilPencil} size="lg" />
                         </span>
-                        <span onClick={() => handleDelete(user._id)} className="hunter-action-icon">
+                        <span onClick={() => handleDelete(user._id)} className="hunter-action-icon" title="Delete User">
                           <CIcon icon={cilTrash} size="lg" />
                         </span>
-                        <span onClick={() => JobsManagemen(user._id)} className="hunter-action-icon">
+                        <span onClick={() => JobsManagemen(user._id)} className="hunter-action-icon" title="Manage Jobs">
                           <CIcon icon={cilBriefcase} size="lg" />
                         </span>
                       </CTableDataCell>
@@ -363,11 +365,11 @@ const Hunter = () => {
             </div>
           )}
           <div className="hunter-pagination">
-            <CButton color="secondary" onClick={prevPage} disabled={page === 1} className="hunter-pagination-btn">
+            <CButton color="secondary" onClick={prevPage} disabled={page === 1} className="hunter-pagination-btn" title="Previous Page">
               Previous
             </CButton>
             <span className="hunter-page-info">Page: {page}</span>
-            <CButton color="secondary" onClick={nextPage} disabled={!hasMoreData} className="hunter-pagination-btn">
+            <CButton color="secondary" onClick={nextPage} disabled={!hasMoreData} className="hunter-pagination-btn" title="Next Page">
               Next
             </CButton>
           </div>
@@ -379,19 +381,19 @@ const Hunter = () => {
           <CModalTitle>Edit User</CModalTitle>
         </CModalHeader>
         <CModalBody className="hunter-modal-body">
-          <CFormInput type="text" name="name" label="Name" value={editUser?.name || ''} onChange={handleChange} className="hunter-modal-input" />
-          <CFormInput type="email" name="email" label="Email" value={editUser?.email || ''} onChange={handleChange} className="hunter-modal-input" />
-          <CFormInput type="text" name="phoneNo" label="Phone Number" value={editUser?.phoneNo || ''} onChange={handleChange} className="hunter-modal-input" />
-          <CFormSelect name="userStatus" label="User Status" value={editUser?.userStatus || ''} onChange={handleChange} className="hunter-modal-select">
+          <CFormInput type="text" name="name" label="Name" value={editUser?.name || ''} onChange={handleChange} className="hunter-modal-input" title="Edit Name" />
+          <CFormInput type="email" name="email" label="Email" value={editUser?.email || ''} onChange={handleChange} className="hunter-modal-input" title="Edit Email" />
+          <CFormInput type="text" name="phoneNo" label="Phone Number" value={editUser?.phoneNo || ''} onChange={handleChange} className="hunter-modal-input" title="Edit Phone Number" />
+          <CFormSelect name="userStatus" label="User Status" value={editUser?.userStatus || ''} onChange={handleChange} className="hunter-modal-select" title="Edit User Status">
             <option value="Active">Active</option>
             <option value="Suspended">Suspended</option>
             <option value="Pending">Pending</option>
           </CFormSelect>
-          <CFormSelect name="adminVerified" label="Admin Verified" value={editUser?.adminVerified || ''} onChange={handleChange} className="hunter-modal-select">
+          <CFormSelect name="adminVerified" label="Admin Verified" value={editUser?.adminVerified || ''} onChange={handleChange} className="hunter-modal-select" title="Edit Admin Verified Status">
             <option value="Verified">Verified</option>
             <option value="Not-Verified">Not Verified</option>
           </CFormSelect>
-          <CFormSelect name="accountStatus" label="Account Status" value={editUser?.accountStatus || ''} onChange={handleChange} className="hunter-modal-select">
+          <CFormSelect name="accountStatus" label="Account Status" value={editUser?.accountStatus || ''} onChange={handleChange} className="hunter-modal-select" title="Edit Account Status">
             <option value="Suspend">Suspend</option>
             <option value="Deactivate">Deactivate</option>
             <option value="Reactivate">Reactivate</option>
@@ -402,16 +404,17 @@ const Hunter = () => {
             value={editUser?.emailVerified ? 'true' : 'false'}
             onChange={(e) => setEditUser(prev => ({ ...prev, emailVerified: e.target.value === 'true' }))}
             className="hunter-modal-select"
+            title="Edit Email Verification"
           >
             <option value="true">Yes</option>
             <option value="false">No</option>
           </CFormSelect>
         </CModalBody>
         <CModalFooter className="hunter-modal-footer">
-          <CButton color="secondary" onClick={() => setIsEditModalOpen(false)} className="hunter-modal-btn">
+          <CButton color="secondary" onClick={() => setIsEditModalOpen(false)} className="hunter-modal-btn" title="Close Edit Modal">
             Close
           </CButton>
-          <CButton color="primary" onClick={handleSaveEdit} className="hunter-modal-btn">
+          <CButton color="primary" onClick={handleSaveEdit} className="hunter-modal-btn" title="Save Changes">
             Save Changes
           </CButton>
         </CModalFooter>
@@ -426,7 +429,7 @@ const Hunter = () => {
             <div className="hunter-view-content">
               {viewUser.images && (
                 <div className="hunter-view-image">
-                  <img src={viewUser.images} alt="User" className="hunter-user-image" />
+                  <img src={viewUser.images} alt="User" className="hunter-user-image" title="User Image" />
                 </div>
               )}
               <p><strong>Name:</strong> {viewUser.name}</p>
@@ -457,7 +460,7 @@ const Hunter = () => {
           )}
         </CModalBody>
         <CModalFooter className="hunter-modal-footer">
-          <CButton color="secondary" onClick={() => setIsViewModalOpen(false)} className="hunter-modal-btn">
+          <CButton color="secondary" onClick={() => setIsViewModalOpen(false)} className="hunter-modal-btn" title="Close View Modal">
             Close
           </CButton>
         </CModalFooter>
@@ -472,7 +475,7 @@ const Hunter = () => {
             <>
               <div className="hunter-notif-section mb-3">
                 <label className="hunter-notif-label"><strong>Notification Type</strong></label>
-                <CFormSelect value={notifType} onChange={(e) => setNotifType(e.target.value)} className="hunter-notif-select">
+                <CFormSelect value={notifType} onChange={(e) => setNotifType(e.target.value)} className="hunter-notif-select" title="Select Notification Type">
                   <option value="alert">Alert</option>
                   <option value="reminder">Reminder</option>
                   <option value="promotion">Promotion</option>
@@ -486,9 +489,10 @@ const Hunter = () => {
                   value={notifText}
                   onChange={(e) => setNotifText(e.target.value)}
                   className="hunter-notif-input"
+                  title="Enter Notification Text"
                 />
               </div>
-              <div className="hunter-notif-send text-center mb-3">
+              <div className="hunter-notif-send text-center mb-3" title="Send Notification">
                 <span onClick={handleSendNotification} className="hunter-notif-send-icon">
                   <CIcon icon={cilEnvelopeOpen} size="lg" />
                 </span>
@@ -504,7 +508,7 @@ const Hunter = () => {
                     <div className="hunter-notif-text">
                       <strong>{notif.type.toUpperCase()}</strong>: {notif.text}
                     </div>
-                    <span onClick={() => handleDeleteNotification(notif._id)} className="hunter-notif-delete">
+                    <span onClick={() => handleDeleteNotification(notif._id)} className="hunter-notif-delete" title="Delete Notification">
                       <CIcon icon={cilTrash} size="lg" />
                     </span>
                   </div>
@@ -514,14 +518,14 @@ const Hunter = () => {
           )}
         </CModalBody>
         <CModalFooter className="hunter-modal-footer">
-          <CButton color="secondary" onClick={() => setIsNotifModalOpen(false)} className="hunter-modal-btn">
+          <CButton color="secondary" onClick={() => setIsNotifModalOpen(false)} className="hunter-modal-btn" title="Close Notification Modal">
             Close
           </CButton>
         </CModalFooter>
       </CModal>
 
       <CModal visible={isChatModalOpen} onClose={() => setIsChatModalOpen(false)} size="md" className="hunter-modal">
-        <CModalHeader onClose={() => setIsChatModalOpen(false)}>
+        <CModalHeader onClose={() => setIsChatModalOpen(false)} title="Chat Modal">
           <CModalTitle>Chat with {chatUser?.contactName || chatUser?.name}</CModalTitle>
         </CModalHeader>
         <div style={{ display: 'flex', flexDirection: 'column', height: '400px' }}>
@@ -539,7 +543,7 @@ const Hunter = () => {
                     display: 'inline-block',
                     maxWidth: '70%',
                     wordBreak: 'break-word'
-                  }}>
+                  }} title={msg.senderId === currentUser ? 'Sent Message' : 'Received Message'}>
                     {msg.msg}
                   </span>
                 </div>
@@ -554,10 +558,11 @@ const Hunter = () => {
                   placeholder="Type a message..."
                   value={newChatMessage}
                   onChange={(e) => setNewChatMessage(e.target.value)}
+                  title="Type your message here"
                 />
               </CCol>
               <CCol md={2}>
-                <CButton color="primary" onClick={handleSendChatMessage}>Send</CButton>
+                <CButton color="primary" onClick={handleSendChatMessage} title="Send Chat Message">Send</CButton>
               </CCol>
             </CRow>
           </div>

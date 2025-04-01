@@ -253,6 +253,7 @@ const SubscriptionManagement = () => {
                       <CTableDataCell style={{ textAlign: 'left', display: 'flex', alignItems: 'center' }}>
                         <CIcon
                           className="fw-bold text-success me-2"
+                          title='view subscription'
                           onClick={() => handleViewSubscription(subscription)}
                           icon={cilViewColumn}
                           size="lg"
@@ -260,6 +261,7 @@ const SubscriptionManagement = () => {
                         />
                         <CIcon
                           className="fw-bold text-success me-2"
+                          title='edit subscription'
                           onClick={() => handleEditSubscription(subscription)}
                           icon={cilPencil}
                           size="lg"
@@ -267,6 +269,7 @@ const SubscriptionManagement = () => {
                         />
                         <CIcon
                           className="fw-bold text-danger me-2"
+                          title='delete subscription'
                           onClick={() => handleDeleteSubscription(subscription._id)}
                           icon={cilTrash}
                           size="lg"
