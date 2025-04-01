@@ -365,16 +365,7 @@ const AnalyticsReports = () => {
                   data={providerStatsChartData}
                   options={providerStatsChartOptions}
                 />
-                <table className="table mt-3">
-                  <tbody>
-                    <tr>
-                      <td>
-                        <strong>Response Time</strong>
-                      </td>
-                      <td>{selectedProvider.responseTime}</td>
-                    </tr>
-                  </tbody>
-                </table>
+                
               </CCardBody>
             </CCard>
           )}
