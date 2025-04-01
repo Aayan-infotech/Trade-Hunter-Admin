@@ -115,6 +115,7 @@ const SubscriptionUsersManagement = () => {
                       <CTableDataCell>
                         <CIcon
                           className="me-2 text-primary cursor-pointer"
+                          title="view"
                           onClick={() => handleViewSubscription(subscription)}
                           icon={cilViewColumn}
                           size="lg"

@@ -119,7 +119,7 @@ const Provider = () => {
   const handleDelete = async (id) => {
     if (window.confirm('Are you sure you want to delete this user?')) {
       try {
-        await axios.delete(`http://3.223.253.106:7777/api/prvdr//${id}`)
+        await axios.delete(`http://3.223.253.106:7777/api/prvdr/delete/${id}`)
         fetchUsers()
       } catch (error) {
         console.error('Error deleting user:', error)
@@ -362,27 +362,27 @@ const Provider = () => {
                         {user.subscriptionStatus ? 'Active' : 'Inactive'}
                       </CTableDataCell>
                       <CTableDataCell className="hunter-actions-cell">
-                        <span onClick={() => handleView(user)} className="hunter-action-icon">
+                        <span onClick={() => handleView(user)} className="hunter-action-icon" title='view'>
                           <CIcon icon={cilInfo} size="lg" />
                         </span>
                         <span
                           onClick={() => handleNotification(user)}
-                          className="hunter-action-icon"
+                          className="hunter-action-icon" title='send Notification'
                         >
                           <CIcon icon={cilEnvelopeOpen} size="lg" />
                         </span>
-                        <span onClick={() => handleChat(user)} className="hunter-action-icon">
+                        <span onClick={() => handleChat(user)} className="hunter-action-icon" title='chat'>
                           <CIcon icon={cilCommentBubble} size="lg" />
                         </span>
-                        <span onClick={() => handleEdit(user)} className="hunter-action-icon">
+                        <span onClick={() => handleEdit(user)} className="hunter-action-icon" title='edit User'>
                           <CIcon icon={cilPencil} size="lg" />
                         </span>
-                        <span onClick={() => handleDelete(user._id)} className="hunter-action-icon">
+                        <span onClick={() => handleDelete(user._id)} className="hunter-action-icon" title='delete user'>
                           <CIcon icon={cilTrash} size="lg" />
                         </span>
                         <span
                           onClick={() => handleAssignedJobs(user._id)}
-                          className="hunter-action-icon"
+                          className="hunter-action-icon" title='delete user'
                         >
                           <CIcon icon={cilBriefcase} size="lg" />
                         </span>

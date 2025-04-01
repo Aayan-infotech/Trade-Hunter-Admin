@@ -122,7 +122,7 @@ const ContentAndCommunicationManagement = () => {
       </CHeader>
       
       {/* Module Navigation Row: Left, Center, Right */}
-      <CRow className="mb-4" style={{ backgroundColor: '#f0f2f5', padding: '10px 0' }}>
+      <CRow className="mb-4 module-nav-row" style={{ padding: '10px 0' }}>
         <CCol md="4" className="text-end">
           <CButton 
             color={activeModule === 'Static Content' ? 'primary' : 'secondary'} 

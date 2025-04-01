@@ -260,7 +260,7 @@ const AnalyticsReports = () => {
               Retention Rate
             </CCardHeader>
             <CCardBody>
-              <h3>{retentionRate}%</h3>
+            <h3>{!isNaN(Number(retentionRate)) ? Number(retentionRate).toFixed(2) : "0.00"}%</h3>
               <CIcon icon={cilCalendar} size="xl" />
             </CCardBody>
           </CCard>
