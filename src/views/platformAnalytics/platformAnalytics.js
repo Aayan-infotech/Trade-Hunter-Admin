@@ -19,6 +19,8 @@ import {
   Tooltip,
   Legend,
 } from "chart.js";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faStar } from "@fortawesome/free-solid-svg-icons";
 import "../Users/Usermanagement.css";
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Tooltip, Legend);
@@ -37,6 +39,49 @@ const AnalyticsReports = () => {
   const [providerSearch, setProviderSearch] = useState("");
   const [providerList, setProviderList] = useState([]);
   const [selectedProvider, setSelectedProvider] = useState(null);
+  const [providerStatsChartData, setProviderStatsChartData] = useState(null);
+  const [providerStatsChartOptions, setProviderStatsChartOptions] = useState(null);
+
+  // Helper function to render stars with partial filling
+  const renderStars = (rating) => {
+    const stars = [];
+    for (let i = 0; i < 5; i++) {
+      let fillPercentage = 0;
+      if (rating >= i + 1) {
+        fillPercentage = 100;
+      } else if (rating > i) {
+        fillPercentage = (rating - i) * 100;
+      }
+      stars.push(
+        <span
+          key={i}
+          style={{
+            position: "relative",
+            display: "inline-block",
+            width: "1em",
+          }}
+        >
+          {/* Empty star */}
+          <FontAwesomeIcon icon={faStar} style={{ color: "#e4e5e9" }} />
+          {/* Overlay filled star with width set to fillPercentage */}
+          <span
+            style={{
+              position: "absolute",
+              top: 0,
+              left: 0,
+              width: `${fillPercentage}%`,
+              overflow: "hidden",
+              whiteSpace: "nowrap",
+              color: "#ffc107",
+            }}
+          >
+            <FontAwesomeIcon icon={faStar} />
+          </span>
+        </span>
+      );
+    }
+    return <span>{stars}</span>;
+  };
 
   useEffect(() => {
     const url = `http://3.223.253.106:7777/api/Prvdr?search=${providerSearch}`;
@@ -122,8 +167,10 @@ const AnalyticsReports = () => {
       acceptanceCount: provider.jobAcceptCount,
       completionCount: provider.jobCompleteCount,
       responseTime: provider.responseTime || "2 hrs",
+      avgRating: provider.avgRating,
       name: provider.name || provider.contactName,
     });
+
     fetch(`http://3.223.253.106:7777/api/provider/completionRate/${providerId}`)
       .then((res) => res.json())
       .then((data) => {
@@ -137,70 +184,91 @@ const AnalyticsReports = () => {
       .catch((err) =>
         console.error("Error fetching provider completion rate:", err)
       );
+
+    fetch(`http://3.223.253.106:7777/api/rating/getAvgRating/${providerId}`)
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.data && data.data.avgRating !== undefined) {
+          setSelectedProvider((prev) => ({
+            ...prev,
+            avgRating: data.data.avgRating,
+          }));
+        } else if (data.avgRating !== undefined) {
+          setSelectedProvider((prev) => ({
+            ...prev,
+            avgRating: data.avgRating,
+          }));
+        }
+      })
+      .catch((err) =>
+        console.error("Error fetching provider average rating:", err)
+      );
   };
 
-  let providerStatsChartData = null;
-  let providerStatsChartOptions = null;
-  if (selectedProvider) {
-    const acceptanceCount = parseInt(selectedProvider.acceptanceCount) || 0;
-    const completionCount = parseInt(selectedProvider.completionCount) || 0;
-    const completionRate = parseFloat(selectedProvider.completionRate) || 0;
+  // Prepare provider stats chart data and options if selectedProvider is available
+  useEffect(() => {
+    if (selectedProvider) {
+      const acceptanceCount = parseInt(selectedProvider.acceptanceCount) || 0;
+      const completionCount = parseInt(selectedProvider.completionCount) || 0;
+      const completionRate = parseFloat(selectedProvider.completionRate) || 0;
 
-    providerStatsChartData = {
-      labels: ["Acceptance Count", "Completion Count", "Completion Rate"],
-      datasets: [
-        {
-          label: "Provider Stats",
-          data: [acceptanceCount, completionCount, completionRate],
-          backgroundColor: [
-            "rgba(75, 192, 192, 0.6)",
-            "rgba(153, 102, 255, 0.6)",
-            "rgba(255, 159, 64, 0.6)",
-          ],
-          borderColor: [
-            "rgba(75, 192, 192, 1)",
-            "rgba(153, 102, 255, 1)",
-            "rgba(255, 159, 64, 1)",
-          ],
-          borderWidth: 1,
-        },
-      ],
-    };
+      setProviderStatsChartData({
+        labels: ["Acceptance Count", "Completion Count", "Completion Rate"],
+        datasets: [
+          {
+            label: "Provider Stats",
+            data: [acceptanceCount, completionCount, completionRate],
+            backgroundColor: [
+              "rgba(75, 192, 192, 0.6)",
+              "rgba(153, 102, 255, 0.6)",
+              "rgba(255, 159, 64, 0.6)",
+            ],
+            borderColor: [
+              "rgba(75, 192, 192, 1)",
+              "rgba(153, 102, 255, 1)",
+              "rgba(255, 159, 64, 1)",
+            ],
+            borderWidth: 1,
+          },
+        ],
+      });
 
-    providerStatsChartOptions = {
-      indexAxis: "y",
-      scales: {
-        x: {
-          ticks: {
-            callback: (value, index) => {
-              if (index === 2) {
-                return value + "%";
-              }
-              return value;
+      setProviderStatsChartOptions({
+        indexAxis: "y",
+        scales: {
+          x: {
+            ticks: {
+              callback: (value, index) => {
+                if (index === 2) {
+                  return value + "%";
+                }
+                return value;
+              },
             },
           },
         },
-      },
-      plugins: {
-        legend: {
-          display: false,
-        },
-        tooltip: {
-          callbacks: {
-            label: (context) => {
-              const label = providerStatsChartData.labels[context.dataIndex];
-              let value = context.parsed.x;
-              if (context.dataIndex === 2) {
-                return `${label}: ${value}%`;
-              }
-              return `${label}: ${value}`;
+        plugins: {
+          legend: {
+            display: false,
+          },
+          tooltip: {
+            callbacks: {
+              label: (context) => {
+                const label =
+                  providerStatsChartData.labels[context.dataIndex];
+                let value = context.parsed.x;
+                if (context.dataIndex === 2) {
+                  return `${label}: ${value}%`;
+                }
+                return `${label}: ${value}`;
+              },
             },
           },
         },
-      },
-      maintainAspectRatio: false,
-    };
-  }
+        maintainAspectRatio: false,
+      });
+    }
+  }, [selectedProvider]);
 
   const jobPostingData = {
     labels: ["Daily", "Weekly", "Monthly"],
@@ -260,7 +328,12 @@ const AnalyticsReports = () => {
               Retention Rate
             </CCardHeader>
             <CCardBody>
-            <h3>{!isNaN(Number(retentionRate)) ? Number(retentionRate).toFixed(2) : "0.00"}%</h3>
+              <h3>
+                {!isNaN(Number(retentionRate))
+                  ? Number(retentionRate).toFixed(2)
+                  : "0.00"}
+                %
+              </h3>
               <CIcon icon={cilCalendar} size="xl" />
             </CCardBody>
           </CCard>
@@ -278,10 +351,7 @@ const AnalyticsReports = () => {
 
       <CRow className="mb-4">
         <CCol md={6}>
-          <CCard
-            className="mb-3 analytics-card"
-            style={{ height: "300px" }}
-          >
+          <CCard className="mb-3 analytics-card" style={{ height: "300px" }}>
             <CCardHeader className="service-card-header">
               Service Demand
             </CCardHeader>
@@ -300,10 +370,7 @@ const AnalyticsReports = () => {
           </CCard>
         </CCol>
         <CCol md={6}>
-          <CCard
-            className="text-center analytics-card"
-            style={{ height: "300px" }}
-          >
+          <CCard className="text-center analytics-card" style={{ height: "300px" }}>
             <CCardHeader className="service-card-header">
               Geographical Demand
             </CCardHeader>
@@ -358,14 +425,23 @@ const AnalyticsReports = () => {
           {selectedProvider && (
             <CCard className="mt-3 provider-stats-card">
               <CCardHeader className="service-card-header">
-                Provider Stats: {selectedProvider.name || selectedProvider.contactName}
+                Provider Stats:{" "}
+                {selectedProvider.name || selectedProvider.contactName}
               </CCardHeader>
               <CCardBody style={{ height: "200px" }}>
-                <Bar
-                  data={providerStatsChartData}
-                  options={providerStatsChartOptions}
-                />
-                
+                {providerStatsChartData && providerStatsChartOptions && (
+                  <Bar
+                    data={providerStatsChartData}
+                    options={providerStatsChartOptions}
+                  />
+                )}
+                <div className="mt-3">
+                  <strong>Average Rating: </strong>
+                  {selectedProvider.avgRating
+                    ? Number(selectedProvider.avgRating).toFixed(2)
+                    : "0.00"}{" "}
+                  {renderStars(Number(selectedProvider.avgRating) || 0)}
+                </div>
               </CCardBody>
             </CCard>
           )}
