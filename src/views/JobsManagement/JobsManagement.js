@@ -73,13 +73,11 @@ const JobsManagement = () => {
     setError(null);
     try {
       let response;
-      // If a job status filter is applied (not "All"), use the filter API
       if (jobStatusFilter !== "All") {
         response = await axios.get(
           `http://3.223.253.106:7777/api/jobs/filter?status=${jobStatusFilter}&page=${page}&limit=10`
         );
       } else {
-        // Otherwise, use the default endpoint with search parameter
         response = await axios.get(
           `http://3.223.253.106:7777/api/jobs/?page=${page}&limit=10&search=${search}`
         );
