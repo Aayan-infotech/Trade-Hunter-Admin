@@ -79,62 +79,84 @@ const JobsHuunter = () => {
       {/* Scrollable container for job cards */}
       <div style={{ maxHeight: "600px", overflowY: "auto", paddingRight: "15px" }}>
         <CRow className="g-4">
-          {jobData.map((job) => (
-            <CCol md={6} key={job._id}>
-              <CCard className="shadow-sm h-100">
-                <CCardHeader className="bg-secondary text-white">
-                  <h5 className="mb-0">{job.title}</h5>
-                </CCardHeader>
-                <CCardBody>
-                  <div className="mb-3">
-                    <strong>Location:</strong>
-                    <p className="text-muted mb-0">
-                      {job.jobLocation?.jobAddressLine || "N/A"}
-                    </p>
-                  </div>
-                  <div className="mb-3">
-                    <strong>Estimated Budget:</strong>
-                    <p className="text-muted mb-0">${job.estimatedBudget}</p>
-                  </div>
-                  <div className="mb-3">
-                    <strong>Business Type:</strong>
-                    <p className="text-muted mb-0">{job.businessType}</p>
-                  </div>
-                  <div className="mb-3">
-                    <strong>Requirements:</strong>
-                    <p className="text-muted mb-0">{job.requirements}</p>
-                  </div>
-                  <div className="mb-3">
-                    <strong>Job Status:</strong>
-                    <p className="text-muted mb-0">{job.jobStatus}</p>
-                  </div> <div className="mb-3">
-                    <strong>Job Accept Count:</strong>
-                    <p className="text-muted mb-0">{job.jobAcceptCount}</p>
-                  </div>
-                   <div className="mb-3">
-                    <strong>Accepted Provider Name and Email:</strong>
-                    <p className="text-muted mb-0">{job.provider?.contactName || "N/A"},  {job.provider?.email || ", N/A"}  </p>
-                  </div>
-                  <div className="mb-3">
-                    <strong>Timeframe:</strong>
-                    <p className="text-muted mb-0">
-                      {new Date(job.timeframe.from).toLocaleString()} to{" "}
-                      {new Date(job.timeframe.to).toLocaleString()}
-                    </p>
-                  </div>
-                  <div className="d-flex justify-content-end mt-4">
-                    <CButton
-                      color="danger"
-                      onClick={() => handleDeleteJob(job._id)}
-                      disabled={deleting}
-                    >
-                      {deleting ? "Deleting..." : "Delete Job"}
-                    </CButton>
-                  </div>
-                </CCardBody>
-              </CCard>
-            </CCol>
-          ))}
+          {jobData.map((job) => {
+            // For provider info, check and display its properties
+            const providerInfo = job.provider
+              ? `${job.provider.contactName || "N/A"}, ${job.provider.email || "N/A"}`
+              : "N/A";
+
+            // For businessType, join the array into a string
+            const businessTypeStr = Array.isArray(job.businessType)
+              ? job.businessType.join(", ")
+              : job.businessType || "N/A";
+
+            // Instead of rendering an array of objects, show the count for jobAcceptCount.
+            const acceptCount =
+              Array.isArray(job.jobAcceptCount) ? job.jobAcceptCount.length : 0;
+
+            return (
+              <CCol md={6} key={job._id}>
+                <CCard className="shadow-sm h-100">
+                  <CCardHeader className="bg-secondary text-white">
+                    <h5 className="mb-0">{job.title}</h5>
+                  </CCardHeader>
+                  <CCardBody>
+                    <div className="mb-3">
+                      <strong>Location:</strong>
+                      <p className="text-muted mb-0">
+                        {job.jobLocation?.jobAddressLine || "N/A"}
+                      </p>
+                    </div>
+                    <div className="mb-3">
+                      <strong>Estimated Budget:</strong>
+                      <p className="text-muted mb-0">${job.estimatedBudget}</p>
+                    </div>
+                    <div className="mb-3">
+                      <strong>Business Type:</strong>
+                      <p className="text-muted mb-0">{businessTypeStr}</p>
+                    </div>
+                    <div className="mb-3">
+                      <strong>Requirements:</strong>
+                      <p className="text-muted mb-0">{job.requirements}</p>
+                    </div>
+                    <div className="mb-3">
+                      <strong>Job Status:</strong>
+                      <p className="text-muted mb-0">{job.jobStatus}</p>
+                    </div>
+                    <div className="mb-3">
+                      <strong>Job Accept Count:</strong>
+                      <p className="text-muted mb-0">{acceptCount}</p>
+                    </div>
+                    <div className="mb-3">
+                      <strong>Accepted Provider Info:</strong>
+                      <p className="text-muted mb-0">{providerInfo}</p>
+                    </div>
+                    <div className="mb-3">
+                      <strong>Timeframe:</strong>
+                      <p className="text-muted mb-0">
+                        {job.timeframe?.from
+                          ? new Date(job.timeframe.from * 1000).toLocaleString()
+                          : "N/A"}{" "}
+                        to{" "}
+                        {job.timeframe?.to
+                          ? new Date(job.timeframe.to * 1000).toLocaleString()
+                          : "N/A"}
+                      </p>
+                    </div>
+                    <div className="d-flex justify-content-end mt-4">
+                      <CButton
+                        color="danger"
+                        onClick={() => handleDeleteJob(job._id)}
+                        disabled={deleting}
+                      >
+                        {deleting ? "Deleting..." : "Delete Job"}
+                      </CButton>
+                    </div>
+                  </CCardBody>
+                </CCard>
+              </CCol>
+            );
+          })}
         </CRow>
       </div>
 
