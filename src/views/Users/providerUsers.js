@@ -58,8 +58,8 @@ const Provider = () => {
   const [viewUser, setViewUser] = useState(null)
   const [notifUser, setNotifUser] = useState(null)
   const [notifications, setNotifications] = useState([])
-  const [notifType, setNotifType] = useState('alert')
-  const [notifText, setNotifText] = useState('')
+  const [notifTitle, setNotifTitle] = useState('')
+  const [notifBody, setNotifBody] = useState('')
   const [hasMoreData, setHasMoreData] = useState(true)
   const [statusFilter, setStatusFilter] = useState('')
 
@@ -165,28 +165,28 @@ const Provider = () => {
   const fetchNotifications = async (userId) => {
     try {
       const response = await axios.get(
-        `http://3.223.253.106:7777/api/notification/getAll/provider/${userId}`,
+        `http://3.223.253.106:7777/api/pushNotification/getAdminNotification/${userId}`,
       )
       setNotifications(response.data.data || [])
     } catch (error) {
       console.error('Error fetching notifications:', error)
     }
   }
-
   const handleSendNotification = async () => {
-    if (!notifText) {
-      alert('Please enter notification text.')
+    if (!notifTitle.trim() || !notifBody.trim()) {
+      alert('Please enter both notification title and body.')
       return
     }
     try {
       await axios.post(
-        `http://3.223.253.106:7777/api/notification/send/provider/${notifUser._id}`,
+        `http://3.223.253.106:7777/api/pushNotification/sendAdminNotification/${notifUser._id}`,
         {
-          type: notifType,
-          text: notifText,
+          title: notifTitle,
+          body: notifBody,
         },
       )
-      setNotifText('')
+      setNotifTitle('')
+      setNotifBody('')
       fetchNotifications(notifUser._id)
       alert('Notification sent successfully!')
     } catch (error) {
@@ -200,7 +200,7 @@ const Provider = () => {
       alert('Notification user not defined')
       return
     }
-    const deleteUrl = `http://3.223.253.106:7777/api/notification/delete/provider/${notifUser._id}/${notifId}`
+    const deleteUrl = `http://3.223.253.106:7777/api/pushNotification/deleteNotification/${notifId}`
     if (window.confirm('Are you sure you want to delete this notification?')) {
       try {
         await axios.delete(deleteUrl)
@@ -621,79 +621,84 @@ const Provider = () => {
         </CModalFooter>
       </CModal>
 
-      <CModal
-        scrollable
-        visible={isNotifModalOpen}
-        onClose={() => setIsNotifModalOpen(false)}
-        className="hunter-modal"
-      >
-        <CModalHeader className="hunter-modal-header">
-          <CModalTitle>Send Notification</CModalTitle>
-        </CModalHeader>
-        <CModalBody className="hunter-modal-body" style={{ maxHeight: '60vh', overflowY: 'auto' }}>
-          {notifUser && (
-            <>
-              <div className="mb-3">
-                <label>
-                  <strong>Notification Type</strong>
-                </label>
-                <CFormSelect value={notifType} onChange={(e) => setNotifType(e.target.value)}>
-                  <option value="alert">Alert</option>
-                  <option value="reminder">Reminder</option>
-                  <option value="promotion">Promotion</option>
-                </CFormSelect>
-              </div>
-              <div className="mb-3">
-                <label>
-                  <strong>Notification Text</strong>
-                </label>
-                <CFormInput
-                  type="text"
-                  placeholder="Enter notification text"
-                  value={notifText}
-                  onChange={(e) => setNotifText(e.target.value)}
-                />
-              </div>
-              <div className="text-center mb-3">
-                <span
-                  onClick={handleSendNotification}
-                  style={{ cursor: 'pointer', color: '#0d6efd', fontSize: '1.8rem' }}
-                >
-                  <CIcon icon={cilEnvelopeOpen} />
-                </span>
-                <p style={{ margin: '0.5rem 0', fontSize: '0.9rem' }}>Send</p>
-              </div>
-              <hr />
-              <h5>Sent Notifications</h5>
-              {notifications.length === 0 ? (
-                <p>No notifications sent yet.</p>
-              ) : (
-                notifications.map((notif) => (
-                  <div
-                    key={notif._id}
-                    className="d-flex justify-content-between align-items-center border p-2 my-1"
-                  >
-                    <div>
-                      <strong>{notif.type.toUpperCase()}</strong>: {notif.text}
-                    </div>
-                    <span
-                      onClick={() => handleDeleteNotification(notif._id)}
-                      style={{ cursor: 'pointer', color: 'red', fontSize: '1.3rem' }}
-                    >
-                      <CIcon icon={cilTrash} />
-                    </span>
-                  </div>
-                ))
-              )}
-            </>
-          )}
-        </CModalBody>
-        <CModalFooter className="hunter-modal-footer">
-          <CButton color="secondary" onClick={() => setIsNotifModalOpen(false)}>
-            Close
-          </CButton>
-        </CModalFooter>
-      </CModal>
+       <CModal
+             scrollable
+             visible={isNotifModalOpen}
+             onClose={() => setIsNotifModalOpen(false)}
+             className="hunter-modal"
+           >
+             <CModalHeader className="hunter-modal-header">
+               <CModalTitle>Send Notification</CModalTitle>
+             </CModalHeader>
+             <CModalBody className="hunter-modal-body">
+               {notifUser && (
+                 <>
+                   <div className="hunter-notif-section mb-3">
+                     <label className="hunter-notif-label">
+                       <strong>Notification Title</strong>
+                     </label>
+                     <CFormInput
+                       type="text"
+                       placeholder="Enter notification title"
+                       value={notifTitle}
+                       onChange={(e) => setNotifTitle(e.target.value)}
+                       className="hunter-notif-input"
+                       title="Enter Notification Title"
+                     />
+                   </div>
+                   <div className="hunter-notif-section mb-3">
+                     <label className="hunter-notif-label">
+                       <strong>Notification Body</strong>
+                     </label>
+                     <CFormInput
+                       type="text"
+                       placeholder="Enter notification body"
+                       value={notifBody}
+                       onChange={(e) => setNotifBody(e.target.value)}
+                       className="hunter-notif-input"
+                       title="Enter Notification Body"
+                     />
+                   </div>
+                   <div className="hunter-notif-send text-center mb-3" title="Send Notification">
+                     <span onClick={handleSendNotification} className="hunter-notif-send-icon">
+                       <CIcon icon={cilEnvelopeOpen} size="lg" />
+                     </span>
+                     <p className="hunter-notif-send-text">Send</p>
+                   </div>
+                   <hr />
+                   <h5 className="hunter-notif-header">Sent Notifications</h5>
+                   {notifications.length === 0 ? (
+                     <p>No notifications sent yet.</p>
+                   ) : (
+                     notifications.map((notif) => (
+                       <div key={notif._id} className="hunter-notif-item">
+                         <div className="hunter-notif-text">
+                           <strong>{notif.title.toUpperCase()}</strong>: {notif.body}
+                         </div>
+                         <span
+                           onClick={() => handleDeleteNotification(notif._id)}
+                           className="hunter-notif-delete"
+                           title="Delete Notification"
+                         >
+                           <CIcon icon={cilTrash} size="lg" />
+                         </span>
+                       </div>
+                     ))
+                   )}
+                 </>
+               )}
+             </CModalBody>
+             <CModalFooter className="hunter-modal-footer">
+               <CButton
+                 color="secondary"
+                 onClick={() => setIsNotifModalOpen(false)}
+                 className="hunter-modal-btn"
+                 title="Close Notification Modal"
+               >
+                 Close
+               </CButton>
+             </CModalFooter>
+           </CModal>
 
       <CModal
         visible={isChatModalOpen}
