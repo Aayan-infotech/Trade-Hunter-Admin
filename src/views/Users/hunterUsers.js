@@ -22,8 +22,6 @@ import {
   CBadge,
   CRow,
   CCol,
-  CListGroup,
-  CListGroupItem,
 } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
 import {
@@ -38,8 +36,8 @@ import {
 import { useNavigate } from 'react-router-dom'
 import './Usermanagement.css'
 
-import { ref, push, onValue, orderByChild, limitToLast } from "firebase/database"
-import { realtimeDb } from "../chat/firestore"
+import { ref, push, onValue } from 'firebase/database'
+import { realtimeDb } from '../chat/firestore'
 
 const formatDate = (dateObj) => {
   if (!dateObj) return 'N/A'
@@ -59,26 +57,26 @@ const Hunter = () => {
   const [isChatModalOpen, setIsChatModalOpen] = useState(false)
   const [editUser, setEditUser] = useState(null)
   const [viewUser, setViewUser] = useState(null)
-  const [notifUser, setNotifUser] = useState(null)
   const [chatUser, setChatUser] = useState(null)
+  const [notifUser, setNotifUser] = useState(null)
   const [notifications, setNotifications] = useState([])
-  const [notifType, setNotifType] = useState('alert')
-  const [notifText, setNotifText] = useState('')
+  const [notifTitle, setNotifTitle] = useState('')
+  const [notifBody, setNotifBody] = useState('')
   const [chatMessages, setChatMessages] = useState([])
   const [newChatMessage, setNewChatMessage] = useState('')
   const [hasMoreData, setHasMoreData] = useState(true)
 
   const navigate = useNavigate()
-  const currentUser = localStorage.getItem("adminId")
+  const currentUser = localStorage.getItem('adminId')
 
   useEffect(() => {
-    console.log("Firebase DB Instance:", realtimeDb)
-    console.log("Current User (adminId):", currentUser)
+    console.log('Firebase DB Instance:', realtimeDb)
+    console.log('Current User (adminId):', currentUser)
   }, [currentUser])
 
   const generateChatId = (otherUserId) => {
     const chatId = [currentUser, otherUserId].sort().join('_chat_')
-    console.log("Generated Chat ID:", chatId)
+    console.log('Generated Chat ID:', chatId)
     return chatId
   }
 
@@ -90,7 +88,7 @@ const Hunter = () => {
     setLoading(true)
     try {
       const response = await axios.get(
-        `http://3.223.253.106:7777/api/users/type/hunter/pagelimit/10?page=${page}&search=${search}&userStatus=${statusFilter}`
+        `http://3.223.253.106:7777/api/users/type/hunter/pagelimit/10?page=${page}&search=${search}&userStatus=${statusFilter}`,
       )
       const fetchedUsers = response.data.users || []
       setUsers(fetchedUsers)
@@ -122,7 +120,7 @@ const Hunter = () => {
   }
 
   const handleDelete = async (id) => {
-    if (window.confirm("Are you sure you want to delete this user?")) {
+    if (window.confirm('Are you sure you want to delete this user?')) {
       try {
         await axios.delete(`http://3.223.253.106:7777/api/DeleteAccount/delete/${id}`)
         fetchUsers()
@@ -151,7 +149,7 @@ const Hunter = () => {
       console.error('Error editing user:', error)
     }
   }
-  
+
   const handleChange = (e) => {
     const { name, value } = e.target
     setEditUser((prevUser) => ({
@@ -168,51 +166,58 @@ const Hunter = () => {
 
   const fetchNotifications = async (userId) => {
     try {
-      const response = await axios.get(`http://3.223.253.106:7777/api/notification/getAll/hunter/${userId}`)
+      const response = await axios.get(
+        `http://3.223.253.106:7777/api/pushNotification/getAdminNotification/${userId}`,
+      )
       setNotifications(response.data.data || [])
     } catch (error) {
       console.error('Error fetching notifications:', error)
     }
   }
-
   const handleSendNotification = async () => {
-    if (!notifText) {
-      alert("Please enter notification text.")
+    if (!notifTitle.trim() || !notifBody.trim()) {
+      alert('Please enter both notification title and body.')
       return
     }
     try {
-      await axios.post(`http://3.223.253.106:7777/api/notification/send/hunter/${notifUser._id}`, {
-        type: notifType,
-        text: notifText,
-      })
-      setNotifText('')
+      // Updated endpoint to match the working Postman endpoint:
+      await axios.post(
+        `http://3.223.253.106:7777/api/pushNotification/sendAdminNotification/${notifUser._id}`,
+        {
+          title: notifTitle,
+          body: notifBody,
+        },
+      )
+      // Clear fields after sending
+      setNotifTitle('')
+      setNotifBody('')
       fetchNotifications(notifUser._id)
-      alert("Notification sent successfully!")
+      alert('Notification sent successfully!')
     } catch (error) {
-      console.error("Error sending notification:", error)
-      alert("Failed to send notification. Please try again.")
+      console.error('Error sending notification:', error)
+      alert('Failed to send notification. Please try again.')
     }
   }
 
   const handleDeleteNotification = async (notifId) => {
     if (!notifUser || !notifUser._id) {
-      alert("Notification user not defined")
+      alert('Notification user not defined')
       return
     }
-    const deleteUrl = `http://3.223.253.106:7777/api/notification/delete/hunter/${notifUser._id}/${notifId}`
-    if (window.confirm("Are you sure you want to delete this notification?")) {
+    const deleteUrl = `http://3.223.253.106:7777/api/pushNotification/deleteNotification/${notifId}`
+    if (window.confirm('Are you sure you want to delete this notification?')) {
       try {
         await axios.delete(deleteUrl)
         fetchNotifications(notifUser._id)
       } catch (error) {
-        console.error("Error deleting notification:", error)
-        alert("Failed to delete notification. Please try again.")
+        console.error('Error deleting notification:', error)
+        alert('Failed to delete notification. Please try again.')
       }
     }
   }
 
   const handleChat = (user) => {
-    console.log("Chat initiated with:", user)
+    console.log('Chat initiated with:', user)
     setChatUser(user)
     setIsChatModalOpen(true)
   }
@@ -221,22 +226,25 @@ const Hunter = () => {
     if (chatUser) {
       const chatChannelId = generateChatId(chatUser._id)
       const chatMessagesRef = ref(realtimeDb, `chatsAdmin/${chatChannelId}/messages`)
-      console.log("Subscribing to Firebase chat messages at:", `chatsAdmin/${chatChannelId}/messages`)
+      console.log(
+        'Subscribing to Firebase chat messages at:',
+        `chatsAdmin/${chatChannelId}/messages`,
+      )
 
       const unsubscribe = onValue(chatMessagesRef, (snapshot) => {
         const data = snapshot.val()
         if (data) {
           const messagesArray = Object.values(data).sort((a, b) => a.timeStamp - b.timeStamp)
-          console.log("Chat messages:", messagesArray)
+          console.log('Chat messages:', messagesArray)
           setChatMessages(messagesArray)
         } else {
-          console.log("No messages found at this channel.")
+          console.log('No messages found at this channel.')
           setChatMessages([])
         }
       })
 
       return () => {
-        console.log("Unsubscribing from Firebase chat messages.")
+        console.log('Unsubscribing from Firebase chat messages.')
         unsubscribe()
       }
     }
@@ -246,31 +254,31 @@ const Hunter = () => {
     if (!newChatMessage.trim()) return
 
     if (!chatUser || !chatUser._id) {
-      console.error("Chat user is not defined.")
+      console.error('Chat user is not defined.')
       return
     }
 
     const chatChannelId = generateChatId(chatUser._id)
     const chatRef = ref(realtimeDb, `chatsAdmin/${chatChannelId}/messages`)
-    console.log("Sending message to path:", `chatsAdmin/${chatChannelId}/messages`)
-    console.log("Current User:", currentUser, "Chat User:", chatUser)
+    console.log('Sending message to path:', `chatsAdmin/${chatChannelId}/messages`)
+    console.log('Current User:', currentUser, 'Chat User:', chatUser)
 
     const message = {
       senderId: currentUser,
       receiverId: chatUser._id,
       receiverName: chatUser.name,
-      type: "hunter",
+      type: 'hunter',
       msg: newChatMessage,
       timeStamp: Date.now(),
     }
 
     push(chatRef, message)
       .then(() => {
-        console.log("Message sent successfully:", message)
+        console.log('Message sent successfully:', message)
         setNewChatMessage('')
       })
       .catch((error) => {
-        console.error("Error sending message:", error)
+        console.error('Error sending message:', error)
       })
   }
 
@@ -288,12 +296,20 @@ const Hunter = () => {
               className="hunter-search-input"
               title="Search by name, email or address"
             />
-            <CButton color="primary" onClick={fetchUsers} className="hunter-search-button" title="Search">
+            <CButton
+              color="primary"
+              onClick={fetchUsers}
+              className="hunter-search-button"
+              title="Search"
+            >
               <CIcon icon={cilSearch} /> Search
             </CButton>
             <CFormSelect
               value={statusFilter}
-              onChange={(e) => { setStatusFilter(e.target.value); setPage(1); }}
+              onChange={(e) => {
+                setStatusFilter(e.target.value)
+                setPage(1)
+              }}
               className="hunter-status-select"
               title="Filter by user status"
             >
@@ -332,29 +348,61 @@ const Hunter = () => {
                       <CTableDataCell>{user.email}</CTableDataCell>
                       <CTableDataCell>{user.phoneNo}</CTableDataCell>
                       <CTableDataCell>
-                        <CBadge color={user.userStatus === 'Active' ? 'success' : user.userStatus === 'Suspended' ? 'danger' : 'warning'}>
+                        <CBadge
+                          color={
+                            user.userStatus === 'Active'
+                              ? 'success'
+                              : user.userStatus === 'Suspended'
+                                ? 'danger'
+                                : 'warning'
+                          }
+                        >
                           {user.userStatus}
                         </CBadge>
                       </CTableDataCell>
                       <CTableDataCell>{user.accountStatus}</CTableDataCell>
                       <CTableDataCell>{user.emailVerified ? 'Yes' : 'No'}</CTableDataCell>
                       <CTableDataCell className="hunter-actions-cell">
-                        <span onClick={() => handleView(user)} className="hunter-action-icon" title="View User">
+                        <span
+                          onClick={() => handleView(user)}
+                          className="hunter-action-icon"
+                          title="View User"
+                        >
                           <CIcon icon={cilInfo} size="lg" />
                         </span>
-                        <span onClick={() => handleNotification(user)} className="hunter-action-icon" title="Send Notification">
+                        <span
+                          onClick={() => handleNotification(user)}
+                          className="hunter-action-icon"
+                          title="Send Notification"
+                        >
                           <CIcon icon={cilEnvelopeOpen} size="lg" />
                         </span>
-                        <span onClick={() => handleChat(user)} className="hunter-action-icon" title="Chat">
+                        <span
+                          onClick={() => handleChat(user)}
+                          className="hunter-action-icon"
+                          title="Chat"
+                        >
                           <CIcon icon={cilCommentBubble} size="lg" />
                         </span>
-                        <span onClick={() => handleEdit(user)} className="hunter-action-icon" title="Edit User">
+                        <span
+                          onClick={() => handleEdit(user)}
+                          className="hunter-action-icon"
+                          title="Edit User"
+                        >
                           <CIcon icon={cilPencil} size="lg" />
                         </span>
-                        <span onClick={() => handleDelete(user._id)} className="hunter-action-icon" title="Delete User">
+                        <span
+                          onClick={() => handleDelete(user._id)}
+                          className="hunter-action-icon"
+                          title="Delete User"
+                        >
                           <CIcon icon={cilTrash} size="lg" />
                         </span>
-                        <span onClick={() => JobsManagemen(user._id)} className="hunter-action-icon" title="Manage Jobs">
+                        <span
+                          onClick={() => JobsManagemen(user._id)}
+                          className="hunter-action-icon"
+                          title="Manage Jobs"
+                        >
                           <CIcon icon={cilBriefcase} size="lg" />
                         </span>
                       </CTableDataCell>
@@ -365,35 +413,98 @@ const Hunter = () => {
             </div>
           )}
           <div className="hunter-pagination">
-            <CButton color="secondary" onClick={prevPage} disabled={page === 1} className="hunter-pagination-btn" title="Previous Page">
+            <CButton
+              color="secondary"
+              onClick={prevPage}
+              disabled={page === 1}
+              className="hunter-pagination-btn"
+              title="Previous Page"
+            >
               Previous
             </CButton>
             <span className="hunter-page-info">Page: {page}</span>
-            <CButton color="secondary" onClick={nextPage} disabled={!hasMoreData} className="hunter-pagination-btn" title="Next Page">
+            <CButton
+              color="secondary"
+              onClick={nextPage}
+              disabled={!hasMoreData}
+              className="hunter-pagination-btn"
+              title="Next Page"
+            >
               Next
             </CButton>
           </div>
         </CCardBody>
       </CCard>
 
-      <CModal scrollable visible={isEditModalOpen} onClose={() => setIsEditModalOpen(false)} className="hunter-modal">
+      {/* Edit User Modal */}
+      <CModal
+        scrollable
+        visible={isEditModalOpen}
+        onClose={() => setIsEditModalOpen(false)}
+        className="hunter-modal"
+      >
         <CModalHeader className="hunter-modal-header">
           <CModalTitle>Edit User</CModalTitle>
         </CModalHeader>
         <CModalBody className="hunter-modal-body">
-          <CFormInput type="text" name="name" label="Name" value={editUser?.name || ''} onChange={handleChange} className="hunter-modal-input" title="Edit Name" />
-          <CFormInput type="email" name="email" label="Email" value={editUser?.email || ''} onChange={handleChange} className="hunter-modal-input" title="Edit Email" />
-          <CFormInput type="text" name="phoneNo" label="Phone Number" value={editUser?.phoneNo || ''} onChange={handleChange} className="hunter-modal-input" title="Edit Phone Number" />
-          <CFormSelect name="userStatus" label="User Status" value={editUser?.userStatus || ''} onChange={handleChange} className="hunter-modal-select" title="Edit User Status">
+          <CFormInput
+            type="text"
+            name="name"
+            label="Name"
+            value={editUser?.name || ''}
+            onChange={handleChange}
+            className="hunter-modal-input"
+            title="Edit Name"
+          />
+          <CFormInput
+            type="email"
+            name="email"
+            label="Email"
+            value={editUser?.email || ''}
+            onChange={handleChange}
+            className="hunter-modal-input"
+            title="Edit Email"
+          />
+          <CFormInput
+            type="text"
+            name="phoneNo"
+            label="Phone Number"
+            value={editUser?.phoneNo || ''}
+            onChange={handleChange}
+            className="hunter-modal-input"
+            title="Edit Phone Number"
+          />
+          <CFormSelect
+            name="userStatus"
+            label="User Status"
+            value={editUser?.userStatus || ''}
+            onChange={handleChange}
+            className="hunter-modal-select"
+            title="Edit User Status"
+          >
             <option value="Active">Active</option>
             <option value="Suspended">Suspended</option>
             <option value="Pending">Pending</option>
           </CFormSelect>
-          <CFormSelect name="adminVerified" label="Admin Verified" value={editUser?.adminVerified || ''} onChange={handleChange} className="hunter-modal-select" title="Edit Admin Verified Status">
+          <CFormSelect
+            name="adminVerified"
+            label="Admin Verified"
+            value={editUser?.adminVerified || ''}
+            onChange={handleChange}
+            className="hunter-modal-select"
+            title="Edit Admin Verified Status"
+          >
             <option value="Verified">Verified</option>
             <option value="Not-Verified">Not Verified</option>
           </CFormSelect>
-          <CFormSelect name="accountStatus" label="Account Status" value={editUser?.accountStatus || ''} onChange={handleChange} className="hunter-modal-select" title="Edit Account Status">
+          <CFormSelect
+            name="accountStatus"
+            label="Account Status"
+            value={editUser?.accountStatus || ''}
+            onChange={handleChange}
+            className="hunter-modal-select"
+            title="Edit Account Status"
+          >
             <option value="Suspend">Suspend</option>
             <option value="Deactivate">Deactivate</option>
             <option value="Reactivate">Reactivate</option>
@@ -402,7 +513,9 @@ const Hunter = () => {
             name="emailVerified"
             label="Email Verified"
             value={editUser?.emailVerified ? 'true' : 'false'}
-            onChange={(e) => setEditUser(prev => ({ ...prev, emailVerified: e.target.value === 'true' }))}
+            onChange={(e) =>
+              setEditUser((prev) => ({ ...prev, emailVerified: e.target.value === 'true' }))
+            }
             className="hunter-modal-select"
             title="Edit Email Verification"
           >
@@ -411,16 +524,32 @@ const Hunter = () => {
           </CFormSelect>
         </CModalBody>
         <CModalFooter className="hunter-modal-footer">
-          <CButton color="secondary" onClick={() => setIsEditModalOpen(false)} className="hunter-modal-btn" title="Close Edit Modal">
+          <CButton
+            color="secondary"
+            onClick={() => setIsEditModalOpen(false)}
+            className="hunter-modal-btn"
+            title="Close Edit Modal"
+          >
             Close
           </CButton>
-          <CButton color="primary" onClick={handleSaveEdit} className="hunter-modal-btn" title="Save Changes">
+          <CButton
+            color="primary"
+            onClick={handleSaveEdit}
+            className="hunter-modal-btn"
+            title="Save Changes"
+          >
             Save Changes
           </CButton>
         </CModalFooter>
       </CModal>
 
-      <CModal scrollable visible={isViewModalOpen} onClose={() => setIsViewModalOpen(false)} className="hunter-modal">
+      {/* View User Modal */}
+      <CModal
+        scrollable
+        visible={isViewModalOpen}
+        onClose={() => setIsViewModalOpen(false)}
+        className="hunter-modal"
+      >
         <CModalHeader className="hunter-modal-header">
           <CModalTitle>View User</CModalTitle>
         </CModalHeader>
@@ -429,19 +558,46 @@ const Hunter = () => {
             <div className="hunter-view-content">
               {viewUser.images && (
                 <div className="hunter-view-image">
-                  <img src={viewUser.images} alt="User" className="hunter-user-image" title="User Image" />
+                  <img
+                    src={viewUser.images}
+                    alt="User"
+                    className="hunter-user-image"
+                    title="User Image"
+                  />
                 </div>
               )}
-              <p><strong>Name:</strong> {viewUser.name}</p>
-              <p><strong>Email:</strong> {viewUser.email}</p>
-              <p><strong>Phone Number:</strong> {viewUser.phoneNo}</p>
-              <p><strong>User Type:</strong> {viewUser.userType}</p>
-              <p><strong>User Status:</strong> {viewUser.userStatus || 'N/A'}</p>
-              <p><strong>Account Status:</strong> {viewUser.accountStatus || 'N/A'}</p>
-              <p><strong>Email Verified:</strong> {viewUser.emailVerified ? 'Yes' : 'No'}</p>
-              <p><strong>Joining Date:</strong> {formatDate(viewUser.insDate)}</p>
-              <p><strong>Address:</strong>{viewUser?.address?.addressLine}</p>
-              <p><strong>Terms &amp; Conditions:</strong> {viewUser.termsAndCondition ? 'Accepted' : 'Not Accepted'}</p>
+              <p>
+                <strong>Name:</strong> {viewUser.name}
+              </p>
+              <p>
+                <strong>Email:</strong> {viewUser.email}
+              </p>
+              <p>
+                <strong>Phone Number:</strong> {viewUser.phoneNo}
+              </p>
+              <p>
+                <strong>User Type:</strong> {viewUser.userType}
+              </p>
+              <p>
+                <strong>User Status:</strong> {viewUser.userStatus || 'N/A'}
+              </p>
+              <p>
+                <strong>Account Status:</strong> {viewUser.accountStatus || 'N/A'}
+              </p>
+              <p>
+                <strong>Email Verified:</strong> {viewUser.emailVerified ? 'Yes' : 'No'}
+              </p>
+              <p>
+                <strong>Joining Date:</strong> {formatDate(viewUser.insDate)}
+              </p>
+              <p>
+                <strong>Address:</strong>
+                {viewUser?.address?.addressLine}
+              </p>
+              <p>
+                <strong>Terms &amp; Conditions:</strong>{' '}
+                {viewUser.termsAndCondition ? 'Accepted' : 'Not Accepted'}
+              </p>
               {viewUser.files && viewUser.files.length > 0 && (
                 <div className="hunter-files-section">
                   <strong>Files:</strong>
@@ -454,19 +610,34 @@ const Hunter = () => {
                   </ul>
                 </div>
               )}
-              <p><strong>Created At:</strong> {formatDate(viewUser.createdAt)}</p>
-              <p><strong>Updated At:</strong> {formatDate(viewUser.updatedAt)}</p>
+              <p>
+                <strong>Created At:</strong> {formatDate(viewUser.createdAt)}
+              </p>
+              <p>
+                <strong>Updated At:</strong> {formatDate(viewUser.updatedAt)}
+              </p>
             </div>
           )}
         </CModalBody>
         <CModalFooter className="hunter-modal-footer">
-          <CButton color="secondary" onClick={() => setIsViewModalOpen(false)} className="hunter-modal-btn" title="Close View Modal">
+          <CButton
+            color="secondary"
+            onClick={() => setIsViewModalOpen(false)}
+            className="hunter-modal-btn"
+            title="Close View Modal"
+          >
             Close
           </CButton>
         </CModalFooter>
       </CModal>
 
-      <CModal scrollable visible={isNotifModalOpen} onClose={() => setIsNotifModalOpen(false)} className="hunter-modal">
+      {/* Notification Modal (Updated UI without notificationType) */}
+      <CModal
+        scrollable
+        visible={isNotifModalOpen}
+        onClose={() => setIsNotifModalOpen(false)}
+        className="hunter-modal"
+      >
         <CModalHeader className="hunter-modal-header">
           <CModalTitle>Send Notification</CModalTitle>
         </CModalHeader>
@@ -474,22 +645,29 @@ const Hunter = () => {
           {notifUser && (
             <>
               <div className="hunter-notif-section mb-3">
-                <label className="hunter-notif-label"><strong>Notification Type</strong></label>
-                <CFormSelect value={notifType} onChange={(e) => setNotifType(e.target.value)} className="hunter-notif-select" title="Select Notification Type">
-                  <option value="alert">Alert</option>
-                  <option value="reminder">Reminder</option>
-                  <option value="promotion">Promotion</option>
-                </CFormSelect>
-              </div>
-              <div className="hunter-notif-section mb-3">
-                <label className="hunter-notif-label"><strong>Notification Text</strong></label>
+                <label className="hunter-notif-label">
+                  <strong>Notification Title</strong>
+                </label>
                 <CFormInput
                   type="text"
-                  placeholder="Enter notification text"
-                  value={notifText}
-                  onChange={(e) => setNotifText(e.target.value)}
+                  placeholder="Enter notification title"
+                  value={notifTitle}
+                  onChange={(e) => setNotifTitle(e.target.value)}
                   className="hunter-notif-input"
-                  title="Enter Notification Text"
+                  title="Enter Notification Title"
+                />
+              </div>
+              <div className="hunter-notif-section mb-3">
+                <label className="hunter-notif-label">
+                  <strong>Notification Body</strong>
+                </label>
+                <CFormInput
+                  type="text"
+                  placeholder="Enter notification body"
+                  value={notifBody}
+                  onChange={(e) => setNotifBody(e.target.value)}
+                  className="hunter-notif-input"
+                  title="Enter Notification Body"
                 />
               </div>
               <div className="hunter-notif-send text-center mb-3" title="Send Notification">
@@ -506,9 +684,13 @@ const Hunter = () => {
                 notifications.map((notif) => (
                   <div key={notif._id} className="hunter-notif-item">
                     <div className="hunter-notif-text">
-                      <strong>{notif.type.toUpperCase()}</strong>: {notif.text}
+                      <strong>{notif.title.toUpperCase()}</strong>: {notif.body}
                     </div>
-                    <span onClick={() => handleDeleteNotification(notif._id)} className="hunter-notif-delete" title="Delete Notification">
+                    <span
+                      onClick={() => handleDeleteNotification(notif._id)}
+                      className="hunter-notif-delete"
+                      title="Delete Notification"
+                    >
                       <CIcon icon={cilTrash} size="lg" />
                     </span>
                   </div>
@@ -518,13 +700,24 @@ const Hunter = () => {
           )}
         </CModalBody>
         <CModalFooter className="hunter-modal-footer">
-          <CButton color="secondary" onClick={() => setIsNotifModalOpen(false)} className="hunter-modal-btn" title="Close Notification Modal">
+          <CButton
+            color="secondary"
+            onClick={() => setIsNotifModalOpen(false)}
+            className="hunter-modal-btn"
+            title="Close Notification Modal"
+          >
             Close
           </CButton>
         </CModalFooter>
       </CModal>
 
-      <CModal visible={isChatModalOpen} onClose={() => setIsChatModalOpen(false)} size="md" className="hunter-modal">
+      {/* Chat Modal */}
+      <CModal
+        visible={isChatModalOpen}
+        onClose={() => setIsChatModalOpen(false)}
+        size="md"
+        className="hunter-modal"
+      >
         <CModalHeader onClose={() => setIsChatModalOpen(false)} title="Chat Modal">
           <CModalTitle>Chat with {chatUser?.contactName || chatUser?.name}</CModalTitle>
         </CModalHeader>
@@ -534,16 +727,25 @@ const Hunter = () => {
               <p>No messages yet.</p>
             ) : (
               chatMessages.map((msg, index) => (
-                <div key={index} style={{ textAlign: msg.senderId === currentUser ? 'right' : 'left', marginBottom: '10px' }}>
-                  <span style={{
-                    backgroundColor: msg.senderId === currentUser ? '#007bff' : '#f1f1f1',
-                    color: msg.senderId === currentUser ? '#fff' : '#333',
-                    padding: '10px 15px',
-                    borderRadius: '20px',
-                    display: 'inline-block',
-                    maxWidth: '70%',
-                    wordBreak: 'break-word'
-                  }} title={msg.senderId === currentUser ? 'Sent Message' : 'Received Message'}>
+                <div
+                  key={index}
+                  style={{
+                    textAlign: msg.senderId === currentUser ? 'right' : 'left',
+                    marginBottom: '10px',
+                  }}
+                >
+                  <span
+                    style={{
+                      backgroundColor: msg.senderId === currentUser ? '#007bff' : '#f1f1f1',
+                      color: msg.senderId === currentUser ? '#fff' : '#333',
+                      padding: '10px 15px',
+                      borderRadius: '20px',
+                      display: 'inline-block',
+                      maxWidth: '70%',
+                      wordBreak: 'break-word',
+                    }}
+                    title={msg.senderId === currentUser ? 'Sent Message' : 'Received Message'}
+                  >
                     {msg.msg}
                   </span>
                 </div>
@@ -562,7 +764,9 @@ const Hunter = () => {
                 />
               </CCol>
               <CCol md={2}>
-                <CButton color="primary" onClick={handleSendChatMessage} title="Send Chat Message">Send</CButton>
+                <CButton color="primary" onClick={handleSendChatMessage} title="Send Chat Message">
+                  Send
+                </CButton>
               </CCol>
             </CRow>
           </div>
@@ -572,4 +776,4 @@ const Hunter = () => {
   )
 }
 
-export default Hunter;
+export default Hunter
