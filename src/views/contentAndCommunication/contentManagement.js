@@ -101,7 +101,6 @@ const ContentAndCommunicationManagement = () => {
     console.log('Pending Verifications Alert:', pendingVerificationsAlert);
     console.log('Unresolved Disputes Alert:', unresolvedDisputesAlert);
     console.log('Subscription Renewals Alert:', subscriptionRenewalsAlert);
-    alert('Automated alerts saved successfully!');
     setPendingVerificationsAlert('');
     setUnresolvedDisputesAlert('');
     setSubscriptionRenewalsAlert('');
@@ -133,7 +132,7 @@ const ContentAndCommunicationManagement = () => {
             Static Content
           </CButton>
         </CCol>
-        <CCol md="4" className="text-center">
+        <CCol md="8" className="text-center">
           <CButton 
             color={activeModule === 'Send Mass Notifications' ? 'primary' : 'secondary'} 
             block 
@@ -141,16 +140,6 @@ const ContentAndCommunicationManagement = () => {
             style={{ borderRadius: 0, fontWeight: 'bold' }}
           >
             Send Mass Notifications
-          </CButton>
-        </CCol>
-        <CCol md="4" className="text-start">
-          <CButton 
-            color={activeModule === 'Automated Alerts' ? 'primary' : 'secondary'} 
-            block 
-            onClick={() => setActiveModule('Automated Alerts')}
-            style={{ borderRadius: 0, fontWeight: 'bold' }}
-          >
-            Automated Alerts
           </CButton>
         </CCol>
       </CRow>
@@ -229,52 +218,7 @@ const ContentAndCommunicationManagement = () => {
         </CCard>
       )}
 
-      {activeModule === 'Automated Alerts' && (
-        <CCard className="p-4 mb-5">
-          <CCardHeader className="service-card-header">Automated Alerts</CCardHeader>
-          <CCardBody>
-            <CRow className="mb-3">
-              <CCol md={12}>
-                <strong>Pending Verifications Alert:</strong>
-                <CFormTextarea
-                  className="mt-2"
-                  placeholder="Enter alert message for pending verifications"
-                  value={pendingVerificationsAlert}
-                  onChange={(e) => setPendingVerificationsAlert(e.target.value)}
-                  style={{ height: "120px" }}
-                />
-              </CCol>
-            </CRow>
-            <CRow className="mb-3">
-              <CCol md={12}>
-                <strong>Unresolved Disputes Alert:</strong>
-                <CFormTextarea
-                  className="mt-2"
-                  placeholder="Enter alert message for unresolved disputes"
-                  value={unresolvedDisputesAlert}
-                  onChange={(e) => setUnresolvedDisputesAlert(e.target.value)}
-                  style={{ height: "120px" }}
-                />
-              </CCol>
-            </CRow>
-            <CRow className="mb-3">
-              <CCol md={12}>
-                <strong>Subscription Renewal Alert:</strong>
-                <CFormTextarea
-                  className="mt-2"
-                  placeholder="Enter alert message for subscription renewals"
-                  value={subscriptionRenewalsAlert}
-                  onChange={(e) => setSubscriptionRenewalsAlert(e.target.value)}
-                  style={{ height: "120px" }}
-                />
-              </CCol>
-            </CRow>
-            <CButton color="info" onClick={saveAlerts}>
-              Save Automated Alerts
-            </CButton>
-          </CCardBody>
-        </CCard>
-      )}
+      
 
       {error && <div className="text-danger mb-3">{error}</div>}
     </CContainer>
