@@ -66,6 +66,15 @@ const Hunter = () => {
   const [newChatMessage, setNewChatMessage] = useState('')
   const [hasMoreData, setHasMoreData] = useState(true)
 
+
+  const token = localStorage.getItem('token');
+  const authHeaders = {
+    headers: {
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json',
+    },
+  };
+
   const navigate = useNavigate()
   const currentUser = localStorage.getItem('adminId')
 
@@ -88,7 +97,7 @@ const Hunter = () => {
     setLoading(true)
     try {
       const response = await axios.get(
-        `http://3.223.253.106:7777/api/users/type/hunter/pagelimit/10?page=${page}&search=${search}&userStatus=${statusFilter}`,
+        `http://3.223.253.106:7777/api/users/type/hunter/pagelimit/10?page=${page}&search=${search}&userStatus=${statusFilter}`,authHeaders
       )
       const fetchedUsers = response.data.users || []
       setUsers(fetchedUsers)
@@ -122,7 +131,7 @@ const Hunter = () => {
   const handleDelete = async (id) => {
     if (window.confirm('Are you sure you want to delete this user?')) {
       try {
-        await axios.delete(`http://3.223.253.106:7777/api/DeleteAccount/delete/${id}`)
+        await axios.delete(`http://3.223.253.106:7777/api/DeleteAccount/delete/${id}`,authHeaders)
         fetchUsers()
       } catch (error) {
         console.error('Error deleting user:', error)
@@ -142,7 +151,7 @@ const Hunter = () => {
 
   const handleSaveEdit = async () => {
     try {
-      await axios.put(`http://3.223.253.106:7777/api/users/${editUser._id}`, editUser)
+      await axios.put(`http://3.223.253.106:7777/api/users/${editUser._id}`,authHeaders, editUser)
       fetchUsers()
       setIsEditModalOpen(false)
     } catch (error) {
@@ -167,7 +176,7 @@ const Hunter = () => {
   const fetchNotifications = async (userId) => {
     try {
       const response = await axios.get(
-        `http://3.223.253.106:7777/api/pushNotification/getAdminNotification/${userId}`,
+        `http://3.223.253.106:7777/api/pushNotification/getAdminNotification/${userId}`,authHeaders
       )
       setNotifications(response.data.data || [])
     } catch (error) {
@@ -186,7 +195,7 @@ const Hunter = () => {
         {
           title: notifTitle,
           body: notifBody,
-        },
+        },authHeaders,
       )
       // Clear fields after sending
       setNotifTitle('')
@@ -204,7 +213,7 @@ const Hunter = () => {
       alert('Notification user not defined')
       return
     }
-    const deleteUrl = `http://3.223.253.106:7777/api/pushNotification/deleteNotification/${notifId}`
+    const deleteUrl = (`http://3.223.253.106:7777/api/pushNotification/deleteNotification/${notifId}`,authHeaders)
     if (window.confirm('Are you sure you want to delete this notification?')) {
       try {
         await axios.delete(deleteUrl)

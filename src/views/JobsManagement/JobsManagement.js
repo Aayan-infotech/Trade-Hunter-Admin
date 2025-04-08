@@ -37,7 +37,6 @@ const formatDate = (dateObj) => {
   return date.toLocaleDateString();
 };
 
-// Helper function to get badge color based on job status
 const getJobStatusBadgeColor = (status) => {
   switch (status) {
     case "Pending":
@@ -56,6 +55,17 @@ const getJobStatusBadgeColor = (status) => {
 };
 
 const JobsManagement = () => {
+  const token = localStorage.getItem("token");
+  if (!token) {
+    alert("Authentication token not found. Please log in again.");
+  }
+  const commonConfig = {
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    },
+  };
+
   const [jobs, setJobs] = useState([]);
   const [loading, setLoading] = useState(false);
   const [page, setPage] = useState(1);
@@ -75,11 +85,13 @@ const JobsManagement = () => {
       let response;
       if (jobStatusFilter !== "All") {
         response = await axios.get(
-          `http://3.223.253.106:7777/api/jobs/filter?status=${jobStatusFilter}&page=${page}&limit=10`
+          `http://3.223.253.106:7777/api/jobs/filter?status=${jobStatusFilter}&page=${page}&limit=10`,
+          commonConfig
         );
       } else {
         response = await axios.get(
-          `http://3.223.253.106:7777/api/jobs/?page=${page}&limit=10&search=${search}`
+          `http://3.223.253.106:7777/api/jobs/?page=${page}&limit=10&search=${search}`,
+          commonConfig
         );
       }
       setJobs(response.data.data.jobPosts || []);
@@ -109,16 +121,7 @@ const JobsManagement = () => {
   const handleDeleteJob = async (jobId) => {
     if (window.confirm("Are you sure you want to delete this job?")) {
       try {
-        const token = localStorage.getItem("token");
-        if (!token) {
-          alert("Authentication token not found. Please log in again.");
-          return;
-        }
-        await axios.delete(`http://3.223.253.106:7777/api/jobPost/${jobId}`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        await axios.delete(`http://3.223.253.106:7777/api/jobPost/${jobId}`, commonConfig);
         fetchJobs();
       } catch (error) {
         console.error("Error deleting job:", error);
@@ -159,7 +162,8 @@ const JobsManagement = () => {
 
       await axios.put(
         `http://3.223.253.106:7777/api/jobs/${editJob._id}`,
-        updatedJob
+        updatedJob,
+        commonConfig
       );
 
       fetchJobs();

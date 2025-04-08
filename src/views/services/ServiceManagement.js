@@ -27,6 +27,14 @@ import '../Users/Usermanagement.css';
 const API_URL = 'http://3.223.253.106:7777/api/service/getAllServices';
 
 const ServiceManagement = () => {
+  const token = localStorage.getItem('token');
+  const commonConfig = {
+    headers: {
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json',
+    },
+  };
+
   const [services, setServices] = useState([]);
   const [loading, setLoading] = useState(false);
   const [showAddModal, setShowAddModal] = useState(false);
@@ -39,8 +47,7 @@ const ServiceManagement = () => {
   const fetchServices = async () => {
     setLoading(true);
     try {
-      const response = await axios.get(API_URL);
-      // Sort services alphabetically by name
+      const response = await axios.get(API_URL, commonConfig);
       const sortedServices = (response.data.data || []).sort((a, b) =>
         a.name.localeCompare(b.name)
       );
@@ -62,7 +69,11 @@ const ServiceManagement = () => {
       return;
     }
     try {
-      await axios.post('http://3.223.253.106:7777/api/service/createService', { name: newServiceName });
+      await axios.post(
+        'http://3.223.253.106:7777/api/service/createService',
+        { name: newServiceName },
+        commonConfig
+      );
       fetchServices();
       setShowAddModal(false);
       setNewServiceName('');
@@ -78,7 +89,11 @@ const ServiceManagement = () => {
 
   const handleSaveEditService = async () => {
     try {
-      await axios.put(`http://3.223.253.106:7777/api/service/editService/${editService._id}`, { name: editService.name });
+      await axios.put(
+        `http://3.223.253.106:7777/api/service/editService/${editService._id}`,
+        { name: editService.name },
+        commonConfig
+      );
       fetchServices();
       setShowEditModal(false);
       setEditService(null);
@@ -90,7 +105,10 @@ const ServiceManagement = () => {
   const handleDeleteService = async (serviceId) => {
     if (window.confirm('Are you sure you want to delete this service?')) {
       try {
-        await axios.delete(`http://3.223.253.106:7777/api/service/delete/${serviceId}`);
+        await axios.delete(
+          `http://3.223.253.106:7777/api/service/delete/${serviceId}`,
+          commonConfig
+        );
         fetchServices();
       } catch (error) {
         console.error('Error deleting service:', error);
@@ -102,6 +120,7 @@ const ServiceManagement = () => {
     setViewService(service);
     setShowViewModal(true);
   };
+
 
   return (
     <CContainer className="service-container">

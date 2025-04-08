@@ -21,11 +21,58 @@ import {
 } from "chart.js";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faStar } from "@fortawesome/free-solid-svg-icons";
+import axios from "axios";
 import "../Users/Usermanagement.css";
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Tooltip, Legend);
 
+const formatDate = (dateObj) => {
+  if (!dateObj) return "N/A";
+  const date = new Date(dateObj);
+  return date.toLocaleDateString();
+};
+
+const renderStars = (rating) => {
+  const stars = [];
+  for (let i = 0; i < 5; i++) {
+    let fillPercentage = 0;
+    if (rating >= i + 1) {
+      fillPercentage = 100;
+    } else if (rating > i) {
+      fillPercentage = (rating - i) * 100;
+    }
+    stars.push(
+      <span
+        key={i}
+        style={{
+          position: "relative",
+          display: "inline-block",
+          width: "1em",
+        }}
+      >
+
+        <FontAwesomeIcon icon={faStar} style={{ color: "#e4e5e9" }} />
+        <span
+          style={{
+            position: "absolute",
+            top: 0,
+            left: 0,
+            width: `${fillPercentage}%`,
+            overflow: "hidden",
+            whiteSpace: "nowrap",
+            color: "#ffc107",
+          }}
+        >
+          <FontAwesomeIcon icon={faStar} />
+        </span>
+      </span>
+    );
+  }
+  return <span>{stars}</span>;
+};
+
 const AnalyticsReports = () => {
+  // State variables
   const [activeUsers, setActiveUsers] = useState(0);
   const [newSignups, setNewSignups] = useState(0);
   const [retentionRate, setRetentionRate] = useState("0");
@@ -42,54 +89,20 @@ const AnalyticsReports = () => {
   const [providerStatsChartData, setProviderStatsChartData] = useState(null);
   const [providerStatsChartOptions, setProviderStatsChartOptions] = useState(null);
 
-  // Helper function to render stars with partial filling
-  const renderStars = (rating) => {
-    const stars = [];
-    for (let i = 0; i < 5; i++) {
-      let fillPercentage = 0;
-      if (rating >= i + 1) {
-        fillPercentage = 100;
-      } else if (rating > i) {
-        fillPercentage = (rating - i) * 100;
-      }
-      stars.push(
-        <span
-          key={i}
-          style={{
-            position: "relative",
-            display: "inline-block",
-            width: "1em",
-          }}
-        >
-          {/* Empty star */}
-          <FontAwesomeIcon icon={faStar} style={{ color: "#e4e5e9" }} />
-          {/* Overlay filled star with width set to fillPercentage */}
-          <span
-            style={{
-              position: "absolute",
-              top: 0,
-              left: 0,
-              width: `${fillPercentage}%`,
-              overflow: "hidden",
-              whiteSpace: "nowrap",
-              color: "#ffc107",
-            }}
-          >
-            <FontAwesomeIcon icon={faStar} />
-          </span>
-        </span>
-      );
-    }
-    return <span>{stars}</span>;
+  const token = localStorage.getItem("token");
+  const commonConfig = {
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    },
   };
 
   useEffect(() => {
-    const url = `http://3.223.253.106:7777/api/Prvdr?search=${providerSearch}`;
-    fetch(url)
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.data && Array.isArray(data.data)) {
-          setProviderList(data.data);
+    axios
+      .get(`http://3.223.253.106:7777/api/Prvdr?search=${providerSearch}`, commonConfig)
+      .then((res) => {
+        if (res.data.data && Array.isArray(res.data.data)) {
+          setProviderList(res.data.data);
         } else {
           setProviderList([]);
         }
@@ -98,60 +111,58 @@ const AnalyticsReports = () => {
   }, [providerSearch]);
 
   useEffect(() => {
-    fetch("http://3.223.253.106:7777/api/count/activeUsers")
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.totalActiveUsers !== undefined) {
-          setActiveUsers(data.totalActiveUsers);
+    axios
+      .get("http://3.223.253.106:7777/api/count/activeUsers", commonConfig)
+      .then((res) => {
+        if (res.data.totalActiveUsers !== undefined) {
+          setActiveUsers(res.data.totalActiveUsers);
         }
       })
       .catch((err) => console.error("Error fetching active users:", err));
 
-    fetch("http://3.223.253.106:7777/api/auth/recentSignups")
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.totalNewSignups !== undefined) {
-          setNewSignups(data.totalNewSignups);
+    axios
+      .get("http://3.223.253.106:7777/api/auth/recentSignups", commonConfig)
+      .then((res) => {
+        if (res.data.totalNewSignups !== undefined) {
+          setNewSignups(res.data.totalNewSignups);
         }
       })
       .catch((err) => console.error("Error fetching recent signups:", err));
 
-    fetch("http://3.223.253.106:7777/api/SubscriptionNew/retentionRate")
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.data && data.data.retentionRate !== undefined) {
-          setRetentionRate(data.data.retentionRate);
+    axios
+      .get("http://3.223.253.106:7777/api/SubscriptionNew/retentionRate", commonConfig)
+      .then((res) => {
+        if (res.data.data && res.data.data.retentionRate !== undefined) {
+          setRetentionRate(res.data.data.retentionRate);
         }
       })
       .catch((err) => console.error("Error fetching retention rate:", err));
 
-    fetch("http://3.223.253.106:7777/api/jobPost/getJobTrends")
-      .then((res) => res.json())
-      .then((data) => {
+    axios
+      .get("http://3.223.253.106:7777/api/jobPost/getJobTrends", commonConfig)
+      .then((res) => {
         setJobTrends({
-          dailyCount: data.data.dailyCount || 0,
-          weeklyCount: data.data.weeklyCount || 0,
-          monthlyCount: data.data.monthlyCount || 0,
+          dailyCount: res.data.data.dailyCount || 0,
+          weeklyCount: res.data.data.weeklyCount || 0,
+          monthlyCount: res.data.data.monthlyCount || 0,
         });
       })
       .catch((err) => console.error("Error fetching job trends:", err));
 
-    fetch("http://3.223.253.106:7777/api/jobPost/getTopBusinessCount")
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.data && Array.isArray(data.data)) {
-          setTopBusinessCount(data.data);
+    axios
+      .get("http://3.223.253.106:7777/api/jobPost/getTopBusinessCount", commonConfig)
+      .then((res) => {
+        if (res.data.data && Array.isArray(res.data.data)) {
+          setTopBusinessCount(res.data.data);
         }
       })
-      .catch((err) =>
-        console.error("Error fetching top business count:", err)
-      );
+      .catch((err) => console.error("Error fetching top business count:", err));
 
-    fetch("http://3.223.253.106:7777/api/jobpost/topLocation")
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.data && Array.isArray(data.data)) {
-          setTopLocations(data.data);
+    axios
+      .get("http://3.223.253.106:7777/api/jobpost/topLocation", commonConfig)
+      .then((res) => {
+        if (res.data.data && Array.isArray(res.data.data)) {
+          setTopLocations(res.data.data);
         }
       })
       .catch((err) =>
@@ -159,7 +170,6 @@ const AnalyticsReports = () => {
       );
   }, []);
 
-  // Handler for provider click
   const handleProviderClick = (provider) => {
     const providerId = provider._id || provider.id;
     setSelectedProvider({
@@ -171,13 +181,13 @@ const AnalyticsReports = () => {
       name: provider.name || provider.contactName,
     });
 
-    fetch(`http://3.223.253.106:7777/api/provider/completionRate/${providerId}`)
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.completionRate !== undefined) {
+    axios
+      .get(`http://3.223.253.106:7777/api/provider/completionRate/${providerId}`, commonConfig)
+      .then((res) => {
+        if (res.data.completionRate !== undefined) {
           setSelectedProvider((prev) => ({
             ...prev,
-            completionRate: data.completionRate,
+            completionRate: res.data.completionRate,
           }));
         }
       })
@@ -185,18 +195,18 @@ const AnalyticsReports = () => {
         console.error("Error fetching provider completion rate:", err)
       );
 
-    fetch(`http://3.223.253.106:7777/api/rating/getAvgRating/${providerId}`)
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.data && data.data.avgRating !== undefined) {
+    axios
+      .get(`http://3.223.253.106:7777/api/rating/getAvgRating/${providerId}`, commonConfig)
+      .then((res) => {
+        if (res.data.data && res.data.data.avgRating !== undefined) {
           setSelectedProvider((prev) => ({
             ...prev,
-            avgRating: data.data.avgRating,
+            avgRating: res.data.data.avgRating,
           }));
-        } else if (data.avgRating !== undefined) {
+        } else if (res.data.avgRating !== undefined) {
           setSelectedProvider((prev) => ({
             ...prev,
-            avgRating: data.avgRating,
+            avgRating: res.data.avgRating,
           }));
         }
       })
@@ -205,7 +215,6 @@ const AnalyticsReports = () => {
       );
   };
 
-  // Prepare provider stats chart data and options if selectedProvider is available
   useEffect(() => {
     if (selectedProvider) {
       const acceptanceCount = parseInt(selectedProvider.acceptanceCount) || 0;
@@ -254,8 +263,7 @@ const AnalyticsReports = () => {
           tooltip: {
             callbacks: {
               label: (context) => {
-                const label =
-                  providerStatsChartData.labels[context.dataIndex];
+                const label = providerStatsChartData.labels[context.dataIndex];
                 let value = context.parsed.x;
                 if (context.dataIndex === 2) {
                   return `${label}: ${value}%`;

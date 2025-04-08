@@ -18,11 +18,19 @@ const JobsHuunter = () => {
   const [loading, setLoading] = useState(true);
   const [deleting, setDeleting] = useState(false);
 
+  const token = localStorage.getItem('token');
+  const authHeaders = {
+    headers: {
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json',
+    },
+  };
+
   useEffect(() => {
     const fetchJobData = async () => {
       try {
         const response = await axios.get(
-          `http://3.223.253.106:7777/api/users/jobposts/${state._id}`
+          `http://3.223.253.106:7777/api/users/jobposts/${state._id}`,authHeaders
         );
         setJobData(response.data?.data || []);
       } catch (error) {
@@ -44,7 +52,7 @@ const JobsHuunter = () => {
     if (!confirmDelete) return;
     setDeleting(true);
     try {
-      await axios.delete(`http://3.223.253.106:7777/api/jobs/${jobId}`);
+      await axios.delete(`http://3.223.253.106:7777/api/jobs/${jobId}`,authHeaders);
       setJobData((prevJobs) => prevJobs.filter((job) => job._id !== jobId));
       alert("Job deleted successfully!");
     } catch (error) {

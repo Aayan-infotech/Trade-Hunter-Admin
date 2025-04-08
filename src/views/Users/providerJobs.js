@@ -22,12 +22,20 @@ const ProviderAssignedJobs = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
+  const token = localStorage.getItem('token');
+  const authHeaders = {
+    headers: {
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json',
+    },
+  };
+
   useEffect(() => {
     const fetchProviderProfile = async () => {
       try {
         console.log("Fetching provider data with id:", providerId);
         const response = await axios.get(
-          `http://3.223.253.106:7777/api/provider/${providerId}`
+          `http://3.223.253.106:7777/api/provider/${providerId}`,authHeaders
         );
         console.log("Response Data:", response.data);
         if (response.data && response.data.success) {

@@ -29,16 +29,22 @@ import ReactQuill from 'react-quill'
 import 'react-quill/dist/quill.snow.css'
 
 const SubscriptionManagement = () => {
+  const token = localStorage.getItem('token')
+  const commonConfig = {
+    headers: {
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json',
+    },
+  }
+
   const [subscriptions, setSubscriptions] = useState([])
   const [loading, setLoading] = useState(false)
 
-  // Modal visibility states
   const [showAddModal, setShowAddModal] = useState(false)
   const [showEditModal, setShowEditModal] = useState(false)
   const [showViewModal, setShowViewModal] = useState(false)
   const [showAddTypeModal, setShowAddTypeModal] = useState(false)
 
-  // State for Add Subscription Modal fields
   const [newTitle, setNewTitle] = useState('')
   const [newAmount, setNewAmount] = useState('')
   const [newValidity, setNewValidity] = useState('')
@@ -46,23 +52,19 @@ const SubscriptionManagement = () => {
   const [newType, setNewType] = useState('')
   const [newKmRadius, setNewKmRadius] = useState('')
 
-  // State for Edit Subscription Modal
   const [editSubscription, setEditSubscription] = useState(null)
-  // State for View Subscription Modal
   const [viewSubscription, setViewSubscription] = useState(null)
 
-  // State for Add Subscription Type Modal
   const [newSubscriptionType, setNewSubscriptionType] = useState('')
 
-  // State to hold available subscription types for the dropdown and modal list
   const [subscriptionTypes, setSubscriptionTypes] = useState([])
 
-  // Fetch subscriptions from new API endpoint
   const fetchSubscriptions = async () => {
     setLoading(true)
     try {
       const response = await axios.get(
         'http://3.223.253.106:7777/api/SubscriptionNew/subscription-plans',
+        commonConfig
       )
       setSubscriptions(response.data.data || [])
     } catch (error) {
@@ -72,11 +74,11 @@ const SubscriptionManagement = () => {
     }
   }
 
-  // Fetch subscription types for the dropdown and modal list
   const fetchSubscriptionTypes = async () => {
     try {
       const response = await axios.get(
         'http://3.223.253.106:7777/api/SubscriptionNew/subscription-type',
+        commonConfig
       )
       setSubscriptionTypes(response.data.data || response.data)
     } catch (error) {
@@ -105,7 +107,11 @@ const SubscriptionManagement = () => {
     }
 
     try {
-      await axios.post('http://3.223.253.106:7777/api/SubscriptionNew/subscription-plan', payload)
+      await axios.post(
+        'http://3.223.253.106:7777/api/SubscriptionNew/subscription-plan',
+        payload,
+        commonConfig
+      )
       fetchSubscriptions()
       setShowAddModal(false)
       setNewTitle('')
@@ -129,6 +135,7 @@ const SubscriptionManagement = () => {
       await axios.put(
         `http://3.223.253.106:7777/api/SubscriptionNew/subscription-plan/${editSubscription._id}`,
         editSubscription,
+        commonConfig
       )
       fetchSubscriptions()
       setShowEditModal(false)
@@ -143,6 +150,7 @@ const SubscriptionManagement = () => {
       try {
         await axios.delete(
           `http://3.223.253.106:7777/api/SubscriptionNew/subscription-plan/${subscriptionId}`,
+          commonConfig
         )
         fetchSubscriptions()
       } catch (error) {
@@ -161,7 +169,11 @@ const SubscriptionManagement = () => {
       type: newSubscriptionType,
     }
     try {
-      await axios.post('http://3.223.253.106:7777/api/SubscriptionNew/subscription-type', payload)
+      await axios.post(
+        'http://3.223.253.106:7777/api/SubscriptionNew/subscription-type',
+        payload,
+        commonConfig
+      )
       setShowAddTypeModal(false)
       setNewSubscriptionType('')
       fetchSubscriptionTypes()
@@ -173,7 +185,10 @@ const SubscriptionManagement = () => {
   const handleDeleteSubscriptionType = async (id) => {
     if (window.confirm('Are you sure you want to delete this subscription type?')) {
       try {
-        await axios.delete(`http://3.223.253.106:7777/api/SubscriptionNew/subscription-type/${id}`)
+        await axios.delete(
+          `http://3.223.253.106:7777/api/SubscriptionNew/subscription-type/${id}`,
+          commonConfig
+        )
         fetchSubscriptionTypes()
       } catch (error) {
         console.error('Error deleting subscription type:', error)
@@ -189,6 +204,7 @@ const SubscriptionManagement = () => {
     groups[type].push(subscription)
     return groups
   }, {})
+
 
   return (
     <CContainer style={{ maxHeight: '100vh', overflowY: 'auto' }}>

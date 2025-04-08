@@ -24,7 +24,7 @@ import CIcon from '@coreui/icons-react';
 import { cilSearch, cilEnvelopeOpen, cilTrash, cilViewColumn } from '@coreui/icons';
 import '../Users/Usermanagement.css';
 
-// Helper function to display only the date portion
+// Format date utility
 const formatDate = (dateStr) => {
   if (!dateStr) return 'N/A';
   const date = new Date(dateStr);
@@ -38,24 +38,31 @@ const GuestUsers = () => {
   const [search, setSearch] = useState('');
   const [hasMoreData, setHasMoreData] = useState(true);
 
-  // View modal state
   const [viewUser, setViewUser] = useState(null);
   const [showViewModal, setShowViewModal] = useState(false);
 
-  // Notification modal state
   const [notifUser, setNotifUser] = useState(null);
   const [showNotifModal, setShowNotifModal] = useState(false);
   const [notifText, setNotifText] = useState('');
   const [notifType, setNotifType] = useState('alert');
   const [notifications, setNotifications] = useState([]);
 
+  // 👇 Get token from localStorage and set headers
+  const token = localStorage.getItem('token');
+  const authHeaders = {
+    headers: {
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json',
+    },
+  };
+
   const fetchGuestUsers = async () => {
     setLoading(true);
     try {
       const response = await axios.get(
-        `http://3.223.253.106:7777/api/Prvdr/GuestMode/?page=${page}&limit=10&search=${search}`
+        `http://3.223.253.106:7777/api/Prvdr/GuestMode/?page=${page}&limit=10&search=${search}`,
+        authHeaders
       );
-      // Directly set users from API response without additional sorting
       const fetchedUsers = response.data.data || [];
       setUsers(fetchedUsers);
       setHasMoreData(fetchedUsers.length === 10);
@@ -81,13 +88,11 @@ const GuestUsers = () => {
 
   const prevPage = () => setPage((prev) => Math.max(prev - 1, 1));
 
-  // View modal functions
   const handleViewUser = (user) => {
     setViewUser(user);
     setShowViewModal(true);
   };
 
-  // Notification modal functions
   const handleNotification = (user) => {
     setNotifUser(user);
     setShowNotifModal(true);
@@ -97,7 +102,8 @@ const GuestUsers = () => {
   const fetchNotifications = async (userId) => {
     try {
       const response = await axios.get(
-        `http://3.223.253.106:7777/api/notification/getAll/provider/${userId}`
+        `http://3.223.253.106:7777/api/notification/getAll/provider/${userId}`,
+        authHeaders
       );
       setNotifications(response.data.data || []);
     } catch (error) {
@@ -113,7 +119,8 @@ const GuestUsers = () => {
     try {
       await axios.post(
         `http://3.223.253.106:7777/api/notification/send/provider/${notifUser._id}`,
-        { type: notifType, text: notifText }
+        { type: notifType, text: notifText },
+        authHeaders
       );
       alert('Notification sent successfully!');
       setNotifText('');
@@ -132,7 +139,7 @@ const GuestUsers = () => {
     const deleteUrl = `http://3.223.253.106:7777/api/notification/delete/provider/${notifUser._id}/${notifId}`;
     if (window.confirm('Are you sure you want to delete this notification?')) {
       try {
-        await axios.delete(deleteUrl);
+        await axios.delete(deleteUrl, authHeaders);
         fetchNotifications(notifUser._id);
       } catch (error) {
         console.error('Error deleting notification:', error);
@@ -144,7 +151,10 @@ const GuestUsers = () => {
   const handleDeleteUser = async (userId) => {
     if (window.confirm('Are you sure you want to delete this guest user?')) {
       try {
-        await axios.delete(`http://3.223.253.106:7777/api/Prvdr/delete/${userId}`);
+        await axios.delete(
+          `http://3.223.253.106:7777/api/Prvdr/delete/${userId}`,
+          authHeaders
+        );
         alert('User deleted successfully.');
         fetchGuestUsers();
       } catch (error) {
