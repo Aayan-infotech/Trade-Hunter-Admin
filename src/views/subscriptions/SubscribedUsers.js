@@ -29,6 +29,14 @@ const SubscriptionUsersManagement = () => {
   const [viewSubscription, setViewSubscription] = useState(null);
   const [showViewModal, setShowViewModal] = useState(false);
 
+  const token = localStorage.getItem("token");
+  const commonConfig = {
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    },
+  };
+
   useEffect(() => {
     fetchSubscriptionUsers();
   }, []);
@@ -38,10 +46,10 @@ const SubscriptionUsersManagement = () => {
     setError(null);
     try {
       const response = await axios.get(
-        "http://3.223.253.106:7777/api/SubscriptionNew/subscription-users"
+        "http://3.223.253.106:7777/api/SubscriptionNew/subscription-users",
+        commonConfig
       );
       const data = response.data.data || [];
-      // Optional: sort data by startDate descending
       const sortedData = data.sort(
         (a, b) => new Date(b.startDate) - new Date(a.startDate)
       );

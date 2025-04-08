@@ -50,12 +50,22 @@ const ContentAndCommunicationManagement = () => {
       fetchContent(activeSection);
     }
   }, [activeSection, activeModule]);
+  
+  const commonConfig = {
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem('token')}`,
+      'Content-Type': 'application/json'
+    },
+  };
 
   const fetchContent = async (section) => {
     try {
       setError(null);
       const endpointSection = sectionMapping[section] || section;
-      const response = await axios.get(`http://3.223.253.106:7777/api/StaticContent/${endpointSection}`);
+      const response = await axios.get(
+        `http://3.223.253.106:7777/api/StaticContent/${endpointSection}`,
+        commonConfig
+      );
       setContentData(prev => ({ ...prev, [section]: response.data.content }));
     } catch (err) {
       console.error('Error fetching content:', err);
@@ -71,7 +81,11 @@ const ContentAndCommunicationManagement = () => {
     try {
       setError(null);
       const endpointSection = sectionMapping[activeSection] || activeSection;
-      await axios.post('http://3.223.253.106:7777/api/StaticContent', { section: endpointSection, content: contentData[activeSection] });
+      await axios.post(
+        'http://3.223.253.106:7777/api/StaticContent',
+        { section: endpointSection, content: contentData[activeSection] },
+        commonConfig
+      );
       alert('Content saved successfully!');
     } catch (err) {
       console.error('Error saving content:', err);
@@ -86,7 +100,11 @@ const ContentAndCommunicationManagement = () => {
         subject: notificationSubject,
         message: notificationMessage,
       };
-      const response = await axios.post('http://3.223.253.106:7777/api/massNotification/', payload);
+      const response = await axios.post(
+        'http://3.223.253.106:7777/api/massNotification/',
+        payload,
+        commonConfig
+      );
       alert('Notification sent successfully!\nResponse: ' + JSON.stringify(response.data));
       setNotificationRecipient('');
       setNotificationSubject('');
@@ -120,7 +138,6 @@ const ContentAndCommunicationManagement = () => {
         </CHeaderBrand>
       </CHeader>
       
-      {/* Module Navigation Row: Left, Center, Right */}
       <CRow className="mb-4 module-nav-row" style={{ padding: '10px 0' }}>
         <CCol md="4" className="text-end">
           <CButton 

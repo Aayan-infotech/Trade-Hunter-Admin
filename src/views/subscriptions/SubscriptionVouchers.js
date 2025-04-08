@@ -1,26 +1,9 @@
 import React, { useState, useEffect } from 'react'
 import {
-  CContainer,
-  CRow,
-  CCol,
-  CCard,
-  CCardHeader,
-  CCardBody,
-  CForm,
-  CFormInput,
-  CFormLabel,
-  CButton,
-  CTable,
-  CTableHead,
-  CTableBody,
-  CTableRow,
-  CTableHeaderCell,
-  CTableDataCell,
-  CModal,
-  CModalHeader,
-  CModalTitle,
-  CModalBody,
-  CModalFooter,
+  CContainer, CRow, CCol, CCard, CCardHeader, CCardBody,
+  CForm, CFormInput, CFormLabel, CButton, CTable, CTableHead,
+  CTableBody, CTableRow, CTableHeaderCell, CTableDataCell,
+  CModal, CModalHeader, CModalTitle, CModalBody, CModalFooter,
 } from '@coreui/react'
 import { FaTicketAlt } from 'react-icons/fa'
 import CIcon from '@coreui/icons-react'
@@ -29,11 +12,10 @@ import '../Users/Usermanagement.css'
 
 const API_CREATE = "http://3.223.253.106:7777/api/voucher/create"
 const API_GET = "http://3.223.253.106:7777/api/voucher"
-const API_DELETE = "http://3.223.253.106:7777/api/voucher" // DELETE: /:id
-const API_UPDATE = "http://3.223.253.106:7777/api/voucher/update" // PUT: /:id
+const API_DELETE = "http://3.223.253.106:7777/api/voucher"
+const API_UPDATE = "http://3.223.253.106:7777/api/voucher/update"
 
 const CreateVoucher = () => {
-  // Create voucher state
   const [code, setCode] = useState('')
   const [startDate, setStartDate] = useState('')
   const [endDate, setEndDate] = useState('')
@@ -41,26 +23,31 @@ const CreateVoucher = () => {
   const [vouchers, setVouchers] = useState([])
   const [loading, setLoading] = useState(false)
 
-  // Edit voucher state
   const [showEditModal, setShowEditModal] = useState(false)
   const [editVoucher, setEditVoucher] = useState(null)
 
-  // Handler for create voucher code change
+  const token = localStorage.getItem('token')
+
+  const fetchOptions = (method = 'GET', body = null) => ({
+    method,
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+    ...(body ? { body: JSON.stringify(body) } : {}),
+  })
+
   const handleCodeChange = (e) => {
     setCode(e.target.value.toUpperCase())
   }
 
-  // Create voucher submission
   const handleSubmit = async (e) => {
     e.preventDefault()
     setLoading(true)
     const data = { code, startDate, endDate, usageLimit: Number(usageLimit) }
+
     try {
-      await fetch(API_CREATE, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data),
-      })
+      await fetch(API_CREATE, fetchOptions('POST', data))
       fetchVouchers()
       setCode('')
       setStartDate('')
@@ -72,10 +59,9 @@ const CreateVoucher = () => {
     setLoading(false)
   }
 
-  // Fetch vouchers from API
   const fetchVouchers = async () => {
     try {
-      const res = await fetch(API_GET)
+      const res = await fetch(API_GET, fetchOptions())
       const result = await res.json()
       setVouchers(result.data || [])
     } catch (error) {
@@ -83,13 +69,10 @@ const CreateVoucher = () => {
     }
   }
 
-  // Delete voucher by id
   const handleDeleteVoucher = async (id) => {
     if (window.confirm("Are you sure you want to delete this voucher?")) {
       try {
-        await fetch(`${API_DELETE}/${id}`, {
-          method: 'DELETE'
-        })
+        await fetch(`${API_DELETE}/${id}`, fetchOptions('DELETE'))
         fetchVouchers()
       } catch (error) {
         console.error("Error deleting voucher:", error)
@@ -97,33 +80,24 @@ const CreateVoucher = () => {
     }
   }
 
-  // Open edit modal and prefill with voucher details
   const openEditModal = (voucher) => {
     setEditVoucher({ ...voucher })
     setShowEditModal(true)
   }
 
-  // Update editVoucher state when a field changes
   const handleEditChange = (field, value) => {
     setEditVoucher(prev => ({ ...prev, [field]: value }))
   }
 
-  // Save changes for edited voucher using PUT API
   const handleSaveEditVoucher = async () => {
     if (!editVoucher) return
     try {
-      const res = await fetch(`${API_UPDATE}/${editVoucher._id}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          code: editVoucher.code,
-          startDate: editVoucher.startDate,
-          endDate: editVoucher.endDate,
-          usageLimit: Number(editVoucher.usageLimit),
-        }),
-      })
-      const result = await res.json()
-      console.log("Update result:", result)
+      await fetch(`${API_UPDATE}/${editVoucher._id}`, fetchOptions('PUT', {
+        code: editVoucher.code,
+        startDate: editVoucher.startDate,
+        endDate: editVoucher.endDate,
+        usageLimit: Number(editVoucher.usageLimit),
+      }))
       fetchVouchers()
       setShowEditModal(false)
       setEditVoucher(null)
@@ -132,7 +106,6 @@ const CreateVoucher = () => {
     }
   }
 
-  // Format timestamp to only show date (locale string)
   const formatDate = (timestamp) => {
     return new Date(timestamp).toLocaleDateString()
   }
@@ -140,6 +113,7 @@ const CreateVoucher = () => {
   useEffect(() => {
     fetchVouchers()
   }, [])
+
 
   return (
     <>

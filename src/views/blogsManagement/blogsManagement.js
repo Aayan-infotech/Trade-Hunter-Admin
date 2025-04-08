@@ -23,11 +23,24 @@ import 'react-quill/dist/quill.snow.css'
 import { FaEdit, FaTrash } from 'react-icons/fa'
 import '../Users/Usermanagement.css'
 
+const commonConfig = {
+  headers: {
+    Authorization: `Bearer ${localStorage.getItem('token')}`,
+    'Content-Type': 'application/json',
+  },
+}
+
+const authConfig = {
+  headers: {
+    Authorization: `Bearer ${localStorage.getItem('token')}`,
+  },
+}
+
 const API_CREATE = "http://3.223.253.106:7777/api/blog/postBlog"
 const API_GET = "http://3.223.253.106:7777/api/blog/getAll"
-const API_DELETE = "http://3.223.253.106:7777/api/blog/delete" 
-const API_UPDATE = "http://3.223.253.106:7777/api/blog/update"   
-const API_GET_BY_ID = "http://3.223.253.106:7777/api/blog/getById" 
+const API_DELETE = "http://3.223.253.106:7777/api/blog/delete"
+const API_UPDATE = "http://3.223.253.106:7777/api/blog/update"
+const API_GET_BY_ID = "http://3.223.253.106:7777/api/blog/getById"
 
 const stripHtml = (html) => html.replace(/<[^>]+>/g, '');
 
@@ -57,6 +70,7 @@ const BlogManagement = () => {
     try {
       const res = await fetch(API_CREATE, {
         method: 'POST',
+        headers: authConfig.headers, 
         body: formData,
       });
       const result = await res.json();
@@ -78,7 +92,7 @@ const BlogManagement = () => {
 
   const fetchBlogs = async () => {
     try {
-      const res = await fetch(API_GET);
+      const res = await fetch(API_GET, commonConfig);
       const result = await res.json();
       if (result.blog && Array.isArray(result.blog)) {
         setBlogs(result.blog);
@@ -96,7 +110,10 @@ const BlogManagement = () => {
     e.stopPropagation();
     if (window.confirm("Are you sure you want to delete this blog post?")) {
       try {
-        const res = await fetch(`${API_DELETE}/${id}`, { method: 'DELETE' });
+        const res = await fetch(`${API_DELETE}/${id}`, {
+          ...commonConfig,
+          method: 'DELETE'
+        });
         const result = await res.json();
         if (res.ok) {
           window.alert(result.message || "Blog post deleted successfully!");
@@ -132,6 +149,7 @@ const BlogManagement = () => {
       }
       const res = await fetch(`${API_UPDATE}/${editBlog._id}`, {
         method: 'PUT',
+        headers: authConfig.headers, 
         body: formData,
       });
       const result = await res.json();
@@ -152,7 +170,7 @@ const BlogManagement = () => {
   const handleCardClick = async (id) => {
     setReadLoading(true);
     try {
-      const res = await fetch(`${API_GET_BY_ID}/${id}`);
+      const res = await fetch(`${API_GET_BY_ID}/${id}`, commonConfig);
       const result = await res.json();
       const blogData = result.blog ? result.blog : result;
       if (res.ok && blogData) {

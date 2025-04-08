@@ -25,11 +25,9 @@ const Dashboard = () => {
   const [subscriptionRevenue, setSubscriptionRevenue] = useState(0)
   const [recentJobActivity, setRecentJobActivity] = useState([])
 
-  // Filter states for subscription revenue
   const [revenueMonth, setRevenueMonth] = useState('')
   const [financialYear, setFinancialYear] = useState('')
 
-  // Arrays for filter options
   const months = [
     "January", "February", "March", "April", "May", "June",
     "July", "August", "September", "October", "November", "December"
@@ -47,15 +45,24 @@ const Dashboard = () => {
     Completed: 'success',
     Deleted: 'secondary',
   }
-
   useEffect(() => {
     const fetchDashboardData = async () => {
       try {
+        const commonConfig = {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`,
+            'Content-Type': 'application/json'
+          },
+        }
+
         const results = await Promise.allSettled([
-          axios.get('http://3.223.253.106:7777/api/count/totalUsers'),
-          axios.get('http://3.223.253.106:7777/api/jobs/getCount'),
-          axios.get('http://3.223.253.106:7777/api/demoTransaction/totalRevenue', { params: { month: revenueMonth, financialYear: financialYear } }),
-          axios.get('http://3.223.253.106:7777/api/jobs/getRecentJobs'),
+          axios.get('http://3.223.253.106:7777/api/count/totalUsers', commonConfig),
+          axios.get('http://3.223.253.106:7777/api/jobs/getCount', commonConfig),
+          axios.get('http://3.223.253.106:7777/api/demoTransaction/totalRevenue', {
+            ...commonConfig,
+            params: { month: revenueMonth, financialYear: financialYear },
+          }),
+          axios.get('http://3.223.253.106:7777/api/jobs/getRecentJobs', commonConfig),
         ])
 
         if (results[0].status === 'fulfilled') {

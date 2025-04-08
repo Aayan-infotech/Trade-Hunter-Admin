@@ -11,6 +11,7 @@ import {
   CTableHeaderCell,
   CTableBody,
   CTableDataCell,
+  CButton,
 } from "@coreui/react";
 import CIcon from "@coreui/icons-react";
 import { cilTrash } from "@coreui/icons";
@@ -22,23 +23,33 @@ const formatDate = (dateObj) => {
   return date.toLocaleDateString();
 };
 
-const followUp = () => {
+const FollowUp = () => {
   const [contacts, setContacts] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+
+  const commonConfig = {
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem("token")}`,
+      "Content-Type": "application/json",
+    },
+  };
 
   const fetchContacts = async () => {
     setLoading(true);
     setError(null);
     try {
-      const response = await axios.get("http://3.223.253.106:7777/api/contact/getAll");
+      const response = await axios.get(
+        "http://3.223.253.106:7777/api/contact/getAll",
+        commonConfig
+      );
       const fetchedContacts = response.data.contacts || [];
       const sortedContacts = fetchedContacts.sort(
         (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
       );
       setContacts(sortedContacts);
-    } catch (error) {
-      console.error("Error fetching contacts:", error);
+    } catch (err) {
+      console.error("Error fetching contacts:", err);
       setError("Failed to load contacts. Please try again.");
     } finally {
       setLoading(false);
@@ -52,11 +63,16 @@ const followUp = () => {
   const handleDelete = async (id) => {
     if (window.confirm("Are you sure you want to delete this contact?")) {
       try {
-        await axios.delete(`http://3.223.253.106:7777/api/contact/delete/${id}`);
+        await axios.delete(
+          `http://3.223.253.106:7777/api/contact/delete/${id}`,
+          commonConfig
+        );
         alert("Contact deleted successfully.");
-        setContacts((prevContacts) => prevContacts.filter((contact) => contact._id !== id));
-      } catch (error) {
-        console.error("Error deleting contact:", error);
+        setContacts((prevContacts) =>
+          prevContacts.filter((contact) => contact._id !== id)
+        );
+      } catch (err) {
+        console.error("Error deleting contact:", err);
         alert("Failed to delete contact.");
       }
     }
@@ -119,4 +135,4 @@ const followUp = () => {
   );
 };
 
-export default followUp;
+export default FollowUp;
