@@ -161,7 +161,7 @@ const JobsManagement = () => {
       }
 
       await axios.put(
-        `http://3.223.253.106:7777/api/jobs/${editJob._id}`,
+        `http://3.223.253.106:7777/api/jobpost/${editJob._id}`,
         updatedJob,
         commonConfig
       );
