@@ -597,7 +597,7 @@ const Hunter = () => {
                 <strong>Email Verified:</strong> {viewUser.emailVerified ? 'Yes' : 'No'}
               </p>
               <p>
-                <strong>Joining Date:</strong> {formatDate(viewUser.insDate)}
+                <strong>Joining Date:</strong> {formatDate(viewUser.createdAt)}
               </p>
               <p>
                 <strong>Address:</strong>
