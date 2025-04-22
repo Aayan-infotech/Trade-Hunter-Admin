@@ -51,24 +51,29 @@ const SubscriptionManagement = () => {
   const [newDescription, setNewDescription] = useState('')
   const [newType, setNewType] = useState('')
   const [newKmRadius, setNewKmRadius] = useState('')
+  const [newLeadCount, setNewLeadCount] = useState('')
 
   const [editSubscription, setEditSubscription] = useState(null)
   const [viewSubscription, setViewSubscription] = useState(null)
 
   const [newSubscriptionType, setNewSubscriptionType] = useState('')
-
   const [subscriptionTypes, setSubscriptionTypes] = useState([])
+
+  useEffect(() => {
+    fetchSubscriptions()
+    fetchSubscriptionTypes()
+  }, [])
 
   const fetchSubscriptions = async () => {
     setLoading(true)
     try {
-      const response = await axios.get(
+      const res = await axios.get(
         'http://3.223.253.106:7777/api/SubscriptionNew/subscription-plans',
         commonConfig
       )
-      setSubscriptions(response.data.data || [])
-    } catch (error) {
-      console.error('Error fetching subscriptions:', error)
+      setSubscriptions(res.data.data || [])
+    } catch (e) {
+      console.error(e)
     } finally {
       setLoading(false)
     }
@@ -76,27 +81,24 @@ const SubscriptionManagement = () => {
 
   const fetchSubscriptionTypes = async () => {
     try {
-      const response = await axios.get(
+      const res = await axios.get(
         'http://3.223.253.106:7777/api/SubscriptionNew/subscription-type',
         commonConfig
       )
-      setSubscriptionTypes(response.data.data || response.data)
-    } catch (error) {
-      console.error('Error fetching subscription types:', error)
+      setSubscriptionTypes(res.data.data || res.data)
+    } catch (e) {
+      console.error(e)
     }
   }
 
-  useEffect(() => {
-    fetchSubscriptions()
-    fetchSubscriptionTypes()
-  }, [])
+  const selectedNewTypeName = subscriptionTypes.find(t => t._id === newType)?.type
+  const isNewPayPerLead = selectedNewTypeName === 'Pay Per Lead'
 
   const handleAddSubscription = async () => {
     if (!newTitle || !newAmount || !newValidity || !newType) {
       alert('Please fill in all required fields.')
       return
     }
-
     const payload = {
       planName: newTitle,
       amount: Number(newAmount),
@@ -104,8 +106,8 @@ const SubscriptionManagement = () => {
       description: newDescription,
       kmRadius: Number(newKmRadius || 0),
       type: newType,
+      leadCount: isNewPayPerLead ? Number(newLeadCount) : 0,
     }
-
     try {
       await axios.post(
         'http://3.223.253.106:7777/api/SubscriptionNew/subscription-plan',
@@ -120,69 +122,74 @@ const SubscriptionManagement = () => {
       setNewDescription('')
       setNewKmRadius('')
       setNewType('')
-    } catch (error) {
-      console.error('Error adding subscription plan:', error)
+      setNewLeadCount('')
+    } catch (e) {
+      console.error(e)
     }
   }
 
-  const handleEditSubscription = (subscription) => {
-    setEditSubscription(subscription)
+  const handleEditSubscription = sub => {
+    setEditSubscription(sub)
     setShowEditModal(true)
   }
 
   const handleSaveEditSubscription = async () => {
+    const updated = {
+      ...editSubscription,
+      leadCount:
+        subscriptionTypes.find(t => t._id === editSubscription.type)?.type === 'Pay Per Lead'
+          ? Number(editSubscription.leadCount)
+          : 0,
+    }
     try {
       await axios.put(
         `http://3.223.253.106:7777/api/SubscriptionNew/subscription-plan/${editSubscription._id}`,
-        editSubscription,
+        updated,
         commonConfig
       )
       fetchSubscriptions()
       setShowEditModal(false)
       setEditSubscription(null)
-    } catch (error) {
-      console.error('Error editing subscription:', error)
+    } catch (e) {
+      console.error(e)
     }
   }
 
-  const handleDeleteSubscription = async (subscriptionId) => {
+  const handleDeleteSubscription = async id => {
     if (window.confirm('Delete Subscription?')) {
       try {
         await axios.delete(
-          `http://3.223.253.106:7777/api/SubscriptionNew/subscription-plan/${subscriptionId}`,
+          `http://3.223.253.106:7777/api/SubscriptionNew/subscription-plan/${id}`,
           commonConfig
         )
         fetchSubscriptions()
-      } catch (error) {
-        console.error('Error deleting subscription:', error)
+      } catch (e) {
+        console.error(e)
       }
     }
   }
 
-  const handleViewSubscription = (subscription) => {
-    setViewSubscription(subscription)
+  const handleViewSubscription = sub => {
+    setViewSubscription(sub)
     setShowViewModal(true)
   }
 
   const handleAddSubscriptionType = async () => {
-    const payload = {
-      type: newSubscriptionType,
-    }
     try {
       await axios.post(
         'http://3.223.253.106:7777/api/SubscriptionNew/subscription-type',
-        payload,
+        { type: newSubscriptionType },
         commonConfig
       )
       setShowAddTypeModal(false)
       setNewSubscriptionType('')
       fetchSubscriptionTypes()
-    } catch (error) {
-      console.error('Error adding subscription type:', error)
+    } catch (e) {
+      console.error(e)
     }
   }
 
-  const handleDeleteSubscriptionType = async (id) => {
+  const handleDeleteSubscriptionType = async id => {
     if (window.confirm('Are you sure you want to delete this subscription type?')) {
       try {
         await axios.delete(
@@ -190,37 +197,29 @@ const SubscriptionManagement = () => {
           commonConfig
         )
         fetchSubscriptionTypes()
-      } catch (error) {
-        console.error('Error deleting subscription type:', error)
+      } catch (e) {
+        console.error(e)
       }
     }
   }
 
-  const groupedSubscriptions = subscriptions.reduce((groups, subscription) => {
-    const { type } = subscription
-    if (!groups[type]) {
-      groups[type] = []
-    }
-    groups[type].push(subscription)
-    return groups
+  const groupedSubscriptions = subscriptions.reduce((acc, sub) => {
+    acc[sub.type] = acc[sub.type] || []
+    acc[sub.type].push(sub)
+    return acc
   }, {})
-
 
   return (
     <CContainer style={{ maxHeight: '100vh', overflowY: 'auto' }}>
       <CCard>
         <CCardHeader className="service-card-header d-flex justify-content-between align-items-center">
-          <div>
-            <CButton color="primary" className="me-2" onClick={() => setShowAddTypeModal(true)}>
-              <CIcon icon={cilPlus} /> Add Subscription Type
-            </CButton>
-          </div>
+          <CButton color="primary" onClick={() => setShowAddTypeModal(true)}>
+            <CIcon icon={cilPlus} /> Add Subscription Type
+          </CButton>
           <h4>Subscription Management</h4>
-          <div>
-            <CButton color="primary" onClick={() => setShowAddModal(true)}>
-              <CIcon icon={cilPlus} /> Add Subscription
-            </CButton>
-          </div>
+          <CButton color="primary" onClick={() => setShowAddModal(true)}>
+            <CIcon icon={cilPlus} /> Add Subscription
+          </CButton>
         </CCardHeader>
         <CCardBody style={{ maxHeight: '65vh', overflowY: 'auto' }}>
           {loading ? (
@@ -239,93 +238,72 @@ const SubscriptionManagement = () => {
                 </CTableRow>
               </CTableHead>
               <CTableBody>
-                {Object.keys(groupedSubscriptions).map((type) => {
-                  const group = groupedSubscriptions[type]
-                  return group.map((subscription, index) => (
-                    <CTableRow key={subscription._id || index}>
-                      {index === 0 && (
-                        <CTableDataCell rowSpan={group.length} style={{ textAlign: 'left' }}>
+                {Object.keys(groupedSubscriptions).map(type =>
+                  groupedSubscriptions[type].map((sub, i) => (
+                    <CTableRow key={sub._id || i}>
+                      {i === 0 && (
+                        <CTableDataCell rowSpan={groupedSubscriptions[type].length}>
                           {type}
                         </CTableDataCell>
                       )}
-                      <CTableDataCell style={{ textAlign: 'left' }}>
-                        {subscription.planName}
+                      <CTableDataCell>{sub.planName}</CTableDataCell>
+                      <CTableDataCell>{sub.amount}</CTableDataCell>
+                      <CTableDataCell>{sub.validity}</CTableDataCell>
+                      <CTableDataCell>
+                        <div dangerouslySetInnerHTML={{ __html: sub.description }} />
                       </CTableDataCell>
-                      <CTableDataCell style={{ textAlign: 'left' }}>
-                        {subscription.amount}
-                      </CTableDataCell>
-                      <CTableDataCell style={{ textAlign: 'left' }}>
-                        {subscription.validity}
-                      </CTableDataCell>
-                      <CTableDataCell style={{ textAlign: 'left' }}>
-                        <div
-                          style={{ textAlign: 'left' }}
-                          dangerouslySetInnerHTML={{ __html: subscription.description }}
-                        />
-                      </CTableDataCell>
-                      <CTableDataCell style={{ textAlign: 'left' }}>
-                        {subscription.kmRadius}
-                      </CTableDataCell>
-                      <CTableDataCell style={{ textAlign: 'left', display: 'flex', alignItems: 'center' }}>
+                      <CTableDataCell>{sub.kmRadius}</CTableDataCell>
+                      <CTableDataCell>
                         <CIcon
-                          className="fw-bold text-success me-2"
-                          title='view subscription'
-                          onClick={() => handleViewSubscription(subscription)}
                           icon={cilViewColumn}
                           size="lg"
+                          onClick={() => handleViewSubscription(sub)}
                           style={{ cursor: 'pointer' }}
                         />
                         <CIcon
-                          className="fw-bold text-success me-2"
-                          title='edit subscription'
-                          onClick={() => handleEditSubscription(subscription)}
                           icon={cilPencil}
                           size="lg"
+                          className="mx-2"
+                          onClick={() => handleEditSubscription(sub)}
                           style={{ cursor: 'pointer' }}
                         />
                         <CIcon
-                          className="fw-bold text-danger me-2"
-                          title='delete subscription'
-                          onClick={() => handleDeleteSubscription(subscription._id)}
                           icon={cilTrash}
                           size="lg"
+                          onClick={() => handleDeleteSubscription(sub._id)}
                           style={{ cursor: 'pointer' }}
                         />
                       </CTableDataCell>
                     </CTableRow>
                   ))
-                })}
+                )}
               </CTableBody>
             </CTable>
           )}
         </CCardBody>
       </CCard>
 
-      {/* Add Subscription Modal */}
       <CModal scrollable visible={showAddModal} onClose={() => setShowAddModal(false)}>
         <CModalHeader className="service-card-header">
           <CModalTitle>Add Subscription</CModalTitle>
         </CModalHeader>
         <CModalBody>
-          {/* Subscription Type Dropdown */}
           <CFormSelect
             label="Subscription Type"
             value={newType}
-            onChange={(e) => setNewType(e.target.value)}
+            onChange={e => setNewType(e.target.value)}
             className="mb-2"
             required
           >
             <option value="">Select a Subscription Type</option>
-            {subscriptionTypes.map((typeObj) => (
-              <option key={typeObj._id} value={typeObj._id}>
-                {typeObj.type}
-              </option>
+            {subscriptionTypes.map(t => (
+              <option key={t._id} value={t._id}>{t.type}</option>
             ))}
           </CFormSelect>
           <CFormInput
             label="Plan Name"
             value={newTitle}
-            onChange={(e) => setNewTitle(e.target.value)}
+            onChange={e => setNewTitle(e.target.value)}
             className="mb-2"
             required
           />
@@ -333,7 +311,7 @@ const SubscriptionManagement = () => {
             label="Amount"
             type="number"
             value={newAmount}
-            onChange={(e) => setNewAmount(e.target.value)}
+            onChange={e => setNewAmount(e.target.value)}
             className="mb-2"
             required
           />
@@ -341,19 +319,32 @@ const SubscriptionManagement = () => {
             label="Validity (days)"
             type="number"
             value={newValidity}
-            onChange={(e) => setNewValidity(e.target.value)}
+            onChange={e => setNewValidity(e.target.value)}
             className="mb-2"
             required
           />
           <label>Description</label>
-          <ReactQuill value={newDescription} onChange={(value) => setNewDescription(value)} className="mb-2" />
+          <ReactQuill
+            value={newDescription}
+            onChange={setNewDescription}
+            className="mb-2"
+          />
           <CFormInput
             label="KM Radius"
             type="number"
             value={newKmRadius}
-            onChange={(e) => setNewKmRadius(e.target.value)}
+            onChange={e => setNewKmRadius(e.target.value)}
             className="mb-2"
           />
+          {isNewPayPerLead && (
+            <CFormInput
+              label="Lead Count"
+              type="number"
+              value={newLeadCount}
+              onChange={e => setNewLeadCount(e.target.value)}
+              className="mb-2"
+            />
+          )}
         </CModalBody>
         <CModalFooter>
           <CButton color="secondary" onClick={() => setShowAddModal(false)}>
@@ -365,7 +356,6 @@ const SubscriptionManagement = () => {
         </CModalFooter>
       </CModal>
 
-      {/* Edit Subscription Modal */}
       <CModal scrollable visible={showEditModal} onClose={() => setShowEditModal(false)}>
         <CModalHeader className="service-card-header">
           <CModalTitle>Edit Subscription</CModalTitle>
@@ -376,60 +366,57 @@ const SubscriptionManagement = () => {
               <CFormSelect
                 label="Subscription Type"
                 value={editSubscription.type}
-                onChange={(e) => setEditSubscription({ ...editSubscription, type: e.target.value })}
+                onChange={e => setEditSubscription({ ...editSubscription, type: e.target.value })}
                 className="mb-2"
                 required
               >
                 <option value="">Select a Subscription Type</option>
-                {subscriptionTypes.map((typeObj) => (
-                  <option key={typeObj._id} value={typeObj._id}>
-                    {typeObj.type}
-                  </option>
+                {subscriptionTypes.map(t => (
+                  <option key={t._id} value={t._id}>{t.type}</option>
                 ))}
               </CFormSelect>
               <CFormInput
                 label="Plan Name"
                 value={editSubscription.planName}
-                onChange={(e) =>
-                  setEditSubscription({ ...editSubscription, planName: e.target.value })
-                }
+                onChange={e => setEditSubscription({ ...editSubscription, planName: e.target.value })}
                 className="mb-2"
               />
               <CFormInput
                 label="Amount"
                 type="number"
                 value={editSubscription.amount}
-                onChange={(e) =>
-                  setEditSubscription({ ...editSubscription, amount: Number(e.target.value) })
-                }
+                onChange={e => setEditSubscription({ ...editSubscription, amount: Number(e.target.value) })}
                 className="mb-2"
               />
               <CFormInput
                 label="Validity (days)"
                 type="number"
                 value={editSubscription.validity}
-                onChange={(e) =>
-                  setEditSubscription({ ...editSubscription, validity: Number(e.target.value) })
-                }
+                onChange={e => setEditSubscription({ ...editSubscription, validity: Number(e.target.value) })}
                 className="mb-2"
               />
               <label>Description</label>
               <ReactQuill
                 value={editSubscription.description}
-                onChange={(value) =>
-                  setEditSubscription({ ...editSubscription, description: value })
-                }
+                onChange={value => setEditSubscription({ ...editSubscription, description: value })}
                 className="mb-2"
               />
               <CFormInput
                 label="KM Radius"
                 type="number"
                 value={editSubscription.kmRadius}
-                onChange={(e) =>
-                  setEditSubscription({ ...editSubscription, kmRadius: Number(e.target.value) })
-                }
+                onChange={e => setEditSubscription({ ...editSubscription, kmRadius: Number(e.target.value) })}
                 className="mb-2"
               />
+              {subscriptionTypes.find(t => t._id === editSubscription.type)?.type === 'Pay Per Lead' && (
+                <CFormInput
+                  label="Lead Count"
+                  type="number"
+                  value={editSubscription.leadCount || ''}
+                  onChange={e => setEditSubscription({ ...editSubscription, leadCount: Number(e.target.value) })}
+                  className="mb-2"
+                />
+              )}
             </>
           )}
         </CModalBody>
@@ -443,7 +430,6 @@ const SubscriptionManagement = () => {
         </CModalFooter>
       </CModal>
 
-      {/* View Subscription Modal */}
       <CModal scrollable visible={showViewModal} onClose={() => setShowViewModal(false)}>
         <CModalHeader className="service-card-header">
           <CModalTitle>Subscription Details</CModalTitle>
@@ -451,28 +437,18 @@ const SubscriptionManagement = () => {
         <CModalBody>
           {viewSubscription && (
             <CListGroup>
-              <CListGroupItem style={{ textAlign: 'left' }}>
-                <strong>Plan Name: </strong>{viewSubscription.planName}
-              </CListGroupItem>
-              <CListGroupItem style={{ textAlign: 'left' }}>
-                <strong>Amount: </strong>{viewSubscription.amount}
-              </CListGroupItem>
-              <CListGroupItem style={{ textAlign: 'left' }}>
-                <strong>Validity (days): </strong>{viewSubscription.validity}
-              </CListGroupItem>
-              <CListGroupItem style={{ textAlign: 'left' }}>
+              <CListGroupItem><strong>Plan Name: </strong>{viewSubscription.planName}</CListGroupItem>
+              <CListGroupItem><strong>Amount: </strong>{viewSubscription.amount}</CListGroupItem>
+              <CListGroupItem><strong>Validity (days): </strong>{viewSubscription.validity}</CListGroupItem>
+              <CListGroupItem>
                 <strong>Description: </strong>
-                <div
-                  style={{ textAlign: 'left' }}
-                  dangerouslySetInnerHTML={{ __html: viewSubscription.description }}
-                />
+                <div dangerouslySetInnerHTML={{ __html: viewSubscription.description }} />
               </CListGroupItem>
-              <CListGroupItem style={{ textAlign: 'left' }}>
-                <strong>Radius: </strong>{viewSubscription.kmRadius}
-              </CListGroupItem>
-              <CListGroupItem style={{ textAlign: 'left' }}>
-                <strong>Subscription Type: </strong>{viewSubscription.type}
-              </CListGroupItem>
+              <CListGroupItem><strong>Radius: </strong>{viewSubscription.kmRadius}</CListGroupItem>
+              <CListGroupItem><strong>Subscription Type: </strong>{viewSubscription.type}</CListGroupItem>
+              {subscriptionTypes.find(t => t._id === viewSubscription.type)?.type === 'Pay Per Lead' && (
+                <CListGroupItem><strong>Lead Count: </strong>{viewSubscription.leadCount}</CListGroupItem>
+              )}
             </CListGroup>
           )}
         </CModalBody>
@@ -483,7 +459,6 @@ const SubscriptionManagement = () => {
         </CModalFooter>
       </CModal>
 
-      {/* Add Subscription Type Modal */}
       <CModal scrollable visible={showAddTypeModal} onClose={() => setShowAddTypeModal(false)}>
         <CModalHeader className="service-card-header">
           <CModalTitle>Add Subscription Type</CModalTitle>
@@ -492,22 +467,18 @@ const SubscriptionManagement = () => {
           <CFormInput
             label="Subscription Type"
             value={newSubscriptionType}
-            onChange={(e) => setNewSubscriptionType(e.target.value)}
+            onChange={e => setNewSubscriptionType(e.target.value)}
             className="mb-2"
           />
-          {/* List all existing subscription types with a clickable trash icon */}
           <CListGroup>
-            {subscriptionTypes.map((typeObj) => (
-              <CListGroupItem
-                key={typeObj._id}
-                className="d-flex justify-content-between align-items-center"
-              >
-                <span>{typeObj.type}</span>
+            {subscriptionTypes.map(t => (
+              <CListGroupItem key={t._id} className="d-flex justify-content-between align-items-center">
+                <span>{t.type}</span>
                 <CIcon
                   icon={cilTrash}
                   className="text-danger"
                   style={{ cursor: 'pointer' }}
-                  onClick={() => handleDeleteSubscriptionType(typeObj._id)}
+                  onClick={() => handleDeleteSubscriptionType(t._id)}
                 />
               </CListGroupItem>
             ))}
