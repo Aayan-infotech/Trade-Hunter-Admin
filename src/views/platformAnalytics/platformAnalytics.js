@@ -99,7 +99,7 @@ const AnalyticsReports = () => {
 
   useEffect(() => {
     axios
-      .get(`http://3.223.253.106:7777/api/Prvdr?search=${providerSearch}`, commonConfig)
+      .get(`http://3.223.253.106:7787/api/Prvdr?search=${providerSearch}`, commonConfig)
       .then((res) => {
         if (res.data.data && Array.isArray(res.data.data)) {
           setProviderList(res.data.data);
@@ -112,7 +112,7 @@ const AnalyticsReports = () => {
 
   useEffect(() => {
     axios
-      .get("http://3.223.253.106:7777/api/count/activeUsers", commonConfig)
+      .get("http://3.223.253.106:7787/api/count/activeUsers", commonConfig)
       .then((res) => {
         if (res.data.totalActiveUsers !== undefined) {
           setActiveUsers(res.data.totalActiveUsers);
@@ -121,7 +121,7 @@ const AnalyticsReports = () => {
       .catch((err) => console.error("Error fetching active users:", err));
 
     axios
-      .get("http://3.223.253.106:7777/api/auth/recentSignups", commonConfig)
+      .get("http://3.223.253.106:7787/api/auth/recentSignups", commonConfig)
       .then((res) => {
         if (res.data.totalNewSignups !== undefined) {
           setNewSignups(res.data.totalNewSignups);
@@ -130,7 +130,7 @@ const AnalyticsReports = () => {
       .catch((err) => console.error("Error fetching recent signups:", err));
 
     axios
-      .get("http://3.223.253.106:7777/api/SubscriptionNew/retentionRate", commonConfig)
+      .get("http://3.223.253.106:7787/api/SubscriptionNew/retentionRate", commonConfig)
       .then((res) => {
         if (res.data.data && res.data.data.retentionRate !== undefined) {
           setRetentionRate(res.data.data.retentionRate);
@@ -139,7 +139,7 @@ const AnalyticsReports = () => {
       .catch((err) => console.error("Error fetching retention rate:", err));
 
     axios
-      .get("http://3.223.253.106:7777/api/jobPost/getJobTrends", commonConfig)
+      .get("http://3.223.253.106:7787/api/jobPost/getJobTrends", commonConfig)
       .then((res) => {
         setJobTrends({
           dailyCount: res.data.data.dailyCount || 0,
@@ -150,7 +150,7 @@ const AnalyticsReports = () => {
       .catch((err) => console.error("Error fetching job trends:", err));
 
     axios
-      .get("http://3.223.253.106:7777/api/jobPost/getTopBusinessCount", commonConfig)
+      .get("http://3.223.253.106:7787/api/jobPost/getTopBusinessCount", commonConfig)
       .then((res) => {
         if (res.data.data && Array.isArray(res.data.data)) {
           setTopBusinessCount(res.data.data);
@@ -159,7 +159,7 @@ const AnalyticsReports = () => {
       .catch((err) => console.error("Error fetching top business count:", err));
 
     axios
-      .get("http://3.223.253.106:7777/api/jobpost/topLocation", commonConfig)
+      .get("http://3.223.253.106:7787/api/jobpost/topLocation", commonConfig)
       .then((res) => {
         if (res.data.data && Array.isArray(res.data.data)) {
           setTopLocations(res.data.data);
@@ -182,7 +182,7 @@ const AnalyticsReports = () => {
     });
 
     axios
-      .get(`http://3.223.253.106:7777/api/provider/completionRate/${providerId}`, commonConfig)
+      .get(`http://3.223.253.106:7787/api/provider/completionRate/${providerId}`, commonConfig)
       .then((res) => {
         if (res.data.completionRate !== undefined) {
           setSelectedProvider((prev) => ({
@@ -196,7 +196,7 @@ const AnalyticsReports = () => {
       );
 
     axios
-      .get(`http://3.223.253.106:7777/api/rating/getAvgRating/${providerId}`, commonConfig)
+      .get(`http://3.223.253.106:7787/api/rating/getAvgRating/${providerId}`, commonConfig)
       .then((res) => {
         if (res.data.data && res.data.data.avgRating !== undefined) {
           setSelectedProvider((prev) => ({

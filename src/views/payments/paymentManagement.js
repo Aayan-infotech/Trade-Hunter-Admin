@@ -37,7 +37,7 @@ const PaymentManagement = () => {
     setLoading(true);
     setError(null);
     try {
-      const response = await axios.get("http://3.223.253.106:7777/api/demoTransaction/transactions");
+      const response = await axios.get("http://3.223.253.106:7787/api/demoTransaction/transactions");
       const sortedPayments = (response.data.data || []).sort(
         (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
       );

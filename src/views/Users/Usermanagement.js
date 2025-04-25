@@ -42,7 +42,7 @@ const Usermanagement = () => {
 
   const fetchUsers = async () => {
     try {
-      const response = await axios.get('http://3.223.253.106:7777/api/users');
+      const response = await axios.get('http://3.223.253.106:7787/api/users');
       setUsers(response.data);
       setFilteredUsers(response.data);
     } catch (error) {
@@ -53,7 +53,7 @@ const Usermanagement = () => {
   const deleteUser = async (id) => {
     if (window.confirm('Are you sure you want to delete this user?')) {
       try {
-        await axios.delete(`http://3.223.253.106:7777/api/users/${id}`);
+        await axios.delete(`http://3.223.253.106:7787/api/users/${id}`);
         setUsers(users.filter((user) => user._id !== id));
         setFilteredUsers(filteredUsers.filter((user) => user._id !== id));
       } catch (error) {
@@ -76,7 +76,7 @@ const Usermanagement = () => {
 
   const handleSave = async () => {
     try {
-      await axios.put(`http://3.223.253.106:7777/api/users/${selectedUser._id}`, selectedUser);
+      await axios.put(`http://3.223.253.106:7787/api/users/${selectedUser._id}`, selectedUser);
       fetchUsers();
       setShowModal(false);
     } catch (error) {
@@ -118,12 +118,12 @@ const Usermanagement = () => {
   const renderFilePreview = (file) => {
     const fileExtension = file.split('.').pop().toLowerCase();
     if (['jpg', 'png', 'jpeg'].includes(fileExtension)) {
-      return <img src={`http://3.223.253.106:7777/uploads/${file}`} alt={file} style={{ width: '100px', height: 'auto' }} />;
+      return <img src={`http://3.223.253.106:7787/uploads/${file}`} alt={file} style={{ width: '100px', height: 'auto' }} />;
     }
     if (fileExtension === 'pdf') {
-      return <embed src={`http://3.223.253.106:7777/uploads/${file}`} type="application/pdf" width="100px" height="100px" />;
+      return <embed src={`http://3.223.253.106:7787/uploads/${file}`} type="application/pdf" width="100px" height="100px" />;
     }
-    return <a href={`http://3.223.253.106:7777/uploads/${file}`} target="_blank" rel="noopener noreferrer">Download {file}</a>;
+    return <a href={`http://3.223.253.106:7787/uploads/${file}`} target="_blank" rel="noopener noreferrer">Download {file}</a>;
   };
 
   const indexOfLastUser = currentPage * usersPerPage;
