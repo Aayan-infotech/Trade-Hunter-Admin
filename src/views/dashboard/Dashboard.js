@@ -56,13 +56,13 @@ const Dashboard = () => {
         }
 
         const results = await Promise.allSettled([
-          axios.get('http://3.223.253.106:7777/api/count/totalUsers', commonConfig),
-          axios.get('http://3.223.253.106:7777/api/jobs/getCount', commonConfig),
-          axios.get('http://3.223.253.106:7777/api/demoTransaction/totalRevenue', {
+          axios.get('http://3.223.253.106:7787/api/count/totalUsers', commonConfig),
+          axios.get('http://3.223.253.106:7787/api/jobs/getCount', commonConfig),
+          axios.get('http://3.223.253.106:7787/api/eway/totalRevenue', {
             ...commonConfig,
             params: { month: revenueMonth, financialYear: financialYear },
           }),
-          axios.get('http://3.223.253.106:7777/api/jobs/getRecentJobs', commonConfig),
+          axios.get('http://3.223.253.106:7787/api/jobs/getRecentJobs', commonConfig),
         ])
 
         if (results[0].status === 'fulfilled') {

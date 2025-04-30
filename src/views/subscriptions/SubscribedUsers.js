@@ -46,7 +46,7 @@ const SubscriptionUsersManagement = () => {
     setError(null);
     try {
       const response = await axios.get(
-        "http://3.223.253.106:7777/api/SubscriptionNew/subscription-users",
+        "http://3.223.253.106:7787/api/SubscriptionNew/subscription-users",
         commonConfig
       );
       const data = response.data.data || [];

@@ -24,7 +24,7 @@ import CIcon from '@coreui/icons-react';
 import { cilTrash, cilPencil, cilViewColumn, cilPlus } from '@coreui/icons';
 import '../Users/Usermanagement.css';
 
-const API_URL = 'http://3.223.253.106:7777/api/service/getAllServices';
+const API_URL = 'http://3.223.253.106:7787/api/service/getAllServices';
 
 const ServiceManagement = () => {
   const token = localStorage.getItem('token');
@@ -70,7 +70,7 @@ const ServiceManagement = () => {
     }
     try {
       await axios.post(
-        'http://3.223.253.106:7777/api/service/createService',
+        'http://3.223.253.106:7787/api/service/createService',
         { name: newServiceName },
         commonConfig
       );
@@ -90,7 +90,7 @@ const ServiceManagement = () => {
   const handleSaveEditService = async () => {
     try {
       await axios.put(
-        `http://3.223.253.106:7777/api/service/editService/${editService._id}`,
+        `http://3.223.253.106:7787/api/service/editService/${editService._id}`,
         { name: editService.name },
         commonConfig
       );
@@ -106,7 +106,7 @@ const ServiceManagement = () => {
     if (window.confirm('Are you sure you want to delete this service?')) {
       try {
         await axios.delete(
-          `http://3.223.253.106:7777/api/service/delete/${serviceId}`,
+          `http://3.223.253.106:7787/api/service/delete/${serviceId}`,
           commonConfig
         );
         fetchServices();

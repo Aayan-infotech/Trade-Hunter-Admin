@@ -63,7 +63,7 @@ const ContentAndCommunicationManagement = () => {
       setError(null);
       const endpointSection = sectionMapping[section] || section;
       const response = await axios.get(
-        `http://3.223.253.106:7777/api/StaticContent/${endpointSection}`,
+        `http://3.223.253.106:7787/api/StaticContent/${endpointSection}`,
         commonConfig
       );
       setContentData(prev => ({ ...prev, [section]: response.data.content }));
@@ -82,7 +82,7 @@ const ContentAndCommunicationManagement = () => {
       setError(null);
       const endpointSection = sectionMapping[activeSection] || activeSection;
       await axios.post(
-        'http://3.223.253.106:7777/api/StaticContent',
+        'http://3.223.253.106:7787/api/StaticContent',
         { section: endpointSection, content: contentData[activeSection] },
         commonConfig
       );
@@ -101,7 +101,7 @@ const ContentAndCommunicationManagement = () => {
         message: notificationMessage,
       };
       const response = await axios.post(
-        'http://3.223.253.106:7777/api/massNotification/',
+        'http://3.223.253.106:7787/api/massNotification/',
         payload,
         commonConfig
       );

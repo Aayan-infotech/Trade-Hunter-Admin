@@ -36,11 +36,11 @@ const authConfig = {
   },
 }
 
-const API_CREATE = "http://3.223.253.106:7777/api/blog/postBlog"
-const API_GET = "http://3.223.253.106:7777/api/blog/getAll"
-const API_DELETE = "http://3.223.253.106:7777/api/blog/delete"
-const API_UPDATE = "http://3.223.253.106:7777/api/blog/update"
-const API_GET_BY_ID = "http://3.223.253.106:7777/api/blog/getById"
+const API_CREATE = "http://3.223.253.106:7787/api/blog/postBlog"
+const API_GET = "http://3.223.253.106:7787/api/blog/getAll"
+const API_DELETE = "http://3.223.253.106:7787/api/blog/delete"
+const API_UPDATE = "http://3.223.253.106:7787/api/blog/update"
+const API_GET_BY_ID = "http://3.223.253.106:7787/api/blog/getById"
 
 const stripHtml = (html) => html.replace(/<[^>]+>/g, '');
 
