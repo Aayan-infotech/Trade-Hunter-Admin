@@ -59,9 +59,6 @@ const PaymentManagement = () => {
     setShowViewModal(true);
   };
 
-  const formatAmountWithAUD = (amount) => {
-    return `${(amount / 100).toFixed(2)} $`;
-  };
 
   return (
     <CContainer>
@@ -103,7 +100,7 @@ const PaymentManagement = () => {
                         {pay.userId?.contactName ?? "—"}
                       </CTableDataCell>
                       <CTableDataCell>
-                        {formatAmountWithAUD(pay.transaction.transactionPrice)}
+                        {(pay.transaction.transactionPrice)}
                       </CTableDataCell>
                       <CTableDataCell>{pay.status}</CTableDataCell>
                       <CTableDataCell>
@@ -150,13 +147,13 @@ const PaymentManagement = () => {
               <p><strong>_id:</strong> {viewPayment._id}</p>
               <p><strong>Transaction ID:</strong> {viewPayment.transaction.transactionId}</p>
               <p><strong>Transaction Date:</strong> {new Date(viewPayment.transaction.transactionDate).toLocaleString()}</p>
-              <p><strong>Transaction Price:</strong> {formatAmountWithAUD(viewPayment.transaction.transactionPrice)}</p>
+              <p><strong>Transaction Price:</strong> {(viewPayment.transaction.transactionPrice)}</p>
               <p><strong>Authorisation Code:</strong> {viewPayment.transaction.authorisationCode}</p>
               <p><strong>Transaction Status:</strong> {viewPayment.transaction.transactionStatus}</p>
               <p><strong>Transaction Type:</strong> {viewPayment.transaction.transactionType}</p>
               <hr />
               <p><strong>Payment Source:</strong> {viewPayment.payment.paymentSource}</p>
-              <p><strong>Payment Total Amount:</strong> {formatAmountWithAUD(viewPayment.payment.totalAmount)}</p>
+              <p><strong>Payment Total Amount:</strong> {(viewPayment.payment.totalAmount)}</p>
               <p><strong>Currency Code:</strong> {viewPayment.payment.countryCode}</p>
               <hr />
               <p><strong>Payer ID:</strong> {viewPayment.payer.payerId || "—"}</p>
