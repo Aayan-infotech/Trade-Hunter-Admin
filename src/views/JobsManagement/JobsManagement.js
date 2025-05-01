@@ -85,12 +85,12 @@ const JobsManagement = () => {
       let response;
       if (jobStatusFilter !== "All") {
         response = await axios.get(
-          `http://3.223.253.106:7787/api/jobs/filter?status=${jobStatusFilter}&page=${page}&limit=10`,
+          `http://18.209.91.97:7787/api/jobs/filter?status=${jobStatusFilter}&page=${page}&limit=10`,
           commonConfig
         );
       } else {
         response = await axios.get(
-          `http://3.223.253.106:7787/api/jobs/?page=${page}&limit=10&search=${search}`,
+          `http://18.209.91.97:7787/api/jobs/?page=${page}&limit=10&search=${search}`,
           commonConfig
         );
       }
@@ -121,7 +121,7 @@ const JobsManagement = () => {
   const handleDeleteJob = async (jobId) => {
     if (window.confirm("Are you sure you want to delete this job?")) {
       try {
-        await axios.delete(`http://3.223.253.106:7787/api/jobPost/${jobId}`, commonConfig);
+        await axios.delete(`http://18.209.91.97:7787/api/jobPost/${jobId}`, commonConfig);
         fetchJobs();
       } catch (error) {
         console.error("Error deleting job:", error);
@@ -161,7 +161,7 @@ const JobsManagement = () => {
       }
 
       await axios.put(
-        `http://3.223.253.106:7787/api/jobpost/${editJob._id}`,
+        `http://18.209.91.97:7787/api/jobpost/${editJob._id}`,
         updatedJob,
         commonConfig
       );
