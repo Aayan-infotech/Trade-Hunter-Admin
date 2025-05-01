@@ -40,7 +40,7 @@ const FollowUp = () => {
     setError(null);
     try {
       const response = await axios.get(
-        "http://3.223.253.106:7787/api/contact/getAll",
+        "http://18.209.91.97:7787/api/contact/getAll",
         commonConfig
       );
       const fetchedContacts = response.data.contacts || [];
@@ -64,7 +64,7 @@ const FollowUp = () => {
     if (window.confirm("Are you sure you want to delete this contact?")) {
       try {
         await axios.delete(
-          `http://3.223.253.106:7787/api/contact/delete/${id}`,
+          `http://18.209.91.97:7787/api/contact/delete/${id}`,
           commonConfig
         );
         alert("Contact deleted successfully.");

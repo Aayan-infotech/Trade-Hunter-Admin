@@ -38,7 +38,7 @@ const PaymentManagement = () => {
     setError(null);
     try {
       const res = await axios.get(
-        "http://3.223.253.106:7787/api/eway/getAllTransactions"
+        "http://18.209.91.97:7787/api/eway/getAllTransactions"
       );
       const sorted = (res.data.transactions || []).sort(
         (a, b) =>
