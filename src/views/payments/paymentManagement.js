@@ -77,7 +77,7 @@ const PaymentManagement = () => {
                   <CTableHeaderCell>Transaction ID</CTableHeaderCell>
                   <CTableHeaderCell>Date</CTableHeaderCell>
                   <CTableHeaderCell>Provider Name</CTableHeaderCell>
-                  <CTableHeaderCell>Amount</CTableHeaderCell>
+                  <CTableHeaderCell>$ </CTableHeaderCell>
                   <CTableHeaderCell>Status</CTableHeaderCell>
                   <CTableHeaderCell>Mode</CTableHeaderCell>
                   <CTableHeaderCell>Plan Name</CTableHeaderCell>

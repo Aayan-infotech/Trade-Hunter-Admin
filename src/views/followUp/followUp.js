@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import io from "socket.io-client";
 import {
   CContainer,
   CCard,
@@ -11,11 +12,14 @@ import {
   CTableHeaderCell,
   CTableBody,
   CTableDataCell,
-  CButton,
 } from "@coreui/react";
 import CIcon from "@coreui/icons-react";
 import { cilTrash } from "@coreui/icons";
+import { ToastContainer, toast } from "react-toastify"; 
+import "react-toastify/dist/ReactToastify.css"; 
 import "../Users/Usermanagement.css";
+
+const socket = io("http://18.209.91.97:7787");
 
 const formatDate = (dateObj) => {
   if (!dateObj) return "N/A";
@@ -58,6 +62,23 @@ const FollowUp = () => {
 
   useEffect(() => {
     fetchContacts();
+
+    // ✅ Real-time listener
+    socket.on("newContact", (newContact) => {
+      toast.success(`New Contact from ${newContact.name}`, {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+      setContacts((prev) => [newContact, ...prev]);
+    });
+
+    return () => {
+      socket.off("newContact");
+    };
   }, []);
 
   const handleDelete = async (id) => {
@@ -80,6 +101,7 @@ const FollowUp = () => {
 
   return (
     <CContainer className="jobs-container">
+      <ToastContainer /> {/* ✅ Toast Container */}
       <CCard>
         <CCardHeader className="service-card-header">
           <h4>Follow Ups</h4>
