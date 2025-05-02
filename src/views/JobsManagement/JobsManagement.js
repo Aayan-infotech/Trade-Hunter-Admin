@@ -28,6 +28,7 @@ import {
   cilPencil,
   cilViewColumn,
   cilSearch,
+  cilStar,         // ← added
 } from "@coreui/icons";
 import "../Users/Usermanagement.css";
 
@@ -77,6 +78,11 @@ const JobsManagement = () => {
   const [showViewModal, setShowViewModal] = useState(false);
   const [editJob, setEditJob] = useState(null);
   const [showEditModal, setShowEditModal] = useState(false);
+
+  // ← new state for ratings
+  const [showRatingsModal, setShowRatingsModal] = useState(false);
+  const [ratings, setRatings] = useState([]);
+  const [ratingsJobTitle, setRatingsJobTitle] = useState("");
 
   const fetchJobs = async () => {
     setLoading(true);
@@ -144,6 +150,22 @@ const JobsManagement = () => {
     };
     setEditJob(formattedJob);
     setShowEditModal(true);
+  };
+
+  // ← new handler to fetch ratings
+  const handleViewRatings = async (job) => {
+    try {
+      const res = await axios.get(
+        `http://18.209.91.97:7787/api/rating/getRatingById/${job._id}`,
+        commonConfig
+      );
+      setRatings(res.data.data || []);
+      setRatingsJobTitle(job.title);
+      setShowRatingsModal(true);
+    } catch (err) {
+      console.error("Error fetching ratings:", err);
+      alert("Failed to load ratings.");
+    }
   };
 
   const handleSaveEditJob = async () => {
@@ -282,6 +304,13 @@ const JobsManagement = () => {
                           onClick={() => handleDeleteJob(job._id)}
                           icon={cilTrash}
                           size="lg"
+                        />
+                        <CIcon                                         
+                          className="action-icon rating-icon"     
+                          title="view Ratings"                     
+                          onClick={() => handleViewRatings(job)}   
+                          icon={cilStar}                          
+                          size="lg"                                
                         />
                       </CTableDataCell>
                     </CTableRow>
@@ -549,6 +578,56 @@ const JobsManagement = () => {
           </CButton>
         </CModalFooter>
       </CModal>
+
+      {/* Ratings Modal */}
+      <CModal
+  scrollable
+  visible={showRatingsModal}
+  onClose={() => setShowRatingsModal(false)}
+>
+  <CModalHeader className="service-card-header">
+    <CModalTitle>Feedback for: {ratingsJobTitle}</CModalTitle>
+  </CModalHeader>
+  <CModalBody className="modal-body-custom">
+    {ratings.length === 0 ? (
+      <p>No ratings found for this job.</p>
+    ) : (
+      ratings.map((r) => (
+        <div key={r._id} style={{ marginBottom: "1rem" }}>
+          <p>
+            <strong>Rating:</strong>{" "}
+            {Array.from({ length: 5 }).map((_, idx) => (
+              <CIcon
+                key={idx}
+                icon={cilStar}
+                size="lg"
+                style={{
+                  color: idx < r.rating ? "gold" : "#ccc",
+                  marginRight: 4,
+                }}
+              />
+            ))}
+          </p>
+          <p>
+            <strong>Review:</strong> {r.review}
+          </p>
+          <hr />
+        </div>
+      ))
+    )}
+  </CModalBody>
+  <CModalFooter className="modal-footer-custom">
+    <CButton
+      onClick={() => setShowRatingsModal(false)}
+      color="secondary"
+      className="modal-close-button"
+    >
+      Close
+    </CButton>
+  </CModalFooter>
+</CModal>
+
+
     </CContainer>
   );
 };
