@@ -1,22 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { 
-  CContainer, 
-  CRow, 
-  CCol, 
-  CCard, 
-  CCardHeader, 
-  CCardBody, 
-  CButton, 
-  CHeader, 
-  CHeaderBrand, 
-  CFormSelect, 
-  CFormInput, 
-  CFormTextarea 
+  CContainer, CRow, CCol, CCard, CCardHeader, CCardBody, 
+  CButton, CHeader, CHeaderBrand, CFormSelect, CFormInput, CFormTextarea, CBadge
 } from '@coreui/react';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faInfoCircle, faFileContract, faShieldAlt } from '@fortawesome/free-solid-svg-icons';
+import { faInfoCircle, faFileContract, faShieldAlt, faBell } from '@fortawesome/free-solid-svg-icons';
 import axios from 'axios';
 import "../Users/Usermanagement.css";
 
@@ -30,27 +20,16 @@ const ContentAndCommunicationManagement = () => {
   const [activeModule, setActiveModule] = useState('Static Content');
   const [activeSection, setActiveSection] = useState('About Us');
   const [contentData, setContentData] = useState({
-    "About Us": "",
-    "Terms & Conditions": "",
-    "Privacy Policy": ""
+    "About Us": "", "Terms & Conditions": "", "Privacy Policy": ""
   });
   
   const [notificationRecipient, setNotificationRecipient] = useState('');
   const [notificationSubject, setNotificationSubject] = useState('');
   const [notificationMessage, setNotificationMessage] = useState('');
-  
-  const [pendingVerificationsAlert, setPendingVerificationsAlert] = useState('');
-  const [unresolvedDisputesAlert, setUnresolvedDisputesAlert] = useState('');
-  const [subscriptionRenewalsAlert, setSubscriptionRenewalsAlert] = useState('');
+  const [allNotifications, setAllNotifications] = useState([]);
   
   const [error, setError] = useState(null);
 
-  useEffect(() => {
-    if(activeModule === 'Static Content'){
-      fetchContent(activeSection);
-    }
-  }, [activeSection, activeModule]);
-  
   const commonConfig = {
     headers: {
       Authorization: `Bearer ${localStorage.getItem('token')}`,
@@ -58,32 +37,39 @@ const ContentAndCommunicationManagement = () => {
     },
   };
 
+  useEffect(() => {
+    if (activeModule === 'Static Content') {
+      fetchContent(activeSection);
+    }
+  }, [activeSection, activeModule]);
+
+  useEffect(() => {
+    if (activeModule === 'Send Mass Notifications') {
+      fetchAllNotifications();
+    }
+  }, [activeModule]);
+
   const fetchContent = async (section) => {
     try {
       setError(null);
-      const endpointSection = sectionMapping[section] || section;
-      const response = await axios.get(
-        `http://18.209.91.97:7787/api/StaticContent/${endpointSection}`,
-        commonConfig
+      const endpoint = sectionMapping[section];
+      const res = await axios.get(
+        `http://18.209.91.97:7787/api/StaticContent/${endpoint}`, commonConfig
       );
-      setContentData(prev => ({ ...prev, [section]: response.data.content }));
+      setContentData(prev => ({ ...prev, [section]: res.data.content }));
     } catch (err) {
       console.error('Error fetching content:', err);
       setError('Error fetching content.');
     }
   };
 
-  const handleDescriptionChange = (value) => {
-    setContentData({ ...contentData, [activeSection]: value });
-  };
-
   const saveContent = async () => {
     try {
       setError(null);
-      const endpointSection = sectionMapping[activeSection] || activeSection;
+      const endpoint = sectionMapping[activeSection];
       await axios.post(
         'http://18.209.91.97:7787/api/StaticContent',
-        { section: endpointSection, content: contentData[activeSection] },
+        { section: endpoint, content: contentData[activeSection] },
         commonConfig
       );
       alert('Content saved successfully!');
@@ -93,35 +79,42 @@ const ContentAndCommunicationManagement = () => {
     }
   };
 
+  const fetchAllNotifications = async () => {
+    try {
+      setError(null);
+      const res = await axios.get(
+        'http://18.209.91.97:7787/api/massNotification/getAll',
+        commonConfig
+      );
+      setAllNotifications(res.data);
+    } catch (err) {
+      console.error('Error fetching all notifications:', err);
+      setError('Could not load sent notifications.');
+    }
+  };
+
   const sendNotification = async () => {
     try {
+      setError(null);
       const payload = {
-        userType: notificationRecipient, 
+        userType: notificationRecipient,
         subject: notificationSubject,
         message: notificationMessage,
       };
-      const response = await axios.post(
+      await axios.post(
         'http://18.209.91.97:7787/api/massNotification/',
         payload,
         commonConfig
       );
-      alert('Notification sent successfully!\nResponse: ' + JSON.stringify(response.data));
+      alert('Notification sent successfully!');
       setNotificationRecipient('');
       setNotificationSubject('');
       setNotificationMessage('');
+      fetchAllNotifications();
     } catch (err) {
       console.error('Error sending notification:', err);
       setError('Error sending notification.');
     }
-  };
-
-  const saveAlerts = () => {
-    console.log('Pending Verifications Alert:', pendingVerificationsAlert);
-    console.log('Unresolved Disputes Alert:', unresolvedDisputesAlert);
-    console.log('Subscription Renewals Alert:', subscriptionRenewalsAlert);
-    setPendingVerificationsAlert('');
-    setUnresolvedDisputesAlert('');
-    setSubscriptionRenewalsAlert('');
   };
 
   const staticSections = [
@@ -133,17 +126,17 @@ const ContentAndCommunicationManagement = () => {
   return (
     <CContainer fluid className="mt-4">
       <CHeader className="service-card-header">
-        <CHeaderBrand className="service-card-header" style={{ height: "30px" }}>
+        <CHeaderBrand style={{ height: "30px" }}>
           Content & Communication Management
         </CHeaderBrand>
       </CHeader>
       
-      <CRow className="mb-4 module-nav-row" style={{ padding: '10px 0' }}>
+      {/* Module Toggle */}
+      <CRow className="mb-4" style={{ padding: '10px 0' }}>
         <CCol md="4" className="text-end">
           <CButton 
-            color={activeModule === 'Static Content' ? 'primary' : 'secondary'} 
-            block 
-            onClick={() => setActiveModule('Static Content')}
+            color={activeModule === 'Static Content' ? 'primary' : 'secondary'}
+            block onClick={() => setActiveModule('Static Content')}
             style={{ borderRadius: 0, fontWeight: 'bold' }}
           >
             Static Content
@@ -151,9 +144,8 @@ const ContentAndCommunicationManagement = () => {
         </CCol>
         <CCol md="8" className="text-center">
           <CButton 
-            color={activeModule === 'Send Mass Notifications' ? 'primary' : 'secondary'} 
-            block 
-            onClick={() => setActiveModule('Send Mass Notifications')}
+            color={activeModule === 'Send Mass Notifications' ? 'primary' : 'secondary'}
+            block onClick={() => setActiveModule('Send Mass Notifications')}
             style={{ borderRadius: 0, fontWeight: 'bold' }}
           >
             Send Mass Notifications
@@ -161,40 +153,38 @@ const ContentAndCommunicationManagement = () => {
         </CCol>
       </CRow>
 
+      {/* Static Content Module */}
       {activeModule === 'Static Content' && (
         <>
           <CRow className="mb-4">
-            {staticSections.map((section) => (
-              <CCol md={4} key={section.name}>
+            {staticSections.map((sec) => (
+              <CCol md={4} key={sec.name}>
                 <CCard 
-                  className={`p-3 text-white bg-${section.color}`} 
-                  style={{ cursor: 'pointer' }} 
-                  onClick={() => setActiveSection(section.name)}
+                  className={`p-3 text-white bg-${sec.color}`} 
+                  style={{ cursor: 'pointer' }}
+                  onClick={() => setActiveSection(sec.name)}
                 >
                   <h5>
-                    <FontAwesomeIcon icon={section.icon} className="me-2" />
-                    {section.name}
+                    <FontAwesomeIcon icon={sec.icon} className="me-2" />
+                    {sec.name}
                   </h5>
-                  <p>Add & update {section.name.toLowerCase()}</p>
+                  <p>Edit {sec.name.toLowerCase()}</p>
                 </CCard>
               </CCol>
             ))}
           </CRow>
-
           <CCard className="p-4 mb-5">
             <CCardBody>
               <h4>{activeSection}</h4>
-              <CRow>
-                <CCol md={12}>
-                  <ReactQuill
-                    style={{ height: "250px", marginBottom: "50px" }}
-                    value={contentData[activeSection]}
-                    onChange={handleDescriptionChange}
-                    placeholder={`Enter ${activeSection.toLowerCase()} content`}
-                  />
-                </CCol>
-              </CRow>
-              <CButton color="success" className="mt-3" onClick={saveContent}>
+              <ReactQuill
+                style={{ height: "250px", marginBottom: "50px" }}
+                value={contentData[activeSection]}
+                onChange={(val) => setContentData(prev => ({ 
+                  ...prev, [activeSection]: val 
+                }))}
+                placeholder={`Enter ${activeSection.toLowerCase()} content`}
+              />
+              <CButton color="success" onClick={saveContent}>
                 Save Content
               </CButton>
             </CCardBody>
@@ -202,10 +192,15 @@ const ContentAndCommunicationManagement = () => {
         </>
       )}
 
+      {/* Mass Notifications Module */}
       {activeModule === 'Send Mass Notifications' && (
         <CCard className="p-4 mb-5">
-          <CCardHeader className="service-card-header">Send Mass Notifications</CCardHeader>
+          <CCardHeader className="service-card-header">
+            <FontAwesomeIcon icon={faBell} className="me-2" />
+            Send Mass Notifications
+          </CCardHeader>
           <CCardBody>
+            {/* existing form untouched */}
             <CFormSelect
               value={notificationRecipient}
               onChange={(e) => setNotificationRecipient(e.target.value)}
@@ -231,11 +226,38 @@ const ContentAndCommunicationManagement = () => {
             <CButton color="primary" className="mt-3" onClick={sendNotification}>
               Send Notification
             </CButton>
+
+            {/* enhanced notifications list */}
+            <div className="mt-5">
+              <h5 className="mb-3">Sent Notifications</h5>
+              <CRow xs={{ cols: 1, md: 2, lg: 3 }} className="g-3">
+                {allNotifications.length === 0 
+                  ? <p className="text-muted">No notifications sent yet.</p>
+                  : allNotifications.map((n) => (
+                    <CCol key={n._id}>
+                      <CCard className="h-100 shadow-sm">
+                        <CCardHeader className="service-card-header">
+                          <CBadge color={n.userType === 'hunter' ? 'info' : 'success'}>
+                            {n.userType.toUpperCase()}
+                          </CBadge>
+                          <small>{new Date(n.createdAt).toLocaleDateString()}</small>
+                        </CCardHeader>
+                        <CCardBody>
+                          <h6>{n.title}</h6>
+                          <p className="mb-2">{n.body}</p>
+                          <small className="text-muted">
+                            {new Date(n.createdAt).toLocaleTimeString()}
+                          </small>
+                        </CCardBody>
+                      </CCard>
+                    </CCol>
+                  ))
+                }
+              </CRow>
+            </div>
           </CCardBody>
         </CCard>
       )}
-
-      
 
       {error && <div className="text-danger mb-3">{error}</div>}
     </CContainer>

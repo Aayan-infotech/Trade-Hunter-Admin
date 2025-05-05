@@ -1021,4 +1021,30 @@ button:hover {
   }
 }
 
+/* Scrollable list for sent notifications */
+.notification-list {
+  max-height: 300px;
+  overflow-y: auto;
+  padding-right: 8px;
+}
+.notification-list::-webkit-scrollbar {
+  width: 6px;
+}
+.notification-list::-webkit-scrollbar-thumb {
+  background-color: rgba(0,0,0,0.2);
+  border-radius: 3px;
+}
+
+/* Wrap the sent-notifications grid */
+.ccard {
+  transition: transform 0.15s ease-in-out;
+}
+.ccard:hover {
+  transform: translateY(-4px);
+}
+
+/* Slight background for the notification area */
+.service-card-header + .ccard {
+  background-color: #fafafa;
+}
 
