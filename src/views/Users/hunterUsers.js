@@ -66,14 +66,15 @@ const Hunter = () => {
   const [newChatMessage, setNewChatMessage] = useState('')
   const [hasMoreData, setHasMoreData] = useState(true)
 
-
-  const token = localStorage.getItem('token');
+  // Retrieve token and set auth headers
+  const token = localStorage.getItem('token')
+  console.log('🛡️ token:', token)
   const authHeaders = {
     headers: {
       Authorization: `Bearer ${token}`,
       'Content-Type': 'application/json',
     },
-  };
+  }
 
   const navigate = useNavigate()
   const currentUser = localStorage.getItem('adminId')
@@ -84,9 +85,7 @@ const Hunter = () => {
   }, [currentUser])
 
   const generateChatId = (otherUserId) => {
-    const chatId = [currentUser, otherUserId].sort().join('_chat_')
-    console.log('Generated Chat ID:', chatId)
-    return chatId
+    return [currentUser, otherUserId].sort().join('_chat_')
   }
 
   const JobsManagemen = (_id) => {
@@ -97,7 +96,8 @@ const Hunter = () => {
     setLoading(true)
     try {
       const response = await axios.get(
-        `http://18.209.91.97:7787/api/users/type/hunter/pagelimit/10?page=${page}&search=${search}&userStatus=${statusFilter}`,authHeaders
+        `http://18.209.91.97:7787/api/users/type/hunter/pagelimit/10?page=${page}&search=${search}&userStatus=${statusFilter}`,
+        authHeaders
       )
       const fetchedUsers = response.data.users || []
       setUsers(fetchedUsers)
@@ -119,9 +119,7 @@ const Hunter = () => {
   }
 
   const nextPage = () => {
-    if (hasMoreData) {
-      setPage((prev) => prev + 1)
-    }
+    if (hasMoreData) setPage((prev) => prev + 1)
   }
 
   const prevPage = () => {
@@ -131,7 +129,10 @@ const Hunter = () => {
   const handleDelete = async (id) => {
     if (window.confirm('Are you sure you want to delete this user?')) {
       try {
-        await axios.delete(`http://18.209.91.97:7787/api/DeleteAccount/delete/${id}`,authHeaders)
+        await axios.delete(
+          `http://18.209.91.97:7787/api/DeleteAccount/delete/${id}`,
+          authHeaders
+        )
         fetchUsers()
       } catch (error) {
         console.error('Error deleting user:', error)
@@ -151,7 +152,11 @@ const Hunter = () => {
 
   const handleSaveEdit = async () => {
     try {
-      await axios.put(`http://18.209.91.97:7787/api/users/${editUser._id}`,authHeaders, editUser)
+      await axios.put(
+        `http://18.209.91.97:7787/api/users/${editUser._id}`,
+        editUser,
+        authHeaders
+      )
       fetchUsers()
       setIsEditModalOpen(false)
     } catch (error) {
@@ -161,10 +166,7 @@ const Hunter = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target
-    setEditUser((prevUser) => ({
-      ...prevUser,
-      [name]: value,
-    }))
+    setEditUser((prevUser) => ({ ...prevUser, [name]: value }))
   }
 
   const handleNotification = (user) => {
@@ -176,28 +178,26 @@ const Hunter = () => {
   const fetchNotifications = async (userId) => {
     try {
       const response = await axios.get(
-        `http://18.209.91.97:7787/api/pushNotification/getAdminNotification/${userId}`,authHeaders
+        `http://18.209.91.97:7787/api/pushNotification/getAdminNotification/${userId}`,
+        authHeaders
       )
       setNotifications(response.data.data || [])
     } catch (error) {
       console.error('Error fetching notifications:', error)
     }
   }
+
   const handleSendNotification = async () => {
     if (!notifTitle.trim() || !notifBody.trim()) {
       alert('Please enter both notification title and body.')
       return
     }
     try {
-      // Updated endpoint to match the working Postman endpoint:
       await axios.post(
         `http://18.209.91.97:7787/api/pushNotification/sendAdminNotification/${notifUser._id}`,
-        {
-          title: notifTitle,
-          body: notifBody,
-        },authHeaders,
+        { title: notifTitle, body: notifBody },
+        authHeaders
       )
-      // Clear fields after sending
       setNotifTitle('')
       setNotifBody('')
       fetchNotifications(notifUser._id)
@@ -209,14 +209,14 @@ const Hunter = () => {
   }
 
   const handleDeleteNotification = async (notifId) => {
-    if (!notifUser || !notifUser._id) {
+    if (!notifUser?._id) {
       alert('Notification user not defined')
       return
     }
-    const deleteUrl = (`http://18.209.91.97:7787/api/pushNotification/deleteNotification/${notifId}`,authHeaders)
+    const deleteUrl = `http://18.209.91.97:7787/api/pushNotification/deleteNotification/${notifId}`
     if (window.confirm('Are you sure you want to delete this notification?')) {
       try {
-        await axios.delete(deleteUrl)
+        await axios.delete(deleteUrl, authHeaders)
         fetchNotifications(notifUser._id)
       } catch (error) {
         console.error('Error deleting notification:', error)
@@ -226,52 +226,36 @@ const Hunter = () => {
   }
 
   const handleChat = (user) => {
-    console.log('Chat initiated with:', user)
     setChatUser(user)
     setIsChatModalOpen(true)
   }
 
   useEffect(() => {
-    if (chatUser) {
-      const chatChannelId = generateChatId(chatUser._id)
-      const chatMessagesRef = ref(realtimeDb, `chatsAdmin/${chatChannelId}/messages`)
-      console.log(
-        'Subscribing to Firebase chat messages at:',
-        `chatsAdmin/${chatChannelId}/messages`,
-      )
-
-      const unsubscribe = onValue(chatMessagesRef, (snapshot) => {
-        const data = snapshot.val()
-        if (data) {
-          const messagesArray = Object.values(data).sort((a, b) => a.timeStamp - b.timeStamp)
-          console.log('Chat messages:', messagesArray)
-          setChatMessages(messagesArray)
-        } else {
-          console.log('No messages found at this channel.')
-          setChatMessages([])
-        }
-      })
-
-      return () => {
-        console.log('Unsubscribing from Firebase chat messages.')
-        unsubscribe()
+    if (!chatUser) return
+    const chatChannelId = generateChatId(chatUser._id)
+    const chatMessagesRef = ref(
+      realtimeDb,
+      `chatsAdmin/${chatChannelId}/messages`
+    )
+    const unsubscribe = onValue(chatMessagesRef, (snapshot) => {
+      const data = snapshot.val()
+      if (data) {
+        const messagesArray = Object.values(data).sort((a, b) => a.timeStamp - b.timeStamp)
+        setChatMessages(messagesArray)
+      } else {
+        setChatMessages([])
       }
-    }
+    })
+    return unsubscribe
   }, [chatUser])
 
   const handleSendChatMessage = () => {
-    if (!newChatMessage.trim()) return
-
-    if (!chatUser || !chatUser._id) {
-      console.error('Chat user is not defined.')
-      return
-    }
-
+    if (!newChatMessage.trim() || !chatUser?._id) return
     const chatChannelId = generateChatId(chatUser._id)
-    const chatRef = ref(realtimeDb, `chatsAdmin/${chatChannelId}/messages`)
-    console.log('Sending message to path:', `chatsAdmin/${chatChannelId}/messages`)
-    console.log('Current User:', currentUser, 'Chat User:', chatUser)
-
+    const chatRef = ref(
+      realtimeDb,
+      `chatsAdmin/${chatChannelId}/messages`
+    )
     const message = {
       senderId: currentUser,
       receiverId: chatUser._id,
@@ -280,15 +264,9 @@ const Hunter = () => {
       msg: newChatMessage,
       timeStamp: Date.now(),
     }
-
     push(chatRef, message)
-      .then(() => {
-        console.log('Message sent successfully:', message)
-        setNewChatMessage('')
-      })
-      .catch((error) => {
-        console.error('Error sending message:', error)
-      })
+      .then(() => setNewChatMessage(''))
+      .catch((error) => console.error('Error sending message:', error))
   }
 
   return (
