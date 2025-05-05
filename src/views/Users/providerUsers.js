@@ -67,13 +67,13 @@ const Provider = () => {
   const [chatMessages, setChatMessages] = useState([])
   const [newChatMessage, setNewChatMessage] = useState('')
 
-  const token = localStorage.getItem('token');
+  const token = localStorage.getItem('token')
   const authHeaders = {
     headers: {
       Authorization: `Bearer ${token}`,
       'Content-Type': 'application/json',
     },
-  };
+  }
 
   const currentUser = localStorage.getItem('adminId')
   const navigate = useNavigate()
@@ -97,7 +97,8 @@ const Provider = () => {
     try {
       setLoading(true)
       const response = await axios.get(
-        `http://18.209.91.97:7787/api/Prvdr?page=${page}&limit=10&search=${search}&userStatus=${statusFilter}`,authHeaders
+        `http://18.209.91.97:7787/api/Prvdr?page=${page}&limit=10&search=${search}&userStatus=${statusFilter}`,
+        authHeaders
       )
       const fetchedProviders = response.data.data || []
       setUsers(fetchedProviders)
@@ -127,7 +128,10 @@ const Provider = () => {
   const handleDelete = async (id) => {
     if (window.confirm('Are you sure you want to delete this user?')) {
       try {
-        await axios.delete(`http://18.209.91.97:7787/api/prvdr/delete/${id}`,authHeaders)
+        await axios.delete(
+          `http://18.209.91.97:7787/api/prvdr/delete/${id}`,
+          authHeaders
+        )
         fetchUsers()
       } catch (error) {
         console.error('Error deleting user:', error)
@@ -147,7 +151,11 @@ const Provider = () => {
 
   const handleSaveEdit = async () => {
     try {
-      await axios.put(`http://18.209.91.97:7787/api/Prvdr/${editUser._id}`,authHeaders, editUser)
+      await axios.put(
+        `http://18.209.91.97:7787/api/provider/updateById/${editUser._id}`,
+        editUser,
+        authHeaders
+      )
       fetchUsers()
       setIsEditModalOpen(false)
     } catch (error) {
@@ -173,13 +181,15 @@ const Provider = () => {
   const fetchNotifications = async (userId) => {
     try {
       const response = await axios.get(
-        `http://18.209.91.97:7787/api/pushNotification/getAdminNotification/${userId}`,authHeaders
+        `http://18.209.91.97:7787/api/pushNotification/getAdminNotification/${userId}`,
+        authHeaders
       )
       setNotifications(response.data.data || [])
     } catch (error) {
       console.error('Error fetching notifications:', error)
     }
   }
+
   const handleSendNotification = async () => {
     if (!notifTitle.trim() || !notifBody.trim()) {
       alert('Please enter both notification title and body.')
@@ -187,11 +197,9 @@ const Provider = () => {
     }
     try {
       await axios.post(
-        `http://18.209.91.97:7787/api/pushNotification/sendAdminNotification/${notifUser._id}`,authHeaders,
-        {
-          title: notifTitle,
-          body: notifBody,
-        },
+        `http://18.209.91.97:7787/api/pushNotification/sendAdminNotification/${notifUser._id}`,
+        { title: notifTitle, body: notifBody },
+        authHeaders
       )
       setNotifTitle('')
       setNotifBody('')
@@ -208,10 +216,11 @@ const Provider = () => {
       alert('Notification user not defined')
       return
     }
-    const deleteUrl = (`http://18.209.91.97:7787/api/pushNotification/deleteNotification/${notifId}`,authHeaders)
+
+    const deleteUrl = `http://18.209.91.97:7787/api/pushNotification/deleteNotification/${notifId}`
     if (window.confirm('Are you sure you want to delete this notification?')) {
       try {
-        await axios.delete(deleteUrl)
+        await axios.delete(deleteUrl, authHeaders)
         fetchNotifications(notifUser._id)
       } catch (error) {
         console.error('Error deleting notification:', error)
@@ -230,10 +239,7 @@ const Provider = () => {
     if (chatUser) {
       const chatChannelId = generateChatId(chatUser._id)
       const chatMessagesRef = ref(realtimeDb, `chatsAdmin/${chatChannelId}/messages`)
-      console.log(
-        'Subscribing to Firebase chat messages at:',
-        `chatsAdmin/${chatChannelId}/messages`,
-      )
+      console.log('Subscribing to Firebase chat messages at:', `chatsAdmin/${chatChannelId}/messages`)
 
       const unsubscribe = onValue(chatMessagesRef, (snapshot) => {
         const data = snapshot.val()
@@ -286,6 +292,7 @@ const Provider = () => {
       })
   }
 
+  
   return (
     <CContainer className="hunter-container">
       <CCard className="hunter-card">
