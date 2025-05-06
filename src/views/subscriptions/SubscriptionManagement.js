@@ -133,14 +133,48 @@ const SubscriptionManagement = () => {
     setShowEditModal(true)
   }
 
+  // const handleSaveEditSubscription = async () => {
+  //   const updated = {
+  //     ...editSubscription,
+  //     leadCount:
+  //       subscriptionTypes.find(t => t._id === editSubscription.type)?.type === 'Pay Per Lead'
+  //         ? Number(editSubscription.leadCount)
+  //         : 0,
+  //   }
+  //   try {
+  //     await axios.put(
+  //       `http://3.223.253.106:7777/api/SubscriptionNew/subscription-plan/${editSubscription._id}`,
+  //       updated,
+  //       commonConfig
+  //     )
+  //     fetchSubscriptions()
+  //     setShowEditModal(false)
+  //     setEditSubscription(null)
+  //   } catch (e) {
+  //     console.error(e)
+  //   }
+  // }
+  
   const handleSaveEditSubscription = async () => {
+    // Ensure 'type' is always the ObjectId, not the name
+    let typeId = editSubscription.type
+  
+    // If it's not already an ObjectId, find the corresponding ID from the type name
+    if (!subscriptionTypes.find(t => t._id === typeId)) {
+      const found = subscriptionTypes.find(t => t.type === typeId)
+      if (found) {
+        typeId = found._id
+      }
+    }
+  
+    const selectedType = subscriptionTypes.find(t => t._id === typeId)
+  
     const updated = {
       ...editSubscription,
-      leadCount:
-        subscriptionTypes.find(t => t._id === editSubscription.type)?.type === 'Pay Per Lead'
-          ? Number(editSubscription.leadCount)
-          : 0,
+      type: typeId, // send only ID
+      leadCount: selectedType?.type === 'Pay Per Lead' ? Number(editSubscription.leadCount) : 0,
     }
+  
     try {
       await axios.put(
         `http://18.209.91.97:7787/api/SubscriptionNew/subscription-plan/${editSubscription._id}`,
@@ -154,6 +188,8 @@ const SubscriptionManagement = () => {
       console.error(e)
     }
   }
+  
+
 
   const handleDeleteSubscription = async id => {
     if (window.confirm('Delete Subscription?')) {
