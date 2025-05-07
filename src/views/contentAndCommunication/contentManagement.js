@@ -117,6 +117,20 @@ const ContentAndCommunicationManagement = () => {
     }
   };
 
+
+  const formatDateToAEST = (dateString) =>
+    new Date(dateString).toLocaleString("en-AU", {
+      timeZone: "Australia/Sydney",
+      weekday: "short",
+      day: "numeric",
+      month: "short",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: true,
+    });
+
+
   const staticSections = [
     { name: "About Us", icon: faInfoCircle, color: "primary" },
     { name: "Terms & Conditions", icon: faFileContract, color: "warning" },
@@ -240,13 +254,13 @@ const ContentAndCommunicationManagement = () => {
                           <CBadge color={n.userType === 'hunter' ? 'info' : 'success'}>
                             {n.userType.toUpperCase()}
                           </CBadge>
-                          <small>{new Date(n.createdAt).toLocaleDateString()}</small>
+                          <small>{formatDateToAEST(n.createdAt)}</small>
                         </CCardHeader>
                         <CCardBody>
                           <h6>{n.title}</h6>
                           <p className="mb-2">{n.body}</p>
                           <small className="text-muted">
-                            {new Date(n.createdAt).toLocaleTimeString()}
+                            {formatDateToAEST(n.createdAt)}
                           </small>
                         </CCardBody>
                       </CCard>
