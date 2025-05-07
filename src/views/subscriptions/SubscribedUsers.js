@@ -184,11 +184,11 @@ const SubscriptionUsersManagement = () => {
                 {viewSubscription.subscriptionPlanId?.amount || "0.00"}
               </p>
               <p>
-                <strong>Start Date (AEST):</strong>{" "}
+                <strong>Start Date:</strong>{" "}
                 {formatDateToAEST(viewSubscription.startDate)}
               </p>
               <p>
-                <strong>End Date (AEST):</strong>{" "}
+                <strong>End Date:</strong>{" "}
                 {formatDateToAEST(viewSubscription.endDate)}
               </p>
               <p>

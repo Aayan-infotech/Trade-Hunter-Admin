@@ -59,6 +59,18 @@ const PaymentManagement = () => {
     setShowViewModal(true);
   };
 
+  const formatDateToAEST = (dateString) =>
+    new Date(dateString).toLocaleString("en-AU", {
+      timeZone: "Australia/Sydney",
+      weekday: "short",
+      day: "numeric",
+      month: "short",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: true,
+    });
+
 
   return (
     <CContainer>
@@ -146,7 +158,7 @@ const PaymentManagement = () => {
             <div className="p-2">
               <p><strong>_id:</strong> {viewPayment._id}</p>
               <p><strong>Transaction ID:</strong> {viewPayment.transaction.transactionId}</p>
-              <p><strong>Transaction Date:</strong> {new Date(viewPayment.transaction.transactionDate).toLocaleString()}</p>
+              <p><strong>Transaction Date:</strong> {formatDateToAEST(viewPayment.transactionDate)}</p>
               <p><strong>Transaction Price:</strong> {(viewPayment.transaction.transactionPrice)}</p>
               <p><strong>Authorisation Code:</strong> {viewPayment.transaction.authorisationCode}</p>
               <p><strong>Transaction Status:</strong> {viewPayment.transaction.transactionStatus}</p>
@@ -168,8 +180,8 @@ const PaymentManagement = () => {
               <p><strong>Plan Name:</strong> {viewPayment.subscriptionPlanId?.planName}</p>
               <p><strong>KM Radius:</strong> {viewPayment.subscriptionPlanId?.kmRadius}</p>
               <hr />
-              <p><strong>Record Created At:</strong> {new Date(viewPayment.createdAt).toLocaleString()}</p>
-              <p><strong>Record Updated At:</strong> {new Date(viewPayment.updatedAt).toLocaleString()}</p>
+              <p><strong>Record Created At:</strong> {formatDateToAEST(viewPayment.createdAt)}</p>
+              <p><strong>Record Updated At:</strong> {formatDateToAEST(viewPayment.updatedAt)}</p>
             </div>
           )}
         </CModalBody>
