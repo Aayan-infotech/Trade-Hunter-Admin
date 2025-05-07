@@ -67,6 +67,18 @@ const SubscriptionUsersManagement = () => {
     setShowViewModal(true);
   };
 
+  const formatDateToAEST = (dateString) =>
+    new Date(dateString).toLocaleString("en-AU", {
+      timeZone: "Australia/Sydney",
+      weekday: "short",
+      day: "numeric",
+      month: "short",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: true,
+    });
+
   return (
     <CContainer>
       <CCard>
@@ -86,8 +98,8 @@ const SubscriptionUsersManagement = () => {
                   <CTableHeaderCell>Subscription Type</CTableHeaderCell>
                   <CTableHeaderCell>Plan Name</CTableHeaderCell>
                   <CTableHeaderCell>$</CTableHeaderCell>
-                  <CTableHeaderCell>Start Date</CTableHeaderCell>
-                  <CTableHeaderCell>End Date</CTableHeaderCell>
+                  <CTableHeaderCell>Start Date (AEST)</CTableHeaderCell>
+                  <CTableHeaderCell>End Date (AEST)</CTableHeaderCell>
                   <CTableHeaderCell>Km Radius</CTableHeaderCell>
                   <CTableHeaderCell>Action</CTableHeaderCell>
                 </CTableRow>
@@ -112,10 +124,10 @@ const SubscriptionUsersManagement = () => {
                         ${subscription.subscriptionPlanId?.amount || "0.00"}
                       </CTableDataCell>
                       <CTableDataCell>
-                        {new Date(subscription.startDate).toLocaleString()}
+                        {formatDateToAEST(subscription.startDate)}
                       </CTableDataCell>
                       <CTableDataCell>
-                        {new Date(subscription.endDate).toLocaleString()}
+                        {formatDateToAEST(subscription.endDate)}
                       </CTableDataCell>
                       <CTableDataCell>
                         {subscription.kmRadius || "N/A"}
@@ -172,12 +184,12 @@ const SubscriptionUsersManagement = () => {
                 {viewSubscription.subscriptionPlanId?.amount || "0.00"}
               </p>
               <p>
-                <strong>Start Date:</strong>{" "}
-                {new Date(viewSubscription.startDate).toLocaleString()}
+                <strong>Start Date (AEST):</strong>{" "}
+                {formatDateToAEST(viewSubscription.startDate)}
               </p>
               <p>
-                <strong>End Date:</strong>{" "}
-                {new Date(viewSubscription.endDate).toLocaleString()}
+                <strong>End Date (AEST):</strong>{" "}
+                {formatDateToAEST(viewSubscription.endDate)}
               </p>
               <p>
                 <strong>Km Radius:</strong>{" "}
@@ -197,3 +209,5 @@ const SubscriptionUsersManagement = () => {
 };
 
 export default SubscriptionUsersManagement;
+
+
