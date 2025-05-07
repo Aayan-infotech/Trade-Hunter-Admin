@@ -29,14 +29,20 @@ const Dashboard = () => {
   const [financialYear, setFinancialYear] = useState('')
 
   const months = [
-    "January", "February", "March", "April", "May", "June",
-    "July", "August", "September", "October", "November", "December"
+    'January',
+    'February',
+    'March',
+    'April',
+    'May',
+    'June',
+    'July',
+    'August',
+    'September',
+    'October',
+    'November',
+    'December',
   ]
-  const financialYears = [
-    "2023-2024",
-    "2024-2025",
-    "2025-2026",
-  ]
+  const financialYears = ['2023-2024', '2024-2025', '2025-2026']
 
   const jobPostingColors = {
     Pending: 'danger',
@@ -51,7 +57,7 @@ const Dashboard = () => {
         const commonConfig = {
           headers: {
             Authorization: `Bearer ${localStorage.getItem('token')}`,
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
           },
         }
 
@@ -77,7 +83,10 @@ const Dashboard = () => {
           setJobPostings(jobData)
         }
 
-        if (results[2].status === 'fulfilled' && results[2].value.data?.data?.totalRevenue !== undefined) {
+        if (
+          results[2].status === 'fulfilled' &&
+          results[2].value.data?.data?.totalRevenue !== undefined
+        ) {
           setSubscriptionRevenue(results[2].value.data.data.totalRevenue)
         }
 
@@ -142,10 +151,19 @@ const Dashboard = () => {
               <h2 className="text-center">{totalUsers}</h2>
               <p className="text-muted text-center">Total Users</p>
               {/* Updated container for badges */}
-              <div className="d-flex justify-content-around align-items-center" style={{ whiteSpace: 'nowrap' }}>
-                <CBadge color="info" className="mx-1">Hunters: {hunter}</CBadge>
-                <CBadge color="success" className="mx-1">Providers: {provider}</CBadge>
-                <CBadge color="secondary" className="mx-1">Guests: {guest}</CBadge>
+              <div
+                className="d-flex justify-content-around align-items-center"
+                style={{ whiteSpace: 'nowrap' }}
+              >
+                <CBadge color="info" className="mx-1">
+                  Hunters: {hunter}
+                </CBadge>
+                <CBadge color="success" className="mx-1">
+                  Providers: {provider}
+                </CBadge>
+                <CBadge color="secondary" className="mx-1">
+                  Guests: {guest}
+                </CBadge>
               </div>
             </CCardBody>
           </CCard>
@@ -169,9 +187,7 @@ const Dashboard = () => {
         {/* Subscription Revenue Card with Filters */}
         <CCol md={4}>
           <CCard className="dashboard-card hover-effect h-100 d-flex flex-column">
-            <CCardHeader className="service-card-header">
-              Subscription Revenue
-            </CCardHeader>
+            <CCardHeader className="service-card-header">Subscription Revenue</CCardHeader>
             <CCardBody className="flex-grow-1 d-flex flex-column justify-content-center text-center">
               {/* Filters for revenue */}
               <div className="d-flex justify-content-center mb-3">
@@ -201,7 +217,8 @@ const Dashboard = () => {
                   ))}
                 </CFormSelect>
               </div>
-              <h1 className="text-success">${subscriptionRevenue}</h1>
+
+              <h1 className="text-success">${parseFloat(subscriptionRevenue).toFixed(2)}</h1>
               <p className="text-muted">Total Earnings</p>
             </CCardBody>
           </CCard>
@@ -261,4 +278,4 @@ const Dashboard = () => {
   )
 }
 
-export default Dashboard;
+export default Dashboard
