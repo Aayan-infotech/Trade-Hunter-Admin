@@ -61,6 +61,14 @@ const FollowUp = () => {
   };
 
   useEffect(() => {
+    const markAllAsRead = async () => {
+      try {
+        await axios.put('http://18.209.91.97:7787/api/contact/markAllRead');
+      } catch (err) {
+        console.error('Failed to mark all as read', err);
+      }
+    };
+    markAllAsRead();
     fetchContacts();
 
     // ✅ Real-time listener

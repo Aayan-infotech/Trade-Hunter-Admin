@@ -27,6 +27,7 @@ import {
 } from '@coreui/icons';
 import { CNavGroup, CNavItem, CNavTitle } from '@coreui/react';
 import NavContacts from './navContacts'; // Adjust path as needed
+import FollowUpNavItem from '../src/views/followUp/NavItemFollow'
 
 const _nav = [
   {
@@ -103,11 +104,14 @@ const _nav = [
     to: '/contentManagement',
     icon: <CIcon icon={cilBullhorn} customClassName="nav-icon" style={{ color: 'blue' }} />,
   },
+  // {
+  //   component: CNavItem,
+  //   name: "Follow-Up",
+  //   to: '/followUp',
+  //   icon: <CIcon icon={cilAlarm} customClassName="nav-icon" style={{ color: 'blue' }} />,
+  // },
   {
-    component: CNavItem,
-    name: "Follow-Up",
-    to: '/followUp',
-    icon: <CIcon icon={cilAlarm} customClassName="nav-icon" style={{ color: 'blue' }} />,
+    component:FollowUpNavItem
   },
   {
     component: CNavItem,
