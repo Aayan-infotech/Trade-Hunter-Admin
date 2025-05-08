@@ -19,6 +19,9 @@ const providerAssignedJobs = React.lazy(() => import('./views/Users/providerJobs
 const SubscriptionVouchers = React.lazy(() => import('./views/subscriptions/SubscriptionVouchers.js'))
 const SubscribedUsers = React.lazy(() => import('./views/subscriptions/SubscribedUsers.js'))
 const blogsManagement = React.lazy(() => import('./views/blogsManagement/blogsManagement.js'))
+const ratingsManagement = React.lazy(() => import('./views/reviewAndRatings/ratings.js'))
+const allFeedbacks = React.lazy(() => import('./views/reviewAndRatings/allFeedbacks.js'))
+
 
 
 
@@ -41,6 +44,8 @@ const routes = [
   { path: '/promotions', name: 'Subscription Vouchers', element: SubscriptionVouchers },
   { path: '/subscribedUsers', name: 'Subscribed Users', element: SubscribedUsers },
   { path: '/blogsManagement', name: 'Blogs Management', element: blogsManagement },
+  { path: '/ratingsManagement', name: 'Ratings Management', element: ratingsManagement },
+  {path: '/allFeedbacks', name: 'All Feedbacks', element: allFeedbacks},
 
 
   // { path: '/JobsManagement', name: 'JobsManagement', element: JobsManagement },

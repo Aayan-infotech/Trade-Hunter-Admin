@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { 
-  CContainer, CRow, CCol, CCard, CCardHeader, CCardBody, 
+import {
+  CContainer, CRow, CCol, CCard, CCardHeader, CCardBody,
   CButton, CHeader, CHeaderBrand, CFormSelect, CFormInput, CFormTextarea, CBadge
 } from '@coreui/react';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faInfoCircle, faFileContract, faShieldAlt, faBell } from '@fortawesome/free-solid-svg-icons';
+import { faInfoCircle, faFileContract, faShieldAlt, faBell, faTrash } from '@fortawesome/free-solid-svg-icons';
 import axios from 'axios';
 import "../Users/Usermanagement.css";
 
@@ -22,12 +22,11 @@ const ContentAndCommunicationManagement = () => {
   const [contentData, setContentData] = useState({
     "About Us": "", "Terms & Conditions": "", "Privacy Policy": ""
   });
-  
+
   const [notificationRecipient, setNotificationRecipient] = useState('');
   const [notificationSubject, setNotificationSubject] = useState('');
   const [notificationMessage, setNotificationMessage] = useState('');
   const [allNotifications, setAllNotifications] = useState([]);
-  
   const [error, setError] = useState(null);
 
   const commonConfig = {
@@ -117,6 +116,22 @@ const ContentAndCommunicationManagement = () => {
     }
   };
 
+  const deleteNotification = async (id) => {
+    const confirmDelete = window.confirm("Are you sure you want to delete this notification?");
+    if (!confirmDelete) return;
+
+    try {
+      await axios.delete(
+        `http://18.209.91.97:7787/api/massNotification/delete/${id}`,
+        commonConfig
+      );
+      setAllNotifications(prev => prev.filter(n => n._id !== id));
+      alert("Notification deleted successfully!");
+    } catch (err) {
+      console.error("Error deleting notification:", err);
+      setError("Error deleting notification.");
+    }
+  };
 
   const formatDateToAEST = (dateString) =>
     new Date(dateString).toLocaleString("en-AU", {
@@ -129,7 +144,6 @@ const ContentAndCommunicationManagement = () => {
       minute: "2-digit",
       hour12: true,
     });
-
 
   const staticSections = [
     { name: "About Us", icon: faInfoCircle, color: "primary" },
@@ -144,11 +158,10 @@ const ContentAndCommunicationManagement = () => {
           Content & Communication Management
         </CHeaderBrand>
       </CHeader>
-      
-      {/* Module Toggle */}
+
       <CRow className="mb-4" style={{ padding: '10px 0' }}>
         <CCol md="4" className="text-end">
-          <CButton 
+          <CButton
             color={activeModule === 'Static Content' ? 'primary' : 'secondary'}
             block onClick={() => setActiveModule('Static Content')}
             style={{ borderRadius: 0, fontWeight: 'bold' }}
@@ -157,7 +170,7 @@ const ContentAndCommunicationManagement = () => {
           </CButton>
         </CCol>
         <CCol md="8" className="text-center">
-          <CButton 
+          <CButton
             color={activeModule === 'Send Mass Notifications' ? 'primary' : 'secondary'}
             block onClick={() => setActiveModule('Send Mass Notifications')}
             style={{ borderRadius: 0, fontWeight: 'bold' }}
@@ -167,14 +180,13 @@ const ContentAndCommunicationManagement = () => {
         </CCol>
       </CRow>
 
-      {/* Static Content Module */}
       {activeModule === 'Static Content' && (
         <>
           <CRow className="mb-4">
             {staticSections.map((sec) => (
               <CCol md={4} key={sec.name}>
-                <CCard 
-                  className={`p-3 text-white bg-${sec.color}`} 
+                <CCard
+                  className={`p-3 text-white bg-${sec.color}`}
                   style={{ cursor: 'pointer' }}
                   onClick={() => setActiveSection(sec.name)}
                 >
@@ -193,8 +205,8 @@ const ContentAndCommunicationManagement = () => {
               <ReactQuill
                 style={{ height: "250px", marginBottom: "50px" }}
                 value={contentData[activeSection]}
-                onChange={(val) => setContentData(prev => ({ 
-                  ...prev, [activeSection]: val 
+                onChange={(val) => setContentData(prev => ({
+                  ...prev, [activeSection]: val
                 }))}
                 placeholder={`Enter ${activeSection.toLowerCase()} content`}
               />
@@ -206,7 +218,6 @@ const ContentAndCommunicationManagement = () => {
         </>
       )}
 
-      {/* Mass Notifications Module */}
       {activeModule === 'Send Mass Notifications' && (
         <CCard className="p-4 mb-5">
           <CCardHeader className="service-card-header">
@@ -214,7 +225,6 @@ const ContentAndCommunicationManagement = () => {
             Send Mass Notifications
           </CCardHeader>
           <CCardBody>
-            {/* existing form untouched */}
             <CFormSelect
               value={notificationRecipient}
               onChange={(e) => setNotificationRecipient(e.target.value)}
@@ -241,20 +251,27 @@ const ContentAndCommunicationManagement = () => {
               Send Notification
             </CButton>
 
-            {/* enhanced notifications list */}
             <div className="mt-5">
               <h5 className="mb-3">Sent Notifications</h5>
               <CRow xs={{ cols: 1, md: 2, lg: 3 }} className="g-3">
-                {allNotifications.length === 0 
+                {allNotifications.length === 0
                   ? <p className="text-muted">No notifications sent yet.</p>
                   : allNotifications.map((n) => (
                     <CCol key={n._id}>
                       <CCard className="h-100 shadow-sm">
-                        <CCardHeader className="service-card-header">
-                          <CBadge color={n.userType === 'hunter' ? 'info' : 'success'}>
-                            {n.userType.toUpperCase()}
-                          </CBadge>
-                          <small>{formatDateToAEST(n.createdAt)}</small>
+                        <CCardHeader className="service-card-header d-flex justify-content-between align-items-center">
+                          <div>
+                            <CBadge color={n.userType === 'hunter' ? 'info' : 'success'} className="me-2">
+                              {n.userType.toUpperCase()}
+                            </CBadge>
+                            <small>{formatDateToAEST(n.createdAt)}</small>
+                          </div>
+                          <FontAwesomeIcon
+                            icon={faTrash}
+                            style={{ cursor: 'pointer', color: 'white' }}
+                            title="Delete"
+                            onClick={() => deleteNotification(n._id)}
+                          />
                         </CCardHeader>
                         <CCardBody>
                           <h6>{n.title}</h6>
