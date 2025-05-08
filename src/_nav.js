@@ -123,7 +123,7 @@ const _nav = [
   },
   {
     component: CNavItem,
-    name: "Rating an Feedback",
+    name: "Ratings And Feedbacks",
     to: '/ratingsManagement',
     icon: <CIcon icon={cilPen} customClassName="nav-icon" style={{ color: 'blue' }} />,
   },
