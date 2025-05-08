@@ -62,7 +62,7 @@ const ProviderRatings = () => {
     <CContainer>
       <CCard>
         <CCardHeader className="service-card-header">
-          <h4>Providers & Ratings</h4>
+          <h4>Ratings And Feedbacks</h4>
           <div className="d-flex" style={{ gap: '8px' }}>
             <CFormInput
               placeholder="Search by name or email"
@@ -85,7 +85,7 @@ const ProviderRatings = () => {
                   <CTableHeaderCell>Provider Name</CTableHeaderCell>
                   <CTableHeaderCell>Email</CTableHeaderCell>
                   <CTableHeaderCell>Avg Rating</CTableHeaderCell>
-                  <CTableHeaderCell>Actions</CTableHeaderCell>
+                  <CTableHeaderCell>Feedbacks</CTableHeaderCell>
                 </CTableRow>
               </CTableHead>
               <CTableBody>
