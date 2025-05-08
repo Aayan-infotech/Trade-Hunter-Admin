@@ -121,6 +121,12 @@ const _nav = [
     to: '/blogsManagement',
     icon: <CIcon icon={cilPen} customClassName="nav-icon" style={{ color: 'blue' }} />,
   },
+  {
+    component: CNavItem,
+    name: "Rating an Feedback",
+    to: '/ratingsManagement',
+    icon: <CIcon icon={cilPen} customClassName="nav-icon" style={{ color: 'blue' }} />,
+  },
 ];
 
 export default _nav;
