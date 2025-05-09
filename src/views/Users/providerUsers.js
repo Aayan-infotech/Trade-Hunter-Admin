@@ -301,7 +301,7 @@ const Provider = () => {
           <div className="hunter-search-container">
             <CFormInput
               type="text"
-              placeholder="Search by name , Email or Address"
+              placeholder="Search by Business Name , Email or Address"
               value={search}
               onChange={handleSearch}
               className="hunter-search-input"
@@ -335,11 +335,11 @@ const Provider = () => {
                     <CTableHeaderCell>Sr. No</CTableHeaderCell>
                     <CTableHeaderCell>Joining Date</CTableHeaderCell>
                     <CTableHeaderCell>Name</CTableHeaderCell>
+                    <CTableHeaderCell>Business Name</CTableHeaderCell>
                     <CTableHeaderCell>Email</CTableHeaderCell>
                     <CTableHeaderCell>Contact</CTableHeaderCell>
                     <CTableHeaderCell>User Status</CTableHeaderCell>
                     <CTableHeaderCell>Admin Verified</CTableHeaderCell>
-                    <CTableHeaderCell>Business Name</CTableHeaderCell>
                     <CTableHeaderCell>Document Status</CTableHeaderCell>
                     <CTableHeaderCell>Account Status</CTableHeaderCell>
                     <CTableHeaderCell>Subscription Status</CTableHeaderCell>
@@ -352,6 +352,7 @@ const Provider = () => {
                       <CTableDataCell>{index + 1 + (page - 1) * 10}</CTableDataCell>
                       <CTableDataCell>{formatDate(user.insDate)}</CTableDataCell>
                       <CTableDataCell>{user.contactName}</CTableDataCell>
+                      <CTableDataCell>{user.businessName}</CTableDataCell>
                       <CTableDataCell>{user.email}</CTableDataCell>
                       <CTableDataCell>{user.phoneNo}</CTableDataCell>
                       <CTableDataCell>
@@ -368,7 +369,6 @@ const Provider = () => {
                         </CBadge>
                       </CTableDataCell>
                       <CTableDataCell>{user.adminVerified}</CTableDataCell>
-                      <CTableDataCell>{user.businessName}</CTableDataCell>
                       <CTableDataCell>
                         {user.documentStatus ? 'Approved' : 'Pending'}
                       </CTableDataCell>

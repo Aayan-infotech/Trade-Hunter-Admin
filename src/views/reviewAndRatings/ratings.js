@@ -65,7 +65,7 @@ const ProviderRatings = () => {
           <h4>Ratings And Feedbacks</h4>
           <div className="d-flex" style={{ gap: '8px' }}>
             <CFormInput
-              placeholder="Search by name or email"
+              placeholder="Search by Business Name or email"
               value={search}
               onChange={handleSearchChange}
             />
@@ -83,6 +83,7 @@ const ProviderRatings = () => {
                 <CTableRow>
                   <CTableHeaderCell>Sr. No</CTableHeaderCell>
                   <CTableHeaderCell>Provider Name</CTableHeaderCell>
+                    <CTableHeaderCell>Business Name</CTableHeaderCell>
                   <CTableHeaderCell>Email</CTableHeaderCell>
                   <CTableHeaderCell>Avg Rating</CTableHeaderCell>
                   <CTableHeaderCell>Feedbacks</CTableHeaderCell>
@@ -93,6 +94,7 @@ const ProviderRatings = () => {
                   <CTableRow key={prov.providerId || prov._id}>
                     <CTableDataCell>{idx + 1}</CTableDataCell>
                     <CTableDataCell>{prov.contactName}</CTableDataCell>
+                    <CTableDataCell>{prov.businessName}</CTableDataCell>
                     <CTableDataCell>{prov.email}</CTableDataCell>
                     <CTableDataCell>{renderStars(prov.avgRating)}</CTableDataCell>
                     <CTableDataCell>

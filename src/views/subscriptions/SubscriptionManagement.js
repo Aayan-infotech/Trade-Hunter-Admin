@@ -69,7 +69,7 @@ const SubscriptionManagement = () => {
     try {
       const res = await axios.get(
         'http://18.209.91.97:7787/api/SubscriptionNew/subscription-plans',
-        commonConfig
+        commonConfig,
       )
       setSubscriptions(res.data.data || [])
     } catch (e) {
@@ -83,7 +83,7 @@ const SubscriptionManagement = () => {
     try {
       const res = await axios.get(
         'http://18.209.91.97:7787/api/SubscriptionNew/subscription-type',
-        commonConfig
+        commonConfig,
       )
       setSubscriptionTypes(res.data.data || res.data)
     } catch (e) {
@@ -91,7 +91,7 @@ const SubscriptionManagement = () => {
     }
   }
 
-  const selectedNewTypeName = subscriptionTypes.find(t => t._id === newType)?.type
+  const selectedNewTypeName = subscriptionTypes.find((t) => t._id === newType)?.type
   const isNewPayPerLead = selectedNewTypeName === 'Pay Per Lead'
 
   const handleAddSubscription = async () => {
@@ -112,7 +112,7 @@ const SubscriptionManagement = () => {
       await axios.post(
         'http://18.209.91.97:7787/api/SubscriptionNew/subscription-plan',
         payload,
-        commonConfig
+        commonConfig,
       )
       fetchSubscriptions()
       setShowAddModal(false)
@@ -128,7 +128,7 @@ const SubscriptionManagement = () => {
     }
   }
 
-  const handleEditSubscription = sub => {
+  const handleEditSubscription = (sub) => {
     setEditSubscription(sub)
     setShowEditModal(true)
   }
@@ -136,8 +136,9 @@ const SubscriptionManagement = () => {
   const handleSaveEditSubscription = async () => {
     const updated = {
       ...editSubscription,
+      type: subscriptionTypes.find((t) => t._id === editSubscription.type)?.type,
       leadCount:
-        subscriptionTypes.find(t => t._id === editSubscription.type)?.type === 'Pay Per Lead'
+        subscriptionTypes.find((t) => t._id === editSubscription.type)?.type === 'Pay Per Lead'
           ? Number(editSubscription.leadCount)
           : 0,
     }
@@ -145,7 +146,7 @@ const SubscriptionManagement = () => {
       await axios.put(
         `http://18.209.91.97:7787/api/SubscriptionNew/subscription-plan/${editSubscription._id}`,
         updated,
-        commonConfig
+        commonConfig,
       )
       fetchSubscriptions()
       setShowEditModal(false)
@@ -155,12 +156,12 @@ const SubscriptionManagement = () => {
     }
   }
 
-  const handleDeleteSubscription = async id => {
+  const handleDeleteSubscription = async (id) => {
     if (window.confirm('Delete Subscription?')) {
       try {
         await axios.delete(
           `http://18.209.91.97:7787/api/SubscriptionNew/subscription-plan/${id}`,
-          commonConfig
+          commonConfig,
         )
         fetchSubscriptions()
       } catch (e) {
@@ -169,7 +170,7 @@ const SubscriptionManagement = () => {
     }
   }
 
-  const handleViewSubscription = sub => {
+  const handleViewSubscription = (sub) => {
     setViewSubscription(sub)
     setShowViewModal(true)
   }
@@ -179,7 +180,7 @@ const SubscriptionManagement = () => {
       await axios.post(
         'http://18.209.91.97:7787/api/SubscriptionNew/subscription-type',
         { type: newSubscriptionType },
-        commonConfig
+        commonConfig,
       )
       setShowAddTypeModal(false)
       setNewSubscriptionType('')
@@ -189,12 +190,12 @@ const SubscriptionManagement = () => {
     }
   }
 
-  const handleDeleteSubscriptionType = async id => {
+  const handleDeleteSubscriptionType = async (id) => {
     if (window.confirm('Are you sure you want to delete this subscription type?')) {
       try {
         await axios.delete(
           `http://18.209.91.97:7787/api/SubscriptionNew/subscription-type/${id}`,
-          commonConfig
+          commonConfig,
         )
         fetchSubscriptionTypes()
       } catch (e) {
@@ -209,6 +210,8 @@ const SubscriptionManagement = () => {
     return acc
   }, {})
 
+  console.log('subscriptionTypes', subscriptionTypes)
+  console.log('editSubscription', editSubscription)
   return (
     <CContainer style={{ maxHeight: '100vh', overflowY: 'auto' }}>
       <CCard>
@@ -238,7 +241,7 @@ const SubscriptionManagement = () => {
                 </CTableRow>
               </CTableHead>
               <CTableBody>
-                {Object.keys(groupedSubscriptions).map(type =>
+                {Object.keys(groupedSubscriptions).map((type) =>
                   groupedSubscriptions[type].map((sub, i) => (
                     <CTableRow key={sub._id || i}>
                       {i === 0 && (
@@ -275,7 +278,7 @@ const SubscriptionManagement = () => {
                         />
                       </CTableDataCell>
                     </CTableRow>
-                  ))
+                  )),
                 )}
               </CTableBody>
             </CTable>
@@ -291,19 +294,21 @@ const SubscriptionManagement = () => {
           <CFormSelect
             label="Subscription Type"
             value={newType}
-            onChange={e => setNewType(e.target.value)}
+            onChange={(e) => setNewType(e.target.value)}
             className="mb-2"
             required
           >
             <option value="">Select a Subscription Type</option>
-            {subscriptionTypes.map(t => (
-              <option key={t._id} value={t._id}>{t.type}</option>
+            {subscriptionTypes.map((t) => (
+              <option key={t._id} value={t._id}>
+                {t.type}
+              </option>
             ))}
           </CFormSelect>
           <CFormInput
             label="Plan Name"
             value={newTitle}
-            onChange={e => setNewTitle(e.target.value)}
+            onChange={(e) => setNewTitle(e.target.value)}
             className="mb-2"
             required
           />
@@ -311,7 +316,7 @@ const SubscriptionManagement = () => {
             label="Amount"
             type="number"
             value={newAmount}
-            onChange={e => setNewAmount(e.target.value)}
+            onChange={(e) => setNewAmount(e.target.value)}
             className="mb-2"
             required
           />
@@ -319,21 +324,17 @@ const SubscriptionManagement = () => {
             label="Validity (days)"
             type="number"
             value={newValidity}
-            onChange={e => setNewValidity(e.target.value)}
+            onChange={(e) => setNewValidity(e.target.value)}
             className="mb-2"
             required
           />
           <label>Description</label>
-          <ReactQuill
-            value={newDescription}
-            onChange={setNewDescription}
-            className="mb-2"
-          />
+          <ReactQuill value={newDescription} onChange={setNewDescription} className="mb-2" />
           <CFormInput
             label="KM Radius"
             type="number"
             value={newKmRadius}
-            onChange={e => setNewKmRadius(e.target.value)}
+            onChange={(e) => setNewKmRadius(e.target.value)}
             className="mb-2"
           />
           {isNewPayPerLead && (
@@ -341,7 +342,7 @@ const SubscriptionManagement = () => {
               label="Lead Count"
               type="number"
               value={newLeadCount}
-              onChange={e => setNewLeadCount(e.target.value)}
+              onChange={(e) => setNewLeadCount(e.target.value)}
               className="mb-2"
             />
           )}
@@ -365,55 +366,76 @@ const SubscriptionManagement = () => {
             <>
               <CFormSelect
                 label="Subscription Type"
-                value={editSubscription.type}
-                onChange={e => setEditSubscription({ ...editSubscription, type: e.target.value })}
+                value={subscriptionTypes.find((t) => t.type === editSubscription.type)?._id || ''}
+                onChange={(e) => {
+                  const selectedType = subscriptionTypes.find((t) => t._id === e.target.value)
+                  setEditSubscription({
+                    ...editSubscription,
+                    type: selectedType?.type || '',
+                  })
+                }}
                 className="mb-2"
                 required
               >
                 <option value="">Select a Subscription Type</option>
-                {subscriptionTypes.map(t => (
-                  <option key={t._id} value={t._id}>{t.type}</option>
+                {subscriptionTypes.map((t) => (
+                  <option key={t._id} value={t._id}>
+                    {t.type}
+                  </option>
                 ))}
               </CFormSelect>
               <CFormInput
                 label="Plan Name"
                 value={editSubscription.planName}
-                onChange={e => setEditSubscription({ ...editSubscription, planName: e.target.value })}
+                onChange={(e) =>
+                  setEditSubscription({ ...editSubscription, planName: e.target.value })
+                }
                 className="mb-2"
               />
               <CFormInput
                 label="Amount"
                 type="number"
                 value={editSubscription.amount}
-                onChange={e => setEditSubscription({ ...editSubscription, amount: Number(e.target.value) })}
+                onChange={(e) =>
+                  setEditSubscription({ ...editSubscription, amount: Number(e.target.value) })
+                }
                 className="mb-2"
               />
               <CFormInput
                 label="Validity (days)"
                 type="number"
                 value={editSubscription.validity}
-                onChange={e => setEditSubscription({ ...editSubscription, validity: Number(e.target.value) })}
+                onChange={(e) =>
+                  setEditSubscription({ ...editSubscription, validity: Number(e.target.value) })
+                }
                 className="mb-2"
               />
               <label>Description</label>
               <ReactQuill
                 value={editSubscription.description}
-                onChange={value => setEditSubscription({ ...editSubscription, description: value })}
+                onChange={(value) =>
+                  setEditSubscription({ ...editSubscription, description: value })
+                }
                 className="mb-2"
               />
               <CFormInput
                 label="KM Radius"
                 type="number"
                 value={editSubscription.kmRadius}
-                onChange={e => setEditSubscription({ ...editSubscription, kmRadius: Number(e.target.value) })}
+                onChange={(e) =>
+                  setEditSubscription({ ...editSubscription, kmRadius: Number(e.target.value) })
+                }
                 className="mb-2"
               />
-              {subscriptionTypes.find(t => t._id === editSubscription.type)?.type === 'Pay Per Lead' && (
+              {subscriptionTypes.find((t) => t._id === editSubscription.type)?.type ===
+                'Pay Per Lead' && (
                 <CFormInput
                   label="Lead Count"
                   type="number"
                   value={editSubscription.leadCount || ''}
-                  onChange={e => setEditSubscription({ ...editSubscription, leadCount: Number(e.target.value) })}
+                  onChange={(e) =>
+                    setEditSubscription({ ...editSubscription, leadCount: Number(e.target.value) })
+                  }
                   className="mb-2"
                 />
               )}
@@ -437,17 +459,36 @@ const SubscriptionManagement = () => {
         <CModalBody>
           {viewSubscription && (
             <CListGroup>
-              <CListGroupItem><strong>Plan Name: </strong>{viewSubscription.planName}</CListGroupItem>
-              <CListGroupItem><strong>Amount: </strong>{viewSubscription.amount}</CListGroupItem>
-              <CListGroupItem><strong>Validity (days): </strong>{viewSubscription.validity}</CListGroupItem>
+              <CListGroupItem>
+                <strong>Plan Name: </strong>
+                {viewSubscription.planName}
+              </CListGroupItem>
+              <CListGroupItem>
+                <strong>Amount: </strong>
+                {viewSubscription.amount}
+              </CListGroupItem>
+              <CListGroupItem>
+                <strong>Validity (days): </strong>
+                {viewSubscription.validity}
+              </CListGroupItem>
               <CListGroupItem>
                 <strong>Description: </strong>
                 <div dangerouslySetInnerHTML={{ __html: viewSubscription.description }} />
               </CListGroupItem>
-              <CListGroupItem><strong>Radius: </strong>{viewSubscription.kmRadius}</CListGroupItem>
-              <CListGroupItem><strong>Subscription Type: </strong>{viewSubscription.type}</CListGroupItem>
-              {subscriptionTypes.find(t => t._id === viewSubscription.type)?.type === 'Pay Per Lead' && (
-                <CListGroupItem><strong>Lead Count: </strong>{viewSubscription.leadCount}</CListGroupItem>
+              <CListGroupItem>
+                <strong>Radius: </strong>
+                {viewSubscription.kmRadius}
+              </CListGroupItem>
+              <CListGroupItem>
+                <strong>Subscription Type: </strong>
+                {viewSubscription.type}
+              </CListGroupItem>
+              {subscriptionTypes.find((t) => t._id === viewSubscription.type)?.type ===
+                'Pay Per Lead' && (
+                <CListGroupItem>
+                  <strong>Lead Count: </strong>
+                  {viewSubscription.leadCount}
+                </CListGroupItem>
               )}
             </CListGroup>
           )}
@@ -467,12 +508,15 @@ const SubscriptionManagement = () => {
           <CFormInput
             label="Subscription Type"
             value={newSubscriptionType}
-            onChange={e => setNewSubscriptionType(e.target.value)}
+            onChange={(e) => setNewSubscriptionType(e.target.value)}
             className="mb-2"
           />
           <CListGroup>
-            {subscriptionTypes.map(t => (
-              <CListGroupItem key={t._id} className="d-flex justify-content-between align-items-center">
+            {subscriptionTypes.map((t) => (
+              <CListGroupItem
+                key={t._id}
+                className="d-flex justify-content-between align-items-center"
+              >
                 <span>{t.type}</span>
                 <CIcon
                   icon={cilTrash}

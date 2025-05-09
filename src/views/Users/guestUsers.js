@@ -172,7 +172,7 @@ const GuestUsers = () => {
           <div className="hunter-search-container" style={{ gap: '10px', flexWrap: 'wrap' }}>
             <CFormInput
               type="text"
-              placeholder="Search by name, Email or Address"
+              placeholder="Search by Business Name, Email or Address"
               value={search}
               onChange={handleSearchChange}
               className="guest-search-input"
@@ -192,9 +192,9 @@ const GuestUsers = () => {
                   <CTableHeaderCell>Sr. No</CTableHeaderCell>
                   <CTableHeaderCell>Joining Date</CTableHeaderCell>
                   <CTableHeaderCell>Name</CTableHeaderCell>
+                  <CTableHeaderCell>Business Name</CTableHeaderCell>
                   <CTableHeaderCell>Email</CTableHeaderCell>
                   <CTableHeaderCell>Contact No</CTableHeaderCell>
-                  <CTableHeaderCell>Business Name</CTableHeaderCell>
                   <CTableHeaderCell>Actions</CTableHeaderCell>
                 </CTableRow>
               </CTableHead>
@@ -204,9 +204,9 @@ const GuestUsers = () => {
                     <CTableDataCell>{index + 1 + (page - 1) * 10}</CTableDataCell>
                     <CTableDataCell>{formatDate(user.insDate)}</CTableDataCell>
                     <CTableDataCell className="text-left">{user.contactName}</CTableDataCell>
+                   <CTableDataCell className="text-left">{user.businessName || 'N/A'}</CTableDataCell>
                     <CTableDataCell className="text-left">{user.email}</CTableDataCell>
                     <CTableDataCell className="text-left">{user.phoneNo}</CTableDataCell>
-                    <CTableDataCell className="text-left">{user.businessName || 'N/A'}</CTableDataCell>
                     <CTableDataCell
                       className="text-left"
                       style={{ display: 'flex', gap: '10px', alignItems: 'center' }}

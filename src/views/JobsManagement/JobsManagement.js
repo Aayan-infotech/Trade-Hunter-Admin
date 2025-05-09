@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react";
-import axios from "axios";
+import React, { useState, useEffect } from 'react'
+import axios from 'axios'
 import {
   CContainer,
   CCard,
@@ -21,184 +21,162 @@ import {
   CFormInput,
   CPaginationItem,
   CBadge,
-} from "@coreui/react";
-import CIcon from "@coreui/icons-react";
+} from '@coreui/react'
+import CIcon from '@coreui/icons-react'
 import {
   cilTrash,
   cilPencil,
   cilViewColumn,
   cilSearch,
-  cilStar,         // ← added
-} from "@coreui/icons";
-import "../Users/Usermanagement.css";
+  cilStar, // ← added
+} from '@coreui/icons'
+import '../Users/Usermanagement.css'
 
 const formatDate = (dateObj) => {
-  if (!dateObj) return "N/A";
-  const date = new Date(dateObj);
-  return date.toLocaleDateString();
-};
+  if (!dateObj) return 'N/A'
+  const date = new Date(dateObj)
+  return date.toLocaleDateString()
+}
 
 const getJobStatusBadgeColor = (status) => {
   switch (status) {
-    case "Pending":
-      return "warning";
-    case "Assigned":
-      return "info";
-    case "InProgress":
-      return "primary";
-    case "Completed":
-      return "success";
-    case "Deleted":
-      return "danger";
+    case 'Pending':
+      return 'warning'
+    case 'Assigned':
+      return 'info'
+    case 'InProgress':
+      return 'primary'
+    case 'Completed':
+      return 'success'
+    case 'Deleted':
+      return 'danger'
     default:
-      return "secondary";
+      return 'secondary'
   }
-};
+}
 
 const JobsManagement = () => {
-  const token = localStorage.getItem("token");
+  const token = localStorage.getItem('token')
   if (!token) {
-    alert("Authentication token not found. Please log in again.");
+    alert('Authentication token not found. Please log in again.')
   }
   const commonConfig = {
     headers: {
       Authorization: `Bearer ${token}`,
-      "Content-Type": "application/json",
+      'Content-Type': 'application/json',
     },
-  };
+  }
 
-  const [jobs, setJobs] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [page, setPage] = useState(1);
-  const [search, setSearch] = useState("");
-  const [jobStatusFilter, setJobStatusFilter] = useState("All");
-  const [totalPages, setTotalPages] = useState(1);
-  const [error, setError] = useState(null);
-  const [viewJob, setViewJob] = useState(null);
-  const [showViewModal, setShowViewModal] = useState(false);
-  const [editJob, setEditJob] = useState(null);
-  const [showEditModal, setShowEditModal] = useState(false);
-
-  // ← new state for ratings
-  const [showRatingsModal, setShowRatingsModal] = useState(false);
-  const [ratings, setRatings] = useState([]);
-  const [ratingsJobTitle, setRatingsJobTitle] = useState("");
+  const [jobs, setJobs] = useState([])
+  const [loading, setLoading] = useState(false)
+  const [page, setPage] = useState(1)
+  const [search, setSearch] = useState('')
+  const [jobStatusFilter, setJobStatusFilter] = useState('All')
+  const [totalPages, setTotalPages] = useState(1)
+  const [error, setError] = useState(null)
+  const [viewJob, setViewJob] = useState(null)
+  const [showViewModal, setShowViewModal] = useState(false)
+  const [editJob, setEditJob] = useState(null)
+  const [showEditModal, setShowEditModal] = useState(false)
 
   const fetchJobs = async () => {
-    setLoading(true);
-    setError(null);
+    setLoading(true)
+    setError(null)
     try {
-      let response;
-      if (jobStatusFilter !== "All") {
+      let response
+      if (jobStatusFilter !== 'All') {
         response = await axios.get(
           `http://18.209.91.97:7787/api/jobs/filter?status=${jobStatusFilter}&page=${page}&limit=10`,
-          commonConfig
-        );
+          commonConfig,
+        )
       } else {
         response = await axios.get(
           `http://18.209.91.97:7787/api/jobs/?page=${page}&limit=10&search=${search}`,
-          commonConfig
-        );
+          commonConfig,
+        )
       }
-      setJobs(response.data.data.jobPosts || []);
-      setTotalPages(response.data.data.pagination.totalPages || 1);
+      setJobs(response.data.data.jobPosts || [])
+      setTotalPages(response.data.data.pagination.totalPages || 1)
     } catch (error) {
-      console.error("Error fetching jobs:", error);
-      setError("Failed to load jobs. Please try again.");
+      console.error('Error fetching jobs:', error)
+      setError('Failed to load jobs. Please try again.')
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
-  };
+  }
 
   useEffect(() => {
-    fetchJobs();
-  }, [page, search, jobStatusFilter]);
+    fetchJobs()
+  }, [page, search, jobStatusFilter])
 
   const handleSearch = (e) => {
-    setSearch(e.target.value);
-    setPage(1);
-  };
+    setSearch(e.target.value)
+    setPage(1)
+  }
 
   const handleStatusFilter = (e) => {
-    setJobStatusFilter(e.target.value);
-    setPage(1);
-  };
+    setJobStatusFilter(e.target.value)
+    setPage(1)
+  }
 
   const handleDeleteJob = async (jobId) => {
-    if (window.confirm("Are you sure you want to delete this job?")) {
+    if (window.confirm('Are you sure you want to delete this job?')) {
       try {
-        await axios.delete(`http://18.209.91.97:7787/api/jobPost/${jobId}`, commonConfig);
-        fetchJobs();
+        await axios.delete(`http://18.209.91.97:7787/api/jobPost/${jobId}`, commonConfig)
+        fetchJobs()
       } catch (error) {
-        console.error("Error deleting job:", error);
-        alert("Failed to delete job.");
+        console.error('Error deleting job:', error)
+        alert('Failed to delete job.')
       }
     }
-  };
+  }
 
   const handleViewJob = (job) => {
-    setViewJob(job);
-    setShowViewModal(true);
-  };
+    setViewJob(job)
+    setShowViewModal(true)
+  }
 
   const handleEditJob = (job) => {
     const formattedJob = {
       ...job,
       businessType: Array.isArray(job.businessType)
-        ? job.businessType.join(", ")
+        ? job.businessType.join(', ')
         : job.businessType,
-    };
-    setEditJob(formattedJob);
-    setShowEditModal(true);
-  };
-
-  // ← new handler to fetch ratings
-  const handleViewRatings = async (job) => {
-    try {
-      const res = await axios.get(
-        `http://18.209.91.97:7787/api/rating/getRatingById/${job._id}`,
-        commonConfig
-      );
-      setRatings(res.data.data || []);
-      setRatingsJobTitle(job.title);
-      setShowRatingsModal(true);
-    } catch (err) {
-      console.error("Error fetching ratings:", err);
-      alert("Failed to load ratings.");
     }
-  };
+    setEditJob(formattedJob)
+    setShowEditModal(true)
+  }
+
+
 
   const handleSaveEditJob = async () => {
     try {
       const updatedJob = {
         ...editJob,
         businessType: editJob.businessType
-          .split(",")
+          .split(',')
           .map((item) => item.trim())
           .filter((item) => item),
-      };
+      }
 
       if (updatedJob.provider) {
-        delete updatedJob.provider;
+        delete updatedJob.provider
       }
 
       await axios.put(
         `http://18.209.91.97:7787/api/jobpost/${editJob._id}`,
         updatedJob,
-        commonConfig
-      );
+        commonConfig,
+      )
 
-      fetchJobs();
-      setShowEditModal(false);
-      setEditJob(null);
+      fetchJobs()
+      setShowEditModal(false)
+      setEditJob(null)
     } catch (error) {
-      console.error(
-        "Error updating job:",
-        error.response ? error.response.data : error.message
-      );
-      alert("Failed to update job.");
+      console.error('Error updating job:', error.response ? error.response.data : error.message)
+      alert('Failed to update job.')
     }
-  };
+  }
 
   return (
     <CContainer className="jobs-container">
@@ -208,16 +186,16 @@ const JobsManagement = () => {
           <div
             className="search-container"
             style={{
-              display: "flex",
-              gap: "10px",
-              alignItems: "center",
+              display: 'flex',
+              gap: '10px',
+              alignItems: 'center',
             }}
           >
             <select
               value={jobStatusFilter}
               onChange={handleStatusFilter}
               className="form-control"
-              style={{ width: "200px" }}
+              style={{ width: '200px' }}
             >
               <option value="All">Job Status</option>
               <option value="Pending">Pending</option>
@@ -233,11 +211,7 @@ const JobsManagement = () => {
               onChange={handleSearch}
               className="search-input"
             />
-            <CButton
-              color="primary"
-              onClick={fetchJobs}
-              className="search-button"
-            >
+            <CButton color="primary" onClick={fetchJobs} className="search-button">
               <CIcon icon={cilSearch} /> Search
             </CButton>
           </div>
@@ -268,14 +242,12 @@ const JobsManagement = () => {
                       <CTableDataCell>{job.title}</CTableDataCell>
                       <CTableDataCell>{job.user?.name}</CTableDataCell>
                       <CTableDataCell>{job.provider?.contactName}</CTableDataCell>
-                      <CTableDataCell>
-                        {job.jobLocation?.jobAddressLine}
-                      </CTableDataCell>
+                      <CTableDataCell>{job.jobLocation?.jobAddressLine}</CTableDataCell>
                       <CTableDataCell>{formatDate(job.createdAt)}</CTableDataCell>
                       <CTableDataCell>{formatDate(job.updatedAt)}</CTableDataCell>
                       <CTableDataCell>
                         {Array.isArray(job.businessType)
-                          ? job.businessType.join(", ")
+                          ? job.businessType.join(', ')
                           : job.businessType}
                       </CTableDataCell>
                       <CTableDataCell>
@@ -304,13 +276,6 @@ const JobsManagement = () => {
                           onClick={() => handleDeleteJob(job._id)}
                           icon={cilTrash}
                           size="lg"
-                        />
-                        <CIcon                                         
-                          className="action-icon rating-icon"     
-                          title="view Ratings"                     
-                          onClick={() => handleViewRatings(job)}   
-                          icon={cilStar}                          
-                          size="lg"                                
                         />
                       </CTableDataCell>
                     </CTableRow>
@@ -356,11 +321,7 @@ const JobsManagement = () => {
       </CCard>
 
       {/* View Job Modal */}
-      <CModal
-        scrollable
-        visible={showViewModal}
-        onClose={() => setShowViewModal(false)}
-      >
+      <CModal scrollable visible={showViewModal} onClose={() => setShowViewModal(false)}>
         <CModalHeader className="service-card-header">
           <CModalTitle>Job Details</CModalTitle>
         </CModalHeader>
@@ -371,20 +332,18 @@ const JobsManagement = () => {
                 <strong>Title:</strong> {viewJob.title}
               </p>
               <p>
-                <strong>Location:</strong>{" "}
-                {viewJob.jobLocation?.jobAddressLine || "N/A"}
+                <strong>Location:</strong> {viewJob.jobLocation?.jobAddressLine || 'N/A'}
               </p>
               <p>
-                <strong>Job Radius:</strong> {viewJob.jobLocation?.jobRadius}{" "}
-                meters
+                <strong>Job Radius:</strong> {viewJob.jobLocation?.jobRadius} meters
               </p>
               <p>
                 <strong>Estimated Budget:</strong> ${viewJob.estimatedBudget}
               </p>
               <p>
-                <strong>Business Type:</strong>{" "}
+                <strong>Business Type:</strong>{' '}
                 {Array.isArray(viewJob.businessType)
-                  ? viewJob.businessType.join(", ")
+                  ? viewJob.businessType.join(', ')
                   : viewJob.businessType}
               </p>
               <p>
@@ -424,20 +383,18 @@ const JobsManagement = () => {
                 <strong>Deleted By - Email:</strong> {viewJob.deleteBy?.email}
               </p>
               <p>
-                <strong>Completion Date:</strong>{" "}
-                {formatDate(viewJob.updatedAt)}
+                <strong>Completion Date:</strong> {formatDate(viewJob.updatedAt)}
               </p>
               <p>
                 <strong>Timeframe:</strong>
               </p>
               <ul>
                 <li>
-                  <strong>From:</strong>{" "}
+                  <strong>From:</strong>{' '}
                   {new Date(viewJob.timeframe?.from * 1000).toLocaleDateString()}
                 </li>
                 <li>
-                  <strong>To:</strong>{" "}
-                  {new Date(viewJob.timeframe?.to * 1000).toLocaleDateString()}
+                  <strong>To:</strong> {new Date(viewJob.timeframe?.to * 1000).toLocaleDateString()}
                 </li>
               </ul>
               {viewJob.documents && viewJob.documents.length > 0 ? (
@@ -448,11 +405,7 @@ const JobsManagement = () => {
                   <ul>
                     {viewJob.documents.map((doc, index) => (
                       <li key={index}>
-                        <a
-                          href={doc}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                        >
+                        <a href={doc} target="_blank" rel="noopener noreferrer">
                           Document {index + 1}
                         </a>
                       </li>
@@ -479,11 +432,7 @@ const JobsManagement = () => {
       </CModal>
 
       {/* Edit Job Modal */}
-      <CModal
-        scrollable
-        visible={showEditModal}
-        onClose={() => setShowEditModal(false)}
-      >
+      <CModal scrollable visible={showEditModal} onClose={() => setShowEditModal(false)}>
         <CModalHeader className="service-card-header">
           <CModalTitle>Edit Job</CModalTitle>
         </CModalHeader>
@@ -494,15 +443,13 @@ const JobsManagement = () => {
               <input
                 type="text"
                 value={editJob.title}
-                onChange={(e) =>
-                  setEditJob({ ...editJob, title: e.target.value })
-                }
+                onChange={(e) => setEditJob({ ...editJob, title: e.target.value })}
                 className="form-control mb-2"
               />
               <label>Location</label>
               <input
                 type="text"
-                value={editJob.jobLocation?.jobAddressLine || ""}
+                value={editJob.jobLocation?.jobAddressLine || ''}
                 onChange={(e) =>
                   setEditJob({
                     ...editJob,
@@ -517,27 +464,21 @@ const JobsManagement = () => {
               <label>Estimated Budget ($)</label>
               <input
                 type="number"
-                value={editJob.estimatedBudget || ""}
-                onChange={(e) =>
-                  setEditJob({ ...editJob, estimatedBudget: e.target.value })
-                }
+                value={editJob.estimatedBudget || ''}
+                onChange={(e) => setEditJob({ ...editJob, estimatedBudget: e.target.value })}
                 className="form-control mb-2"
               />
               <label>Business Type</label>
               <input
                 type="text"
-                value={editJob.businessType || ""}
-                onChange={(e) =>
-                  setEditJob({ ...editJob, businessType: e.target.value })
-                }
+                value={editJob.businessType || ''}
+                onChange={(e) => setEditJob({ ...editJob, businessType: e.target.value })}
                 className="form-control mb-2"
               />
               <label>Job Status</label>
               <select
-                value={editJob.jobStatus || ""}
-                onChange={(e) =>
-                  setEditJob({ ...editJob, jobStatus: e.target.value })
-                }
+                value={editJob.jobStatus || ''}
+                onChange={(e) => setEditJob({ ...editJob, jobStatus: e.target.value })}
                 className="form-control mb-2"
               >
                 <option value="">Change Status</option>
@@ -548,10 +489,8 @@ const JobsManagement = () => {
               </select>
               <label>Job Assigned</label>
               <select
-                value={editJob.jobAssigned || ""}
-                onChange={(e) =>
-                  setEditJob({ ...editJob, jobAssigned: e.target.value })
-                }
+                value={editJob.jobAssigned || ''}
+                onChange={(e) => setEditJob({ ...editJob, jobAssigned: e.target.value })}
                 className="form-control mb-2"
               >
                 <option value="Cancel">Cancel</option>
@@ -569,67 +508,13 @@ const JobsManagement = () => {
           >
             Cancel
           </CButton>
-          <CButton
-            onClick={handleSaveEditJob}
-            color="primary"
-            className="modal-save-button"
-          >
+          <CButton onClick={handleSaveEditJob} color="primary" className="modal-save-button">
             Save Changes
           </CButton>
         </CModalFooter>
       </CModal>
-
-      {/* Ratings Modal */}
-      <CModal
-  scrollable
-  visible={showRatingsModal}
-  onClose={() => setShowRatingsModal(false)}
->
-  <CModalHeader className="service-card-header">
-    <CModalTitle>Feedback for: {ratingsJobTitle}</CModalTitle>
-  </CModalHeader>
-  <CModalBody className="modal-body-custom">
-    {ratings.length === 0 ? (
-      <p>No ratings found for this job.</p>
-    ) : (
-      ratings.map((r) => (
-        <div key={r._id} style={{ marginBottom: "1rem" }}>
-          <p>
-            <strong>Rating:</strong>{" "}
-            {Array.from({ length: 5 }).map((_, idx) => (
-              <CIcon
-                key={idx}
-                icon={cilStar}
-                size="lg"
-                style={{
-                  color: idx < r.rating ? "gold" : "#ccc",
-                  marginRight: 4,
-                }}
-              />
-            ))}
-          </p>
-          <p>
-            <strong>Review:</strong> {r.review}
-          </p>
-          <hr />
-        </div>
-      ))
-    )}
-  </CModalBody>
-  <CModalFooter className="modal-footer-custom">
-    <CButton
-      onClick={() => setShowRatingsModal(false)}
-      color="secondary"
-      className="modal-close-button"
-    >
-      Close
-    </CButton>
-  </CModalFooter>
-</CModal>
-
-
     </CContainer>
-  );
-};
+  )
+}
 
-export default JobsManagement;
+export default JobsManagement
