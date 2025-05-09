@@ -98,7 +98,7 @@ const Provider = () => {
       setLoading(true)
       const response = await axios.get(
         `http://18.209.91.97:7787/api/Prvdr?page=${page}&limit=10&search=${search}&userStatus=${statusFilter}`,
-        authHeaders
+        authHeaders,
       )
       const fetchedProviders = response.data.data || []
       setUsers(fetchedProviders)
@@ -128,10 +128,7 @@ const Provider = () => {
   const handleDelete = async (id) => {
     if (window.confirm('Are you sure you want to delete this user?')) {
       try {
-        await axios.delete(
-          `http://18.209.91.97:7787/api/prvdr/delete/${id}`,
-          authHeaders
-        )
+        await axios.delete(`http://18.209.91.97:7787/api/prvdr/delete/${id}`, authHeaders)
         fetchUsers()
       } catch (error) {
         console.error('Error deleting user:', error)
@@ -154,7 +151,7 @@ const Provider = () => {
       await axios.put(
         `http://18.209.91.97:7787/api/provider/updateById/${editUser._id}`,
         editUser,
-        authHeaders
+        authHeaders,
       )
       fetchUsers()
       setIsEditModalOpen(false)
@@ -182,7 +179,7 @@ const Provider = () => {
     try {
       const response = await axios.get(
         `http://18.209.91.97:7787/api/pushNotification/getAdminNotification/${userId}`,
-        authHeaders
+        authHeaders,
       )
       setNotifications(response.data.data || [])
     } catch (error) {
@@ -199,7 +196,7 @@ const Provider = () => {
       await axios.post(
         `http://18.209.91.97:7787/api/pushNotification/sendAdminNotification/${notifUser._id}`,
         { title: notifTitle, body: notifBody },
-        authHeaders
+        authHeaders,
       )
       setNotifTitle('')
       setNotifBody('')
@@ -239,7 +236,10 @@ const Provider = () => {
     if (chatUser) {
       const chatChannelId = generateChatId(chatUser._id)
       const chatMessagesRef = ref(realtimeDb, `chatsAdmin/${chatChannelId}/messages`)
-      console.log('Subscribing to Firebase chat messages at:', `chatsAdmin/${chatChannelId}/messages`)
+      console.log(
+        'Subscribing to Firebase chat messages at:',
+        `chatsAdmin/${chatChannelId}/messages`,
+      )
 
       const unsubscribe = onValue(chatMessagesRef, (snapshot) => {
         const data = snapshot.val()
@@ -262,17 +262,13 @@ const Provider = () => {
 
   const handleSendChatMessage = () => {
     if (!newChatMessage.trim()) return
-
-    if (!chatUser || !chatUser._id) {
+    if (!chatUser?._id) {
       console.error('Chat user is not defined.')
       return
     }
 
     const chatChannelId = generateChatId(chatUser._id)
     const chatRef = ref(realtimeDb, `chatsAdmin/${chatChannelId}/messages`)
-    console.log('Sending message to:', `chatsAdmin/${chatChannelId}/messages`)
-    console.log('Current Admin (Sender):', currentUser, 'Chat Provider (Receiver):', chatUser)
-
     const message = {
       senderId: currentUser,
       receiverId: chatUser._id,
@@ -283,16 +279,28 @@ const Provider = () => {
     }
 
     push(chatRef, message)
-      .then(() => {
-        console.log('Message sent successfully:', message)
+      .then(async () => {
+        console.log('Message sent:', message)
         setNewChatMessage('')
+        // send notification API
+        try {
+          await axios.post(
+            'http://18.209.91.97:7787/api/pushNotification/adminNotification',
+            {
+              title: 'New message from Support',
+              body: `Go to Support to see Messages`,
+              receiverId: chatUser._id,
+            },
+            authHeaders,
+          )
+          console.log('Admin notification sent')
+        } catch (err) {
+          console.error('Failed to send admin notification', err)
+        }
       })
-      .catch((error) => {
-        console.error('Error sending message:', error)
-      })
+      .catch((error) => console.error('Error sending message:', error))
   }
 
-  
   return (
     <CContainer className="hunter-container">
       <CCard className="hunter-card">
@@ -377,27 +385,45 @@ const Provider = () => {
                         {user.subscriptionStatus ? 'Active' : 'Inactive'}
                       </CTableDataCell>
                       <CTableDataCell className="hunter-actions-cell">
-                        <span onClick={() => handleView(user)} className="hunter-action-icon" title='view'>
+                        <span
+                          onClick={() => handleView(user)}
+                          className="hunter-action-icon"
+                          title="view"
+                        >
                           <CIcon icon={cilInfo} size="lg" />
                         </span>
                         <span
                           onClick={() => handleNotification(user)}
-                          className="hunter-action-icon" title='send Notification'
+                          className="hunter-action-icon"
+                          title="send Notification"
                         >
                           <CIcon icon={cilEnvelopeOpen} size="lg" />
                         </span>
-                        <span onClick={() => handleChat(user)} className="hunter-action-icon" title='chat'>
+                        <span
+                          onClick={() => handleChat(user)}
+                          className="hunter-action-icon"
+                          title="chat"
+                        >
                           <CIcon icon={cilCommentBubble} size="lg" />
                         </span>
-                        <span onClick={() => handleEdit(user)} className="hunter-action-icon" title='edit User'>
+                        <span
+                          onClick={() => handleEdit(user)}
+                          className="hunter-action-icon"
+                          title="edit User"
+                        >
                           <CIcon icon={cilPencil} size="lg" />
                         </span>
-                        <span onClick={() => handleDelete(user._id)} className="hunter-action-icon" title='delete user'>
+                        <span
+                          onClick={() => handleDelete(user._id)}
+                          className="hunter-action-icon"
+                          title="delete user"
+                        >
                           <CIcon icon={cilTrash} size="lg" />
                         </span>
                         <span
                           onClick={() => handleAssignedJobs(user._id)}
-                          className="hunter-action-icon" title='delete user'
+                          className="hunter-action-icon"
+                          title="delete user"
                         >
                           <CIcon icon={cilBriefcase} size="lg" />
                         </span>
@@ -636,85 +662,84 @@ const Provider = () => {
         </CModalFooter>
       </CModal>
 
-       <CModal
-             scrollable
-             visible={isNotifModalOpen}
-             onClose={() => setIsNotifModalOpen(false)}
-             className="hunter-modal"
-           >
-             <CModalHeader className="hunter-modal-header">
-               <CModalTitle>Send Notification</CModalTitle>
-             </CModalHeader>
-             <CModalBody className="hunter-modal-body">
-               {notifUser && (
-                 <>
-                   <div className="hunter-notif-section mb-3">
-                     <label className="hunter-notif-label">
-                       <strong>Notification Title</strong>
-                     </label>
-                     <CFormInput
-                       type="text"
-                       placeholder="Enter notification title"
-                       value={notifTitle}
-                       onChange={(e) => setNotifTitle(e.target.value)}
-                       className="hunter-notif-input"
-                       title="Enter Notification Title"
-                     />
-                   </div>
-                   <div className="hunter-notif-section mb-3">
-                     <label className="hunter-notif-label">
-                       <strong>Notification Body</strong>
-                     </label>
-                     <CFormInput
-                       type="text"
-                       placeholder="Enter notification body"
-                       value={notifBody}
-                       onChange={(e) => setNotifBody(e.target.value)}
-                       className="hunter-notif-input"
-                       title="Enter Notification Body"
-                     />
-                   </div>
-                   <div className="hunter-notif-send text-center mb-3" title="Send Notification">
-                     <span onClick={handleSendNotification} className="hunter-notif-send-icon">
-                       <CIcon icon={cilEnvelopeOpen} size="lg" />
-                     </span>
-                     <p className="hunter-notif-send-text">Send</p>
-                   </div>
-                   <hr />
-                   <h5 className="hunter-notif-header">Sent Notifications</h5>
-                   {notifications.length === 0 ? (
-                     <p>No notifications sent yet.</p>
-                   ) : (
-                     notifications.map((notif) => (
-                       <div key={notif._id} className="hunter-notif-item">
-                         <div className="hunter-notif-text">
-                           <strong>{notif.title.toUpperCase()}</strong>: {notif.body}
-                         </div>
-                         <span
-                           onClick={() => handleDeleteNotification(notif._id)}
-                           className="hunter-notif-delete"
-                           title="Delete Notification"
-                         >
-                           <CIcon icon={cilTrash} size="lg" />
-                         </span>
-                       </div>
-                     ))
-                   )}
-                 </>
-               )}
-             </CModalBody>
-             <CModalFooter className="hunter-modal-footer">
-               <CButton
-                 color="secondary"
-                 onClick={() => setIsNotifModalOpen(false)}
-                 className="hunter-modal-btn"
-                 title="Close Notification Modal"
-               >
-                 Close
-               </CButton>
-             </CModalFooter>
-           </CModal>
-
+      <CModal
+        scrollable
+        visible={isNotifModalOpen}
+        onClose={() => setIsNotifModalOpen(false)}
+        className="hunter-modal"
+      >
+        <CModalHeader className="hunter-modal-header">
+          <CModalTitle>Send Notification</CModalTitle>
+        </CModalHeader>
+        <CModalBody className="hunter-modal-body">
+          {notifUser && (
+            <>
+              <div className="hunter-notif-section mb-3">
+                <label className="hunter-notif-label">
+                  <strong>Notification Title</strong>
+                </label>
+                <CFormInput
+                  type="text"
+                  placeholder="Enter notification title"
+                  value={notifTitle}
+                  onChange={(e) => setNotifTitle(e.target.value)}
+                  className="hunter-notif-input"
+                  title="Enter Notification Title"
+                />
+              </div>
+              <div className="hunter-notif-section mb-3">
+                <label className="hunter-notif-label">
+                  <strong>Notification Body</strong>
+                </label>
+                <CFormInput
+                  type="text"
+                  placeholder="Enter notification body"
+                  value={notifBody}
+                  onChange={(e) => setNotifBody(e.target.value)}
+                  className="hunter-notif-input"
+                  title="Enter Notification Body"
+                />
+              </div>
+              <div className="hunter-notif-send text-center mb-3" title="Send Notification">
+                <span onClick={handleSendNotification} className="hunter-notif-send-icon">
+                  <CIcon icon={cilEnvelopeOpen} size="lg" />
+                </span>
+                <p className="hunter-notif-send-text">Send</p>
+              </div>
+              <hr />
+              <h5 className="hunter-notif-header">Sent Notifications</h5>
+              {notifications.length === 0 ? (
+                <p>No notifications sent yet.</p>
+              ) : (
+                notifications.map((notif) => (
+                  <div key={notif._id} className="hunter-notif-item">
+                    <div className="hunter-notif-text">
+                      <strong>{notif.title.toUpperCase()}</strong>: {notif.body}
+                    </div>
+                    <span
+                      onClick={() => handleDeleteNotification(notif._id)}
+                      className="hunter-notif-delete"
+                      title="Delete Notification"
+                    >
+                      <CIcon icon={cilTrash} size="lg" />
+                    </span>
+                  </div>
+                ))
+              )}
+            </>
+          )}
+        </CModalBody>
+        <CModalFooter className="hunter-modal-footer">
+          <CButton
+            color="secondary"
+            onClick={() => setIsNotifModalOpen(false)}
+            className="hunter-modal-btn"
+            title="Close Notification Modal"
+          >
+            Close
+          </CButton>
+        </CModalFooter>
+      </CModal>
       <CModal
         visible={isChatModalOpen}
         onClose={() => setIsChatModalOpen(false)}
@@ -722,16 +747,16 @@ const Provider = () => {
         className="hunter-modal"
       >
         <CModalHeader onClose={() => setIsChatModalOpen(false)}>
-          <CModalTitle>Chat with {chatUser?.contactName || chatUser?.name}</CModalTitle>
+          <CModalTitle>Chat with {chatUser?.contactName}</CModalTitle>
         </CModalHeader>
         <div style={{ display: 'flex', flexDirection: 'column', height: '400px' }}>
           <div style={{ flex: 1, overflowY: 'auto', padding: '20px' }}>
             {chatMessages.length === 0 ? (
               <p>No messages yet.</p>
             ) : (
-              chatMessages.map((msg, index) => (
+              chatMessages.map((msg, i) => (
                 <div
-                  key={index}
+                  key={i}
                   style={{
                     textAlign: msg.senderId === currentUser ? 'right' : 'left',
                     marginBottom: '10px',

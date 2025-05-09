@@ -264,8 +264,25 @@ const Hunter = () => {
       msg: newChatMessage,
       timeStamp: Date.now(),
     }
+  
     push(chatRef, message)
-      .then(() => setNewChatMessage(''))
+      .then(async () => {
+        setNewChatMessage('')
+        try {
+          await axios.post(
+            'http://18.209.91.97:7787/api/pushNotification/adminNotification',
+            {
+              title: 'New message from Support',
+              body: `Go to Support To View Message`,
+              receiverId: chatUser._id,
+            },
+            authHeaders
+          )
+          console.log('Admin notification sent')
+        } catch (err) {
+          console.error('Failed to send admin notification', err)
+        }
+      })
       .catch((error) => console.error('Error sending message:', error))
   }
 
@@ -705,7 +722,7 @@ const Hunter = () => {
         size="md"
         className="hunter-modal"
       >
-        <CModalHeader onClose={() => setIsChatModalOpen(false)} title="Chat Modal">
+        <CModalHeader onClose={() => setIsChatModalOpen(false)}>
           <CModalTitle>Chat with {chatUser?.contactName || chatUser?.name}</CModalTitle>
         </CModalHeader>
         <div style={{ display: 'flex', flexDirection: 'column', height: '400px' }}>
@@ -713,9 +730,9 @@ const Hunter = () => {
             {chatMessages.length === 0 ? (
               <p>No messages yet.</p>
             ) : (
-              chatMessages.map((msg, index) => (
+              chatMessages.map((msg, idx) => (
                 <div
-                  key={index}
+                  key={idx}
                   style={{
                     textAlign: msg.senderId === currentUser ? 'right' : 'left',
                     marginBottom: '10px',
@@ -751,7 +768,11 @@ const Hunter = () => {
                 />
               </CCol>
               <CCol md={2}>
-                <CButton color="primary" onClick={handleSendChatMessage} title="Send Chat Message">
+                <CButton
+                  color="primary"
+                  onClick={handleSendChatMessage}
+                  title="Send Chat Message"
+                >
                   Send
                 </CButton>
               </CCol>
