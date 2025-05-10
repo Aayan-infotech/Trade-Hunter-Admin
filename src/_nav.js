@@ -83,6 +83,11 @@ const _nav = [
       },
       {
         component: CNavItem,
+        name: "Voucher Users",
+        to: '/voucherUsers',
+      },
+      {
+        component: CNavItem,
         name: "Revenue Insights",
         to: '/payments',
       },
