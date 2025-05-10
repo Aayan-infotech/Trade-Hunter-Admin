@@ -98,8 +98,8 @@ const SubscriptionUsersManagement = () => {
                   <CTableHeaderCell>Subscription Type</CTableHeaderCell>
                   <CTableHeaderCell>Plan Name</CTableHeaderCell>
                   <CTableHeaderCell>$</CTableHeaderCell>
-                  <CTableHeaderCell>Start Date (AEST)</CTableHeaderCell>
-                  <CTableHeaderCell>End Date (AEST)</CTableHeaderCell>
+                  <CTableHeaderCell>Start Date </CTableHeaderCell>
+                  <CTableHeaderCell>End Date </CTableHeaderCell>
                   <CTableHeaderCell>Km Radius</CTableHeaderCell>
                   <CTableHeaderCell>Action</CTableHeaderCell>
                 </CTableRow>
