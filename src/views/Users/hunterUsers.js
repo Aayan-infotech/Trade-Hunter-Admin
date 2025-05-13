@@ -65,6 +65,7 @@ const Hunter = () => {
   const [chatMessages, setChatMessages] = useState([])
   const [newChatMessage, setNewChatMessage] = useState('')
   const [hasMoreData, setHasMoreData] = useState(true)
+const [totalCount, setTotalCount] = useState(0)
 
   // Retrieve token and set auth headers
   const token = localStorage.getItem('token')
@@ -100,6 +101,8 @@ const Hunter = () => {
         authHeaders
       )
       const fetchedUsers = response.data.users || []
+      setTotalCount(response.data.totalUsers || 0)
+
       setUsers(fetchedUsers)
       setHasMoreData(fetchedUsers.length === 10)
     } catch (error) {
@@ -330,7 +333,8 @@ const Hunter = () => {
           ) : (
             <div className="hunter-table-container">
               <CTable hover responsive className="hunter-table">
-                <CTableHead>
+                <CTableHead className="sticky-header">
+
                   <CTableRow>
                     <CTableHeaderCell>Sr. No</CTableHeaderCell>
                     <CTableHeaderCell>Joining Date</CTableHeaderCell>
@@ -346,7 +350,7 @@ const Hunter = () => {
                 <CTableBody>
                   {users.map((user, index) => (
                     <CTableRow key={user._id}>
-                      <CTableDataCell>{index + 1 + (page - 1) * 10}</CTableDataCell>
+                      <CTableDataCell>  {totalCount - (index + (page - 1) * 10)}</CTableDataCell>
                       <CTableDataCell>{formatDate(user.insDate)}</CTableDataCell>
                       <CTableDataCell>{user.name}</CTableDataCell>
                       <CTableDataCell>{user.email}</CTableDataCell>

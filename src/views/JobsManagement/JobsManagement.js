@@ -44,8 +44,6 @@ const getJobStatusBadgeColor = (status) => {
       return 'warning'
     case 'Assigned':
       return 'info'
-    case 'InProgress':
-      return 'primary'
     case 'Completed':
       return 'success'
     case 'Deleted':
@@ -200,7 +198,6 @@ const JobsManagement = () => {
               <option value="All">Job Status</option>
               <option value="Pending">Pending</option>
               <option value="Assigned">Assigned</option>
-              <option value="InProgress">InProgress</option>
               <option value="Completed">Completed</option>
               <option value="Deleted">Deleted</option>
             </select>
@@ -484,7 +481,6 @@ const JobsManagement = () => {
                 <option value="">Change Status</option>
                 <option value="Pending">Pending</option>
                 <option value="Assigned">Assigned</option>
-                <option value="InProgress">InProgress</option>
                 <option value="Completed">Completed</option>
               </select>
               <label>Job Assigned</label>

@@ -19,7 +19,7 @@ const Dashboard = () => {
   const [provider, setProvider] = useState(0)
   const [guest, setGuest] = useState(0)
   const [jobPostings, setJobPostings] = useState({
-    status: { Pending: 0, Assigned: 0, InProgress: 0, Completed: 0 },
+    status: { Pending: 0, Assigned: 0,  Completed: 0 },
     totalJobs: 0,
   })
   const [subscriptionRevenue, setSubscriptionRevenue] = useState(0)
@@ -47,7 +47,6 @@ const Dashboard = () => {
   const jobPostingColors = {
     Pending: 'danger',
     Assigned: 'primary',
-    InProgress: 'warning',
     Completed: 'success',
     Deleted: 'secondary',
   }
@@ -109,8 +108,6 @@ const Dashboard = () => {
         return '#dc3545' // Red
       case 'Assigned':
         return '#007bff' // Blue
-      case 'InProgress':
-        return '#ffc107' // Yellow
       case 'Completed':
         return '#28a745' // Green
       case 'Deleted':

@@ -11,15 +11,17 @@ import {
   CTableHeaderCell,
   CTableBody,
   CTableDataCell,
+  CInputGroup,
+  CFormInput,
+  CButton,
   CModal,
   CModalHeader,
   CModalTitle,
   CModalBody,
   CModalFooter,
-  CButton,
 } from "@coreui/react";
 import CIcon from "@coreui/icons-react";
-import { cilViewColumn } from "@coreui/icons";
+import { cilViewColumn, cilSearch } from "@coreui/icons";
 import "../Users/Usermanagement.css";
 
 const VoucherUsers = () => {
@@ -28,6 +30,12 @@ const VoucherUsers = () => {
   const [error, setError] = useState(null);
   const [viewVoucher, setViewVoucher] = useState(null);
   const [showViewModal, setShowViewModal] = useState(false);
+
+  // Pagination & Search
+  const [page, setPage] = useState(1);
+  const [limit] = useState(10);
+  const [search, setSearch] = useState("");
+  const [hasMore, setHasMore] = useState(false);
 
   const token = localStorage.getItem("token");
   const commonConfig = {
@@ -39,22 +47,23 @@ const VoucherUsers = () => {
 
   useEffect(() => {
     fetchVoucherUsers();
-  }, []);
+  }, [page, search]);
 
   const fetchVoucherUsers = async () => {
     setLoading(true);
     setError(null);
+
     try {
       const response = await axios.get(
-        "http://18.209.91.97:7787/api/provider/getVoucherUsers",
+        `http://18.209.91.97:7787/api/provider/getVoucherUsers?page=${page}&limit=${limit}&search=${encodeURIComponent(
+          search
+        )}`,
         commonConfig
       );
-      const data = response.data.data || [];
-      // sort by startDate descending
-      const sorted = data.sort(
-        (a, b) => new Date(b.startDate) - new Date(a.startDate)
-      );
-      setVoucherUsers(sorted);
+
+      const { data = [] } = response.data;
+      setVoucherUsers(data);
+      setHasMore(data.length === limit);
     } catch (err) {
       console.error("Error fetching voucher users:", err);
       setError("Failed to load voucher users. Please try again.");
@@ -84,63 +93,103 @@ const VoucherUsers = () => {
     <CContainer>
       <CCard>
         <CCardHeader className="service-card-header">
-          <h4>Voucher Users</h4>
+          <div className="d-flex align-items-center w-100">
+            <h4 className="mb-0">Voucher Users</h4>
+            <div className="ms-auto">
+              <CInputGroup size="md" style={{ width: "350px" }}>
+                <CFormInput
+                  placeholder="Search by business name..."
+                  value={search}
+                  onChange={(e) => {
+                    setSearch(e.target.value);
+                    setPage(1);
+                  }}
+                  style={{ height: "40px" }}
+                />
+                <CButton
+                  color="primary"
+                  size="md"
+                  style={{ height: "40px" }}
+                  onClick={fetchVoucherUsers}
+                  title="Search"
+                >
+                  <CIcon icon={cilSearch} size="lg" />
+                </CButton>
+              </CInputGroup>
+            </div>
+          </div>
         </CCardHeader>
+
         <CCardBody style={{ maxHeight: "400px", overflowY: "auto" }}>
           {error && <p className="text-danger">{error}</p>}
           {loading ? (
             <div>Loading...</div>
           ) : (
-            <CTable hover responsive>
-              <CTableHead>
-                <CTableRow>
-                  <CTableHeaderCell>Contact Name</CTableHeaderCell>
-                  <CTableHeaderCell>Email</CTableHeaderCell>
-                  <CTableHeaderCell>Code</CTableHeaderCell>
-                  <CTableHeaderCell>Start Date</CTableHeaderCell>
-                  <CTableHeaderCell>End Date</CTableHeaderCell>
-                  <CTableHeaderCell>Status</CTableHeaderCell>
-                  <CTableHeaderCell>Action</CTableHeaderCell>
-                </CTableRow>
-              </CTableHead>
-              <CTableBody>
-                {voucherUsers.length > 0 ? (
-                  voucherUsers.map((v) => (
-                    <CTableRow key={v._id}>
-                      <CTableDataCell>
-                        {v.userId?.contactName || "N/A"}
-                      </CTableDataCell>
-                      <CTableDataCell>
-                        {v.userId?.email || "N/A"}
-                      </CTableDataCell>
-                      <CTableDataCell>{v.code}</CTableDataCell>
-                      <CTableDataCell>
-                        {formatDateToAEST(v.startDate)}
-                      </CTableDataCell>
-                      <CTableDataCell>
-                        {formatDateToAEST(v.endDate)}
-                      </CTableDataCell>
-                      <CTableDataCell>{v.status}</CTableDataCell>
-                      <CTableDataCell>
-                        <CIcon
-                          className="me-2 text-primary cursor-pointer"
-                          title="view"
-                          onClick={() => handleViewVoucher(v)}
-                          icon={cilViewColumn}
-                          size="lg"
-                        />
+            <>
+              <CTable hover responsive>
+                <CTableHead className="sticky-header">
+                  <CTableRow>
+                    <CTableHeaderCell>Business Name</CTableHeaderCell>
+                    <CTableHeaderCell>Email</CTableHeaderCell>
+                    <CTableHeaderCell>Code</CTableHeaderCell>
+                    <CTableHeaderCell>Start Date</CTableHeaderCell>
+                    <CTableHeaderCell>End Date</CTableHeaderCell>
+                    <CTableHeaderCell>Status</CTableHeaderCell>
+                    <CTableHeaderCell>Action</CTableHeaderCell>
+                  </CTableRow>
+                </CTableHead>
+                <CTableBody>
+                  {voucherUsers.length > 0 ? (
+                    voucherUsers.map((v) => (
+                      <CTableRow key={v._id}>
+                        <CTableDataCell>{v.userId?.businessName || "N/A"}</CTableDataCell>
+                        <CTableDataCell>{v.userId?.email || "N/A"}</CTableDataCell>
+                        <CTableDataCell>{v.code}</CTableDataCell>
+                        <CTableDataCell>{formatDateToAEST(v.startDate)}</CTableDataCell>
+                        <CTableDataCell>{formatDateToAEST(v.endDate)}</CTableDataCell>
+                        <CTableDataCell>{v.status}</CTableDataCell>
+                        <CTableDataCell>
+                          <CIcon
+                            className="me-2 text-primary cursor-pointer"
+                            title="View Details"
+                            onClick={() => handleViewVoucher(v)}
+                            icon={cilViewColumn}
+                            size="lg"
+                          />
+                        </CTableDataCell>
+                      </CTableRow>
+                    ))
+                  ) : (
+                    <CTableRow>
+                      <CTableDataCell colSpan={7} className="text-center">
+                        No voucher users found for “{search}”.
                       </CTableDataCell>
                     </CTableRow>
-                  ))
-                ) : (
-                  <CTableRow>
-                    <CTableDataCell colSpan={7} className="text-center">
-                      No voucher users available.
-                    </CTableDataCell>
-                  </CTableRow>
-                )}
-              </CTableBody>
-            </CTable>
+                  )}
+                </CTableBody>
+              </CTable>
+
+              {/* Pagination */}
+              <div className="d-flex justify-content-between align-items-center mt-3">
+                <CButton
+                  color="secondary"
+                  size="sm"
+                  disabled={page === 1}
+                  onClick={() => setPage((p) => p - 1)}
+                >
+                  Previous
+                </CButton>
+                <span>Page {page}</span>
+                <CButton
+                  color="secondary"
+                  size="sm"
+                  disabled={!hasMore}
+                  onClick={() => setPage((p) => p + 1)}
+                >
+                  Next
+                </CButton>
+              </div>
+            </>
           )}
         </CCardBody>
       </CCard>
@@ -152,7 +201,7 @@ const VoucherUsers = () => {
         <CModalBody>
           {viewVoucher && (
             <div>
-              <p><strong>Contact Name:</strong> {viewVoucher.userId?.contactName || "N/A"}</p>
+              <p><strong>Business Name:</strong> {viewVoucher.userId?.businessName || "N/A"}</p>
               <p><strong>Email:</strong> {viewVoucher.userId?.email || "N/A"}</p>
               <p><strong>Type:</strong> {viewVoucher.type}</p>
               <p><strong>Voucher ID:</strong> {viewVoucher.voucherId}</p>

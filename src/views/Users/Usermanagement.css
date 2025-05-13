@@ -1047,4 +1047,18 @@ button:hover {
 .service-card-header + .ccard {
   background-color: #fafafa;
 }
+/* Make the table header stick to the top of the scrollable body */
+.sticky-header {
+  position: sticky;
+  top: 0;
+  background: white;
+  z-index: 1;
+}
+.sticky-header {
+  position: sticky;
+  top: 0;
+  background-color: #fff;
+  z-index: 10;
+}
+
 

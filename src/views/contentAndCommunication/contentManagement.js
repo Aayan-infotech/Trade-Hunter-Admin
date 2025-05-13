@@ -154,7 +154,7 @@ const ContentAndCommunicationManagement = () => {
   return (
     <CContainer fluid className="mt-4">
       <CHeader className="service-card-header">
-        <CHeaderBrand style={{ height: "30px" }}>
+        <CHeaderBrand className='text-light' style={{ height: "30px" }}>
           Content & Communication Management
         </CHeaderBrand>
       </CHeader>

@@ -62,6 +62,7 @@ const Provider = () => {
   const [notifBody, setNotifBody] = useState('')
   const [hasMoreData, setHasMoreData] = useState(true)
   const [statusFilter, setStatusFilter] = useState('')
+  const [totalCount, setTotalCount] = useState(0)
 
   const [chatUser, setChatUser] = useState(null)
   const [chatMessages, setChatMessages] = useState([])
@@ -101,6 +102,8 @@ const Provider = () => {
         authHeaders,
       )
       const fetchedProviders = response.data.data || []
+      setTotalCount(response.data.metadata.total || 0)
+
       setUsers(fetchedProviders)
       setHasMoreData(fetchedProviders.length === 10)
     } catch (error) {
@@ -338,7 +341,8 @@ const Provider = () => {
           ) : (
             <div className="hunter-table-container">
               <CTable hover responsive className="hunter-table">
-                <CTableHead>
+                <CTableHead className="sticky-header">
+
                   <CTableRow>
                     <CTableHeaderCell>Sr. No</CTableHeaderCell>
                     <CTableHeaderCell>Joining Date</CTableHeaderCell>
@@ -357,7 +361,7 @@ const Provider = () => {
                 <CTableBody>
                   {users.map((user, index) => (
                     <CTableRow key={user._id}>
-                      <CTableDataCell>{index + 1 + (page - 1) * 10}</CTableDataCell>
+                      <CTableDataCell>{totalCount - (index + (page - 1) * 10)}</CTableDataCell>
                       <CTableDataCell>{formatDate(user.insDate)}</CTableDataCell>
                       <CTableDataCell>{user.contactName}</CTableDataCell>
                       <CTableDataCell>{user.businessName}</CTableDataCell>
