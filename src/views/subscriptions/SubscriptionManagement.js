@@ -229,7 +229,7 @@ const SubscriptionManagement = () => {
             <div>Loading subscriptions...</div>
           ) : (
             <CTable hover responsive>
-              <CTableHead>
+              <CTableHead className="sticky-header">
                 <CTableRow>
                   <CTableHeaderCell>Types</CTableHeaderCell>
                   <CTableHeaderCell>Plan Names</CTableHeaderCell>

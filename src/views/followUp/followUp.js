@@ -113,7 +113,8 @@ const FollowUp = () => {
           ) : (
             <div style={{ maxHeight: "500px", overflowY: "auto" }}>
               <CTable hover responsive className="jobs-table">
-                <CTableHead>
+                <CTableHead className="sticky-header">
+
                   <CTableRow>
                     <CTableHeaderCell>Name</CTableHeaderCell>
                     <CTableHeaderCell>Email</CTableHeaderCell>

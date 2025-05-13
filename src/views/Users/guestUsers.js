@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import React, { useState, useEffect } from 'react'
+import axios from 'axios'
 import {
   CContainer,
   CCard,
@@ -19,150 +19,150 @@ import {
   CModalTitle,
   CModalBody,
   CModalFooter,
-} from '@coreui/react';
-import CIcon from '@coreui/icons-react';
-import { cilSearch, cilEnvelopeOpen, cilTrash, cilViewColumn } from '@coreui/icons';
-import '../Users/Usermanagement.css';
+} from '@coreui/react'
+import CIcon from '@coreui/icons-react'
+import { cilSearch, cilEnvelopeOpen, cilTrash, cilViewColumn } from '@coreui/icons'
+import '../Users/Usermanagement.css'
 
 // Format date utility
 const formatDate = (dateStr) => {
-  if (!dateStr) return 'N/A';
-  const date = new Date(dateStr);
-  return date.toLocaleDateString();
-};
+  if (!dateStr) return 'N/A'
+  const date = new Date(dateStr)
+  return date.toLocaleDateString()
+}
 
 const GuestUsers = () => {
-  const [users, setUsers] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [page, setPage] = useState(1);
-  const [search, setSearch] = useState('');
-  const [hasMoreData, setHasMoreData] = useState(true);
+  const [users, setUsers] = useState([])
+  const [loading, setLoading] = useState(false)
+  const [page, setPage] = useState(1)
+  const [search, setSearch] = useState('')
+  const [hasMoreData, setHasMoreData] = useState(true)
 
-  const [viewUser, setViewUser] = useState(null);
-  const [showViewModal, setShowViewModal] = useState(false);
+  const [viewUser, setViewUser] = useState(null)
+  const [showViewModal, setShowViewModal] = useState(false)
 
-  const [notifUser, setNotifUser] = useState(null);
-  const [showNotifModal, setShowNotifModal] = useState(false);
-  const [notifText, setNotifText] = useState('');
-  const [notifType, setNotifType] = useState('alert');
-  const [notifications, setNotifications] = useState([]);
+  const [notifUser, setNotifUser] = useState(null)
+  const [showNotifModal, setShowNotifModal] = useState(false)
+  const [notifText, setNotifText] = useState('')
+  const [notifType, setNotifType] = useState('alert')
+  const [notifications, setNotifications] = useState([])
+  const [totalCount, setTotalCount] = useState(0)
 
   // 👇 Get token from localStorage and set headers
-  const token = localStorage.getItem('token');
+  const token = localStorage.getItem('token')
   const authHeaders = {
     headers: {
       Authorization: `Bearer ${token}`,
       'Content-Type': 'application/json',
     },
-  };
+  }
 
   const fetchGuestUsers = async () => {
-    setLoading(true);
+    setLoading(true)
     try {
       const response = await axios.get(
         `http://18.209.91.97:7787/api/Prvdr/GuestMode/?page=${page}&limit=10&search=${search}`,
-        authHeaders
-      );
-      const fetchedUsers = response.data.data || [];
-      setUsers(fetchedUsers);
-      setHasMoreData(fetchedUsers.length === 10);
+        authHeaders,
+      )
+      const fetchedUsers = response.data.data || []
+      setTotalCount(response.data.metadata.total || 0)
+
+      setUsers(fetchedUsers)
+      setHasMoreData(fetchedUsers.length === 10)
     } catch (error) {
-      console.error('Error fetching guest users:', error);
+      console.error('Error fetching guest users:', error)
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
-  };
+  }
 
   useEffect(() => {
-    fetchGuestUsers();
-  }, [page, search]);
+    fetchGuestUsers()
+  }, [page, search])
 
   const handleSearchChange = (e) => {
-    setSearch(e.target.value);
-    setPage(1);
-  };
+    setSearch(e.target.value)
+    setPage(1)
+  }
 
   const nextPage = () => {
-    if (hasMoreData) setPage((prev) => prev + 1);
-  };
+    if (hasMoreData) setPage((prev) => prev + 1)
+  }
 
-  const prevPage = () => setPage((prev) => Math.max(prev - 1, 1));
+  const prevPage = () => setPage((prev) => Math.max(prev - 1, 1))
 
   const handleViewUser = (user) => {
-    setViewUser(user);
-    setShowViewModal(true);
-  };
+    setViewUser(user)
+    setShowViewModal(true)
+  }
 
   const handleNotification = (user) => {
-    setNotifUser(user);
-    setShowNotifModal(true);
-    fetchNotifications(user._id);
-  };
+    setNotifUser(user)
+    setShowNotifModal(true)
+    fetchNotifications(user._id)
+  }
 
   const fetchNotifications = async (userId) => {
     try {
       const response = await axios.get(
         `http://18.209.91.97:7787/api/notification/getAll/provider/${userId}`,
-        authHeaders
-      );
-      setNotifications(response.data.data || []);
+        authHeaders,
+      )
+      setNotifications(response.data.data || [])
     } catch (error) {
-      console.error('Error fetching notifications:', error);
+      console.error('Error fetching notifications:', error)
     }
-  };
+  }
 
   const handleSendNotification = async () => {
     if (!notifText.trim()) {
-      alert('Please enter notification text.');
-      return;
+      alert('Please enter notification text.')
+      return
     }
     try {
       await axios.post(
         `http://18.209.91.97:7787/api/notification/send/provider/${notifUser._id}`,
         { type: notifType, text: notifText },
-        authHeaders
-      );
-      alert('Notification sent successfully!');
-      setNotifText('');
-      fetchNotifications(notifUser._id);
+        authHeaders,
+      )
+      alert('Notification sent successfully!')
+      setNotifText('')
+      fetchNotifications(notifUser._id)
     } catch (error) {
-      console.error('Error sending notification:', error);
-      alert('Failed to send notification.');
+      console.error('Error sending notification:', error)
+      alert('Failed to send notification.')
     }
-  };
+  }
 
   const handleDeleteNotification = async (notifId) => {
     if (!notifUser || !notifUser._id) {
-      alert('Notification user not defined');
-      return;
+      alert('Notification user not defined')
+      return
     }
-    const deleteUrl = `http://18.209.91.97:7787/api/notification/delete/provider/${notifUser._id}/${notifId}`;
+    const deleteUrl = `http://18.209.91.97:7787/api/notification/delete/provider/${notifUser._id}/${notifId}`
     if (window.confirm('Are you sure you want to delete this notification?')) {
       try {
-        await axios.delete(deleteUrl, authHeaders);
-        fetchNotifications(notifUser._id);
+        await axios.delete(deleteUrl, authHeaders)
+        fetchNotifications(notifUser._id)
       } catch (error) {
-        console.error('Error deleting notification:', error);
-        alert('Failed to delete notification. Please try again.');
+        console.error('Error deleting notification:', error)
+        alert('Failed to delete notification. Please try again.')
       }
     }
-  };
+  }
 
   const handleDeleteUser = async (userId) => {
     if (window.confirm('Are you sure you want to delete this guest user?')) {
       try {
-        await axios.delete(
-          `http://18.209.91.97:7787/api/Prvdr/delete/${userId}`,
-          authHeaders
-        );
-        alert('User deleted successfully.');
-        fetchGuestUsers();
+        await axios.delete(`http://18.209.91.97:7787/api/Prvdr/delete/${userId}`, authHeaders)
+        alert('User deleted successfully.')
+        fetchGuestUsers()
       } catch (error) {
-        console.error('Error deleting user:', error);
-        alert('Failed to delete user.');
+        console.error('Error deleting user:', error)
+        alert('Failed to delete user.')
       }
     }
-  };
+  }
 
   return (
     <CContainer className="hunter-container">
@@ -187,7 +187,8 @@ const GuestUsers = () => {
             <div className="text-center">Loading...</div>
           ) : (
             <CTable hover responsive className="hunter-table">
-              <CTableHead>
+              <CTableHead className="sticky-header">
+
                 <CTableRow>
                   <CTableHeaderCell>Sr. No</CTableHeaderCell>
                   <CTableHeaderCell>Joining Date</CTableHeaderCell>
@@ -201,10 +202,12 @@ const GuestUsers = () => {
               <CTableBody>
                 {users.map((user, index) => (
                   <CTableRow key={user._id}>
-                    <CTableDataCell>{index + 1 + (page - 1) * 10}</CTableDataCell>
+                     <CTableDataCell>{totalCount - (index + (page - 1) * 10)}</CTableDataCell>
                     <CTableDataCell>{formatDate(user.insDate)}</CTableDataCell>
                     <CTableDataCell className="text-left">{user.contactName}</CTableDataCell>
-                   <CTableDataCell className="text-left">{user.businessName || 'N/A'}</CTableDataCell>
+                    <CTableDataCell className="text-left">
+                      {user.businessName || 'N/A'}
+                    </CTableDataCell>
                     <CTableDataCell className="text-left">{user.email}</CTableDataCell>
                     <CTableDataCell className="text-left">{user.phoneNo}</CTableDataCell>
                     <CTableDataCell
@@ -213,21 +216,21 @@ const GuestUsers = () => {
                     >
                       <CIcon
                         className="action-icon view-icon"
-                        title='view'
+                        title="view"
                         onClick={() => handleViewUser(user)}
                         icon={cilViewColumn}
                         size="lg"
                       />
                       <CIcon
                         className="action-icon notif-icon"
-                        title='send Notification'
+                        title="send Notification"
                         onClick={() => handleNotification(user)}
                         icon={cilEnvelopeOpen}
                         size="lg"
                       />
                       <CIcon
                         className="action-icon delete-icon"
-                        title='delete user'
+                        title="delete user"
                         onClick={() => handleDeleteUser(user._id)}
                         icon={cilTrash}
                         size="lg"
@@ -243,7 +246,12 @@ const GuestUsers = () => {
             className="hunter-pagination d-flex justify-content-center align-items-center mt-3"
             style={{ gap: '20px' }}
           >
-            <CButton color="secondary" onClick={prevPage} disabled={page === 1} className="hunter-pagination-btn">
+            <CButton
+              color="secondary"
+              onClick={prevPage}
+              disabled={page === 1}
+              className="hunter-pagination-btn"
+            >
               Previous
             </CButton>
             <span className="hunter-page-info">Page: {page}</span>
@@ -372,7 +380,7 @@ const GuestUsers = () => {
         </CModalFooter>
       </CModal>
     </CContainer>
-  );
-};
+  )
+}
 
-export default GuestUsers;
+export default GuestUsers
