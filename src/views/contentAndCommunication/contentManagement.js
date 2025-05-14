@@ -14,13 +14,14 @@ const sectionMapping = {
   "About Us": "about",
   "Terms & Conditions": "terms",
   "Privacy Policy": "privacy",
+  "Guide": "guide",
 };
 
 const ContentAndCommunicationManagement = () => {
   const [activeModule, setActiveModule] = useState('Static Content');
   const [activeSection, setActiveSection] = useState('About Us');
   const [contentData, setContentData] = useState({
-    "About Us": "", "Terms & Conditions": "", "Privacy Policy": ""
+    "About Us": "", "Terms & Conditions": "", "Privacy Policy": "Guide"
   });
 
   const [notificationRecipient, setNotificationRecipient] = useState('');
@@ -149,6 +150,7 @@ const ContentAndCommunicationManagement = () => {
     { name: "About Us", icon: faInfoCircle, color: "primary" },
     { name: "Terms & Conditions", icon: faFileContract, color: "warning" },
     { name: "Privacy Policy", icon: faShieldAlt, color: "success" },
+    { name: "Guide", icon: faInfoCircle, color: "info" },
   ];
 
   return (
@@ -184,7 +186,7 @@ const ContentAndCommunicationManagement = () => {
         <>
           <CRow className="mb-4">
             {staticSections.map((sec) => (
-              <CCol md={4} key={sec.name}>
+              <CCol md={3} key={sec.name}>
                 <CCard
                   className={`p-3 text-white bg-${sec.color}`}
                   style={{ cursor: 'pointer' }}
