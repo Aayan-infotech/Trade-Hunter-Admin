@@ -48,7 +48,7 @@ const AllFeedbacks = () => {
       </CButton>
       <CCard>
         <CCardHeader className="service-card-header">
-          <h4>Feedbacks for {provider.contactName}</h4>
+          <h4>Feedbacks for {provider.businessName}</h4>
           <p>{provider.email}</p>
         </CCardHeader>
         <CCardBody>
