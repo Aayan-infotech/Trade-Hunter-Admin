@@ -234,7 +234,7 @@ const Dashboard = () => {
                       <tr>
                         <th>Title</th>
                         <th>Hunters Name</th>
-                        <th>Providers Name</th>
+                        <th>Business Name</th>
                         <th>Location</th>
                         <th>Business Type</th>
                         <th>Status</th>
@@ -246,7 +246,7 @@ const Dashboard = () => {
                         <tr key={index}>
                           <td>{job.title || 'N/A'}</td>
                           <td>{job.user?.name || 'N/A'}</td>
-                          <td>{job.provider?.contactName || 'N/A'}</td>
+                          <td>{job.provider?.businessName || 'N/A'}</td>
                           <td>{job.jobLocation?.jobAddressLine || 'N/A'}</td>
                           <td>
                             {Array.isArray(job.businessType)

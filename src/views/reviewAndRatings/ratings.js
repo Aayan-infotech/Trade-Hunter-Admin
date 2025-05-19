@@ -22,19 +22,23 @@ const ProviderRatings = () => {
   const [providers, setProviders] = useState([]);
   const [loading, setLoading] = useState(false);
   const [search, setSearch] = useState('');
-  const [minAvgRating, setMinAvgRating] = useState('');
+  const [avgRating, setAvgRating] = useState('');
   const navigate = useNavigate();
 
   const token = localStorage.getItem('token');
-  const authHeaders = { headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' } };
+  const authHeaders = {
+    headers: {
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json',
+    },
+  };
 
-  // Fetch providers with optional filters
   const fetchProviders = async () => {
     setLoading(true);
     try {
       const params = new URLSearchParams();
       if (search) params.append('search', search);
-      if (minAvgRating) params.append('minAvgRating', minAvgRating);
+      if (avgRating !== '') params.append('avgRating', avgRating);
 
       const url = `http://18.209.91.97:7787/api/rating/getAllProviderRatings?${params.toString()}`;
       const { data } = await axios.get(url, authHeaders);
@@ -46,17 +50,16 @@ const ProviderRatings = () => {
     }
   };
 
-  // Refetch when filters change
   useEffect(() => {
     fetchProviders();
-  }, [search, minAvgRating]);
+  }, [search, avgRating]);
 
   const handleSearchChange = (e) => setSearch(e.target.value);
   const handleRatingChange = (e) => {
     const value = e.target.value;
-    // allow only numbers between 0 and 5
-    if (value === '' || (/^\d*(\.\d*)?$/).test(value)) {
-      setMinAvgRating(value);
+    // allow only numbers between 0 and 5 (and decimals)
+    if (value === '' || /^\d*(\.\d*)?$/.test(value)) {
+      setAvgRating(value);
     }
   };
 
@@ -65,8 +68,8 @@ const ProviderRatings = () => {
   };
 
   const renderStars = (rating) => {
-    const full = Math.round(rating);
-    return '★'.repeat(full) + '☆'.repeat(5 - full);
+    const fullStars = Math.round(rating);
+    return '★'.repeat(fullStars) + '☆'.repeat(5 - fullStars);
   };
 
   return (
@@ -83,13 +86,13 @@ const ProviderRatings = () => {
             />
             <CFormInput
               type="number"
-              placeholder="Min Avg Rating (0-5)"
-              value={minAvgRating}
+              placeholder="Avg Rating"
+              value={avgRating}
               onChange={handleRatingChange}
               style={{ width: '150px' }}
               min="0"
               max="5"
-              step="0.5"
+              step="1"
             />
             <CButton color="primary" onClick={fetchProviders}>
               <CIcon icon={cilSearch} />

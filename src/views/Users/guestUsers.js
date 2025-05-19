@@ -192,7 +192,6 @@ const GuestUsers = () => {
                 <CTableRow>
                   <CTableHeaderCell>Sr. No</CTableHeaderCell>
                   <CTableHeaderCell>Joining Date</CTableHeaderCell>
-                  <CTableHeaderCell>Name</CTableHeaderCell>
                   <CTableHeaderCell>Business Name</CTableHeaderCell>
                   <CTableHeaderCell>Email</CTableHeaderCell>
                   <CTableHeaderCell>Contact No</CTableHeaderCell>
@@ -204,7 +203,6 @@ const GuestUsers = () => {
                   <CTableRow key={user._id}>
                      <CTableDataCell>{totalCount - (index + (page - 1) * 10)}</CTableDataCell>
                     <CTableDataCell>{formatDate(user.insDate)}</CTableDataCell>
-                    <CTableDataCell className="text-left">{user.contactName}</CTableDataCell>
                     <CTableDataCell className="text-left">
                       {user.businessName || 'N/A'}
                     </CTableDataCell>

@@ -346,7 +346,6 @@ const Provider = () => {
                   <CTableRow>
                     <CTableHeaderCell>Sr. No</CTableHeaderCell>
                     <CTableHeaderCell>Joining Date</CTableHeaderCell>
-                    <CTableHeaderCell>Name</CTableHeaderCell>
                     <CTableHeaderCell>Business Name</CTableHeaderCell>
                     <CTableHeaderCell>Email</CTableHeaderCell>
                     <CTableHeaderCell>Contact</CTableHeaderCell>
@@ -363,7 +362,6 @@ const Provider = () => {
                     <CTableRow key={user._id}>
                       <CTableDataCell>{totalCount - (index + (page - 1) * 10)}</CTableDataCell>
                       <CTableDataCell>{formatDate(user.insDate)}</CTableDataCell>
-                      <CTableDataCell>{user.contactName}</CTableDataCell>
                       <CTableDataCell>{user.businessName}</CTableDataCell>
                       <CTableDataCell>{user.email}</CTableDataCell>
                       <CTableDataCell>{user.phoneNo}</CTableDataCell>
