@@ -99,7 +99,7 @@ const AnalyticsReports = () => {
 
   useEffect(() => {
     axios
-      .get(`http://18.209.91.97:7787/api/Prvdr?search=${providerSearch}`, commonConfig)
+      .get(`http://18.209.91.97:7787/api/Prvdr/getAll?search=${providerSearch}`, commonConfig)
       .then((res) => {
         if (res.data.data && Array.isArray(res.data.data)) {
           setProviderList(res.data.data);
