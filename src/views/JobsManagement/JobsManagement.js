@@ -223,7 +223,7 @@ const JobsManagement = () => {
                 <CTableRow>
                   <CTableHeaderCell>Title</CTableHeaderCell>
                   <CTableHeaderCell>Hunters Name</CTableHeaderCell>
-                  <CTableHeaderCell>Providers Name</CTableHeaderCell>
+                  <CTableHeaderCell>Business Name</CTableHeaderCell>
                   <CTableHeaderCell>Job Address</CTableHeaderCell>
                   <CTableHeaderCell>JobPosted Date</CTableHeaderCell>
                   <CTableHeaderCell>Completion Date</CTableHeaderCell>
@@ -238,7 +238,7 @@ const JobsManagement = () => {
                     <CTableRow key={job._id}>
                       <CTableDataCell>{job.title}</CTableDataCell>
                       <CTableDataCell>{job.user?.name}</CTableDataCell>
-                      <CTableDataCell>{job.provider?.contactName}</CTableDataCell>
+                      <CTableDataCell>{job.provider?.businessName}</CTableDataCell>
                       <CTableDataCell>{job.jobLocation?.jobAddressLine}</CTableDataCell>
                       <CTableDataCell>{formatDate(job.createdAt)}</CTableDataCell>
                       <CTableDataCell>{formatDate(job.updatedAt)}</CTableDataCell>
@@ -365,7 +365,7 @@ const JobsManagement = () => {
                 <strong>Providers ID:</strong> {viewJob.provider?._id}
               </p>
               <p>
-                <strong>Provider Name:</strong> {viewJob.provider?.contactName}
+                <strong>Business Name:</strong> {viewJob.provider?.businessName}
               </p>
               <p>
                 <strong>Provider email:</strong> {viewJob.provider?.email}
