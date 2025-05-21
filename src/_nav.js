@@ -9,7 +9,8 @@ import {
   cilAlarm,
   cilCart,
   cilTag,
-  cilPen
+  cilPen,
+  cilStar
 } from '@coreui/icons';
 import { CNavGroup, CNavItem, CNavTitle } from '@coreui/react';
 import NavContacts from './navContacts'; 
@@ -116,7 +117,7 @@ const _nav = [
     component: CNavItem,
     name: "Ratings And Feedbacks",
     to: '/ratingsManagement',
-    icon: <CIcon icon={cilPen} customClassName="nav-icon" style={{ color: 'blue' }} />,
+    icon: <CIcon icon={cilStar} customClassName="nav-icon" style={{ color: 'blue' }} />,
   },
 ];
 

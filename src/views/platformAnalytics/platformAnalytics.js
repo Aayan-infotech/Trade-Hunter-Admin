@@ -9,7 +9,7 @@ import {
   CFormInput,
 } from "@coreui/react";
 import CIcon from "@coreui/icons-react";
-import { cilUser, cilCalendar, cilMap } from "@coreui/icons";
+import { cilUser, cilCalendar, cilMap, cilBadge } from "@coreui/icons";
 import { Bar } from "react-chartjs-2";
 import {
   Chart as ChartJS,
@@ -341,7 +341,7 @@ const AnalyticsReports = () => {
                   : "0.00"}
                 %
               </h3>
-              <CIcon icon={cilCalendar} size="xl" />
+              <CIcon icon={cilBadge} size="xl" />
             </CCardBody>
           </CCard>
         </CCol>
