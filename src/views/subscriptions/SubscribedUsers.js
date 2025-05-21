@@ -145,8 +145,8 @@ const SubscriptionUsersManagement = () => {
               <CTableBody>
                 {subscriptionUsers.map((sub) => (
                   <CTableRow key={sub._id}>
-                    <CTableDataCell>{sub.userId?.businessName || "N/A"}</CTableDataCell>
-                    <CTableDataCell>{sub.userId?.email || "N/A"}</CTableDataCell>
+                    <CTableDataCell>{sub.userId?.businessName || "User Deleted"}</CTableDataCell>
+                    <CTableDataCell>{sub.userId?.email || "User Deleted"}</CTableDataCell>
                     <CTableDataCell>{sub.subscriptionPlanId?.type?.type || "N/A"}</CTableDataCell>
                     <CTableDataCell>{sub.subscriptionPlanId?.planName || "N/A"}</CTableDataCell>
                     <CTableDataCell>${sub.subscriptionPlanId?.amount ?? "0.00"}</CTableDataCell>

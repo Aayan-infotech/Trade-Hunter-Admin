@@ -155,7 +155,7 @@ const PaymentManagement = () => {
                           )}
                         </CTableDataCell>
                         <CTableDataCell>
-                          {pay.userId?.businessName ?? "—"}
+                          {pay.userId?.businessName ?? "User Deleted"}
                         </CTableDataCell>
                         <CTableDataCell>
                           {pay.transaction.transactionPrice.toFixed(2)}

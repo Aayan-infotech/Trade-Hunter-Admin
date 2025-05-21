@@ -203,7 +203,7 @@ const JobsManagement = () => {
             </select>
             <CFormInput
               type="text"
-              placeholder="Search by Hunters name or Providers name"
+              placeholder="Search by usernames and jobAddress..."
               value={search}
               onChange={handleSearch}
               className="search-input"
