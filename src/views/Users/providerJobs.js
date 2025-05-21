@@ -16,7 +16,7 @@ import "./Usermanagement.css";
 
 const ProviderAssignedJobs = () => {
   const location = useLocation();
-  const { providerId } = location.state || {}; // Extract providerId from location state
+  const { providerId } = location.state || {}; 
 
   const [provider, setProvider] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -79,7 +79,6 @@ const ProviderAssignedJobs = () => {
         </CCardHeader>
       </CCard>
 
-      {/* Scrollable container for job cards */}
       <div style={{ maxHeight: "600px", overflowY: "auto", paddingRight: "15px" }}>
         {assignedJobs.length > 0 ? (
           <CRow className="g-4">
@@ -144,7 +143,6 @@ const ProviderAssignedJobs = () => {
         )}
       </div>
 
-      {/* Optional: Add a Back button */}
       <div className="mt-4 text-center">
         <CButton color="secondary" onClick={() => window.history.back()}>
           &larr; Back

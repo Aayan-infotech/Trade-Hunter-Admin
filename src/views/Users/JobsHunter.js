@@ -77,28 +77,23 @@ const JobsHuunter = () => {
 
   return (
     <CContainer className="jobs-hunter-wrapper mt-4">
-      {/* Header */}
       <CCard className="mb-4 shadow-sm">
         <CCardHeader className="bg-primary text-white text-center">
           <h2 className="mb-0">Job Details</h2>
         </CCardHeader>
       </CCard>
 
-      {/* Scrollable container for job cards */}
       <div style={{ maxHeight: "600px", overflowY: "auto", paddingRight: "15px" }}>
         <CRow className="g-4">
           {jobData.map((job) => {
-            // For provider info, check and display its properties
             const providerInfo = job.provider
               ? `${job.provider.contactName || "N/A"}, ${job.provider.email || "N/A"}`
               : "N/A";
 
-            // For businessType, join the array into a string
             const businessTypeStr = Array.isArray(job.businessType)
               ? job.businessType.join(", ")
               : job.businessType || "N/A";
 
-            // Instead of rendering an array of objects, show the count for jobAcceptCount.
             const acceptCount =
               Array.isArray(job.jobAcceptCount) ? job.jobAcceptCount.length : 0;
 
@@ -168,7 +163,6 @@ const JobsHuunter = () => {
         </CRow>
       </div>
 
-      {/* Back Button */}
       <div className="mt-4 text-center">
         <CButton color="secondary" onClick={() => window.history.back()}>
           &larr; Back

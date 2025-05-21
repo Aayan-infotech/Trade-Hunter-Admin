@@ -39,8 +39,6 @@ const Contact = () => {
             const messagesObj = channelData.messages || {};
             const messagesArray = Object.values(messagesObj);
             messagesArray.sort((a, b) => a.timeStamp - b.timeStamp);
-            // Count unread messages:
-            // If a message doesn't have a read property, treat it as unread.
             const unreadCount = messagesArray.filter(
               msg => msg.senderId !== adminId && (msg.read === false || msg.read === undefined)
             ).length;
@@ -92,8 +90,6 @@ const Contact = () => {
     const participants = chat.id.split('_chat_');
     const otherId = participants.find((id) => id !== adminId);
     setReceiverId(otherId);
-
-    // Mark all messages not sent by admin as read when opening the chat.
     const chatMessagesRef = ref(realtimeDb, `chatsAdmin/${chat.id}/messages`);
     onValue(chatMessagesRef, (snapshot) => {
       snapshot.forEach(childSnapshot => {
@@ -116,7 +112,7 @@ const Contact = () => {
         msg: text,
         timeStamp: Date.now(),
         type: "text",
-        read: false, // New messages from admin are set as unread for the other party
+        read: false, 
       });
       setText("");
     } catch (err) {

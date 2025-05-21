@@ -1,23 +1,9 @@
 import React from 'react';
 import CIcon from '@coreui/icons-react';
 import {
-  cilBell,
-  cilCalculator,
-  cilChartPie,
-  cilCursor,
-  cilDescription,
-  cilDrop,
-  cilExternalLink,
-  cilNotes,
-  cilPencil,
   cilPuzzle,
-  cilSpeedometer,
   cilUser,
   cilBriefcase,
-  cilMoney,
-  cilStar,
-  cilPhone,
-  cilLibraryAdd,
   cilBarChart,
   cilBullhorn,
   cilAlarm,
@@ -26,7 +12,7 @@ import {
   cilPen
 } from '@coreui/icons';
 import { CNavGroup, CNavItem, CNavTitle } from '@coreui/react';
-import NavContacts from './navContacts'; // Adjust path as needed
+import NavContacts from './navContacts'; 
 
 const _nav = [
   {
@@ -94,7 +80,7 @@ const _nav = [
     ],
   },
   {
-    component: NavContacts,  // Dynamic Contacts item.
+    component: NavContacts,  
   },
   {
     component: CNavItem,

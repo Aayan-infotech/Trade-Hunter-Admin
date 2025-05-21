@@ -67,7 +67,6 @@ const Hunter = () => {
   const [hasMoreData, setHasMoreData] = useState(true)
 const [totalCount, setTotalCount] = useState(0)
 
-  // Retrieve token and set auth headers
   const token = localStorage.getItem('token')
   console.log('🛡️ token:', token)
   const authHeaders = {
@@ -444,7 +443,6 @@ const [totalCount, setTotalCount] = useState(0)
         </CCardBody>
       </CCard>
 
-      {/* Edit User Modal */}
       <CModal
         scrollable
         visible={isEditModalOpen}
@@ -551,7 +549,6 @@ const [totalCount, setTotalCount] = useState(0)
         </CModalFooter>
       </CModal>
 
-      {/* View User Modal */}
       <CModal
         scrollable
         visible={isViewModalOpen}
@@ -639,7 +636,6 @@ const [totalCount, setTotalCount] = useState(0)
         </CModalFooter>
       </CModal>
 
-      {/* Notification Modal (Updated UI without notificationType) */}
       <CModal
         scrollable
         visible={isNotifModalOpen}
@@ -719,7 +715,6 @@ const [totalCount, setTotalCount] = useState(0)
         </CModalFooter>
       </CModal>
 
-      {/* Chat Modal */}
       <CModal
         visible={isChatModalOpen}
         onClose={() => setIsChatModalOpen(false)}

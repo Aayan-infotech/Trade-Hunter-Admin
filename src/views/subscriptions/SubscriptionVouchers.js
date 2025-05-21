@@ -117,7 +117,6 @@ const CreateVoucher = () => {
 
   return (
     <>
-      {/* Voucher Creation Section */}
       <CContainer fluid className="d-flex align-items-center justify-content-center mt-5">
         <CCard
           className="voucher-card shadow"
@@ -193,7 +192,6 @@ const CreateVoucher = () => {
         </CCard>
       </CContainer>
       
-      {/* Vouchers Table Section */}
       <CContainer fluid className="mt-5">
         <div className="vouchers-table-section" style={{ backgroundColor: 'var(--container-bg)', border: '1px solid var(--table-border-color)', borderRadius: '5px', padding: '10px' }}>
           <CTable>
@@ -246,7 +244,6 @@ const CreateVoucher = () => {
         </div>
       </CContainer>
 
-      {/* Edit Voucher Modal */}
       {showEditModal && editVoucher && (
         <CModal
           scrollable

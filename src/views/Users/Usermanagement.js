@@ -32,7 +32,7 @@ const Usermanagement = () => {
   const [selectedUser, setSelectedUser] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
-  const [userTypeFilter, setUserTypeFilter] = useState('all'); // 'all', 'hunter', 'provider'
+  const [userTypeFilter, setUserTypeFilter] = useState('all'); 
   const [currentPage, setCurrentPage] = useState(1);
   const usersPerPage = 5;
 
@@ -98,7 +98,7 @@ const Usermanagement = () => {
         user.email.toLowerCase().includes(lowercasedSearchTerm)
     );
     setFilteredUsers(filtered);
-    setCurrentPage(1); // Reset to the first page
+    setCurrentPage(1); 
   };
 
   const handleUserTypeFilter = (e) => {
@@ -112,7 +112,7 @@ const Usermanagement = () => {
       filtered = users.filter((user) => user.userType === 'provider');
     }
     setFilteredUsers(filtered);
-    setCurrentPage(1); // Reset to the first page
+    setCurrentPage(1); 
   };
 
   const renderFilePreview = (file) => {
@@ -137,10 +137,8 @@ const Usermanagement = () => {
       <CCard>
         <CCardHeader>User Management</CCardHeader>
         <CCardBody>
-          {/* Search Bar and Filter */}
           <div className="mb-4 d-flex justify-content-between align-items-center">
             <div className="d-flex align-items-center">
-              {/* Search Input */}
               <CFormInput
                 type="text"
                 placeholder="Search by name or email..."
@@ -151,7 +149,6 @@ const Usermanagement = () => {
               <CButton color="primary" onClick={() => fetchUsers()}>Reset</CButton>
             </div>
 
-            {/* User Type Filter */}
             <CFormSelect value={userTypeFilter} onChange={handleUserTypeFilter} className="w-25">
               <option value="all">All</option>
               <option value="hunter">
@@ -165,7 +162,6 @@ const Usermanagement = () => {
             </CFormSelect>
           </div>
 
-          {/* User Table */}
           <CTable hover responsive className="ctable">
   <CTableHead>
     <CTableRow>
@@ -200,25 +196,17 @@ const Usermanagement = () => {
         <CTableDataCell>{user.documentStatus ? 'Approved' : 'Pending'}</CTableDataCell>
         <CTableDataCell>{user.subscriptionStatus ? 'Active' : 'Pending'}</CTableDataCell>
         <CTableDataCell style={{display:"flex", alignItems:"center"}}>
-          {/* <CButton color="info" size="sm" onClick={() => handleView(user)}> */}
             <CIcon className='fw-bold text-success me-2' onClick={() => handleView(user)} icon={cilSearch} />
-          {/* </CButton> */}
 
-          {/* <CButton color="primary" size="sm" className="ms-2" onClick={() => handleEdit(user)}> */}
             <CIcon className='fw-bold text-success me-2' onClick={() => handleEdit(user)} icon={cilPencil} />
-          {/* </CButton> */}
 
-          {/* <CButton color="danger" size="sm" className="ms-2" onClick={() => deleteUser(user._id)}> */}
             <CIcon className='fw-bold text-danger' onClick={() => deleteUser(user?._id)} icon={cilTrash} />
-          {/* </CButton> */}
         </CTableDataCell>
       </CTableRow>
     ))}
   </CTableBody>
 </CTable>
 
-
-          {/* Pagination */}
           <div className="d-flex justify-content-center mt-4">
             <CButton
               color="secondary"
@@ -241,7 +229,6 @@ const Usermanagement = () => {
         </CCardBody>
       </CCard>
 
-      {/* Modal for View/Edit */}
       {selectedUser && (
         <CModal visible={showModal} onClose={() => setShowModal(false)} className="c-modal">
           <CModalHeader className="c-modal-header">{isEditing ? 'Edit User' : 'View User'}</CModalHeader>
@@ -307,7 +294,6 @@ const Usermanagement = () => {
                 <div className="modal-text"><strong>Ins Ip:</strong> {selectedUser.insIp}</div>
                 <div className="modal-text"><strong>Updated At:</strong> {new Date(selectedUser.updatedAt).toLocaleString()}</div>
 
-                {/* Display files if available */}
                 <div className="modal-text">
                   <strong>Files:</strong>
                   <div className="file-preview-container">

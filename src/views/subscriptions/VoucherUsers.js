@@ -31,7 +31,6 @@ const VoucherUsers = () => {
   const [viewVoucher, setViewVoucher] = useState(null);
   const [showViewModal, setShowViewModal] = useState(false);
 
-  // Pagination & Search
   const [page, setPage] = useState(1);
   const [limit] = useState(10);
   const [search, setSearch] = useState("");
@@ -169,7 +168,6 @@ const VoucherUsers = () => {
                 </CTableBody>
               </CTable>
 
-              {/* Pagination */}
               <div className="d-flex justify-content-between align-items-center mt-3">
                 <CButton
                   color="secondary"

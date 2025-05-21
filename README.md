@@ -82,14 +82,12 @@ $ yarn install
 ### Basic usage
 
 ``` bash
-# dev server with hot reload at http://18.209.91.97:8080
 $ npm start 
 ```
 
 or 
 
 ``` bash
-# dev server with hot reload at http://18.209.91.97:8080
 $ yarn start
 ```
 
@@ -100,14 +98,12 @@ Navigate to [http://18.209.91.97:8080](http://18.209.91.97:8080). The app will a
 Run `build` to build the project. The build artifacts will be stored in the `build/` directory.
 
 ```bash
-# build for production with minification
 $ npm run build
 ```
 
 or
 
 ```bash
-# build for production with minification
 $ yarn build
 ```
 
