@@ -45,6 +45,7 @@ const SubscriptionManagement = () => {
   const [showViewModal, setShowViewModal] = useState(false)
   const [showAddTypeModal, setShowAddTypeModal] = useState(false)
 
+  // Add modal state
   const [newTitle, setNewTitle] = useState('')
   const [newAmount, setNewAmount] = useState('')
   const [newValidity, setNewValidity] = useState('')
@@ -53,9 +54,11 @@ const SubscriptionManagement = () => {
   const [newKmRadius, setNewKmRadius] = useState('')
   const [newLeadCount, setNewLeadCount] = useState('')
 
+  // Edit & view modal state
   const [editSubscription, setEditSubscription] = useState(null)
   const [viewSubscription, setViewSubscription] = useState(null)
 
+  // Subscription types
   const [newSubscriptionType, setNewSubscriptionType] = useState('')
   const [subscriptionTypes, setSubscriptionTypes] = useState([])
 
@@ -64,6 +67,7 @@ const SubscriptionManagement = () => {
     fetchSubscriptionTypes()
   }, [])
 
+  // Fetch data
   const fetchSubscriptions = async () => {
     setLoading(true)
     try {
@@ -91,9 +95,11 @@ const SubscriptionManagement = () => {
     }
   }
 
+  // Helpers for add modal
   const selectedNewTypeName = subscriptionTypes.find((t) => t._id === newType)?.type
   const isNewPayPerLead = selectedNewTypeName === 'Pay Per Lead'
 
+  // Add subscription
   const handleAddSubscription = async () => {
     if (!newTitle || !newAmount || !newValidity || !newType) {
       alert('Please fill in all required fields.')
@@ -128,24 +134,36 @@ const SubscriptionManagement = () => {
     }
   }
 
+  // Open edit modal
   const handleEditSubscription = (sub) => {
-    setEditSubscription(sub)
+    // find object by name to get ID
+    const typeObj = subscriptionTypes.find((t) => t.type === sub.type)
+    setEditSubscription({
+      ...sub,
+      typeId: typeObj?._id || '',
+      typeName: sub.type,
+    })
     setShowEditModal(true)
   }
 
+  // Save edited subscription
   const handleSaveEditSubscription = async () => {
-    const updated = {
-      ...editSubscription,
-      type: subscriptionTypes.find((t) => t._id === editSubscription.type)?.type,
+    const payload = {
+      planName: editSubscription.planName,
+      amount: editSubscription.amount,
+      validity: editSubscription.validity,
+      description: editSubscription.description,
+      kmRadius: editSubscription.kmRadius,
+      type: editSubscription.typeId,
       leadCount:
-        subscriptionTypes.find((t) => t._id === editSubscription.type)?.type === 'Pay Per Lead'
+        editSubscription.typeName === 'Pay Per Lead'
           ? Number(editSubscription.leadCount)
           : 0,
     }
     try {
       await axios.put(
         `http://18.209.91.97:7787/api/SubscriptionNew/subscription-plan/${editSubscription._id}`,
-        updated,
+        payload,
         commonConfig,
       )
       fetchSubscriptions()
@@ -156,6 +174,7 @@ const SubscriptionManagement = () => {
     }
   }
 
+  // Delete, view, and type CRUD
   const handleDeleteSubscription = async (id) => {
     if (window.confirm('Delete Subscription?')) {
       try {
@@ -204,14 +223,13 @@ const SubscriptionManagement = () => {
     }
   }
 
+  // Group by type name
   const groupedSubscriptions = subscriptions.reduce((acc, sub) => {
     acc[sub.type] = acc[sub.type] || []
     acc[sub.type].push(sub)
     return acc
   }, {})
 
-  console.log('subscriptionTypes', subscriptionTypes)
-  console.log('editSubscription', editSubscription)
   return (
     <CContainer style={{ maxHeight: '100vh', overflowY: 'auto' }}>
       <CCard>
@@ -286,6 +304,7 @@ const SubscriptionManagement = () => {
         </CCardBody>
       </CCard>
 
+      {/* Add Subscription Modal */}
       <CModal scrollable visible={showAddModal} onClose={() => setShowAddModal(false)}>
         <CModalHeader className="service-card-header">
           <CModalTitle>Add Subscription</CModalTitle>
@@ -357,6 +376,7 @@ const SubscriptionManagement = () => {
         </CModalFooter>
       </CModal>
 
+      {/* Edit Subscription Modal */}
       <CModal scrollable visible={showEditModal} onClose={() => setShowEditModal(false)}>
         <CModalHeader className="service-card-header">
           <CModalTitle>Edit Subscription</CModalTitle>
@@ -366,12 +386,13 @@ const SubscriptionManagement = () => {
             <>
               <CFormSelect
                 label="Subscription Type"
-                value={subscriptionTypes.find((t) => t.type === editSubscription.type)?._id || ''}
+                value={editSubscription.typeId}
                 onChange={(e) => {
-                  const selectedType = subscriptionTypes.find((t) => t._id === e.target.value)
+                  const sel = subscriptionTypes.find((t) => t._id === e.target.value)
                   setEditSubscription({
                     ...editSubscription,
-                    type: selectedType?.type || '',
+                    typeId: sel?._id || '',
+                    typeName: sel?.type || '',
                   })
                 }}
                 className="mb-2"
@@ -427,8 +448,7 @@ const SubscriptionManagement = () => {
                 }
                 className="mb-2"
               />
-              {subscriptionTypes.find((t) => t._id === editSubscription.type)?.type ===
-                'Pay Per Lead' && (
+              {editSubscription.typeName === 'Pay Per Lead' && (
                 <CFormInput
                   label="Lead Count"
                   type="number"
@@ -452,6 +472,7 @@ const SubscriptionManagement = () => {
         </CModalFooter>
       </CModal>
 
+      {/* View Subscription Modal */}
       <CModal scrollable visible={showViewModal} onClose={() => setShowViewModal(false)}>
         <CModalHeader className="service-card-header">
           <CModalTitle>Subscription Details</CModalTitle>
@@ -500,6 +521,7 @@ const SubscriptionManagement = () => {
         </CModalFooter>
       </CModal>
 
+      {/* Add Subscription Type Modal */}
       <CModal scrollable visible={showAddTypeModal} onClose={() => setShowAddTypeModal(false)}>
         <CModalHeader className="service-card-header">
           <CModalTitle>Add Subscription Type</CModalTitle>
