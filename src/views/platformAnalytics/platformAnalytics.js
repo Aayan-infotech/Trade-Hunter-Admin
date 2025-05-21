@@ -72,7 +72,6 @@ const renderStars = (rating) => {
 };
 
 const AnalyticsReports = () => {
-  // State variables
   const [activeUsers, setActiveUsers] = useState(0);
   const [newSignups, setNewSignups] = useState(0);
   const [retentionRate, setRetentionRate] = useState("0");

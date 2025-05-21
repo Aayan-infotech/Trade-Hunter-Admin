@@ -16,10 +16,7 @@ import { AppSidebarNav } from './AppSidebarNav'
 import { logo } from 'src/assets/brand/logo'
 import { sygnet } from 'src/assets/brand/sygnet'
 
-import Logo from 'src/assets/brand/tred hunter.png';
-// import Logoddw from 'src/assets/brand/ddw-logo-new.png'
-
-// sidebar nav config
+import Logo from 'src/assets/brand/tred hunter.png'
 import navigation from '../_nav'
 
 const AppSidebar = () => {

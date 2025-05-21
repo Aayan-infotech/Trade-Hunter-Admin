@@ -105,15 +105,15 @@ const Dashboard = () => {
   const jobStatusColors = jobStatusLabels.map((status) => {
     switch (status) {
       case 'Pending':
-        return '#dc3545' // Red
+        return '#dc3545' 
       case 'Assigned':
-        return '#007bff' // Blue
+        return '#007bff'
       case 'Completed':
-        return '#28a745' // Green
+        return '#28a745' 
       case 'Deleted':
-        return '#6c757d' // Grey
+        return '#6c757d' 
       default:
-        return '#17a2b8' // Default cyan color
+        return '#17a2b8' 
     }
   })
 
@@ -140,14 +140,12 @@ const Dashboard = () => {
   return (
     <CContainer fluid className="dashboard-container">
       <CRow className="mb-4 d-flex">
-        {/* User Insights Card */}
         <CCol md={4}>
           <CCard className="dashboard-card hover-effect h-100 d-flex flex-column">
             <CCardHeader className="service-card-header">User Insights</CCardHeader>
             <CCardBody className="flex-grow-1 d-flex flex-column justify-content-center">
               <h2 className="text-center">{totalUsers}</h2>
               <p className="text-muted text-center">Total Users</p>
-              {/* Updated container for badges */}
               <div
                 className="d-flex justify-content-around align-items-center"
                 style={{ whiteSpace: 'nowrap' }}
@@ -166,7 +164,6 @@ const Dashboard = () => {
           </CCard>
         </CCol>
 
-        {/* Job Postings Card with Pie Chart */}
         <CCol md={4}>
           <CCard className="dashboard-card hover-effect h-100 d-flex flex-column">
             <CCardHeader className="service-card-header">Job Postings</CCardHeader>
@@ -181,12 +178,10 @@ const Dashboard = () => {
           </CCard>
         </CCol>
 
-        {/* Subscription Revenue Card with Filters */}
         <CCol md={4}>
           <CCard className="dashboard-card hover-effect h-100 d-flex flex-column">
             <CCardHeader className="service-card-header">Subscription Revenue</CCardHeader>
             <CCardBody className="flex-grow-1 d-flex flex-column justify-content-center text-center">
-              {/* Filters for revenue */}
               <div className="d-flex justify-content-center mb-3">
                 <CFormSelect
                   value={revenueMonth}

@@ -12,7 +12,7 @@ export default defineConfig(() => {
     css: {
       postcss: {
         plugins: [
-          autoprefixer({}), // add options if needed
+          autoprefixer({}), 
         ],
       },
       preprocessorOptions: {
@@ -48,7 +48,6 @@ export default defineConfig(() => {
     server: {
       port: 8080,
       proxy: {
-        // https://vitejs.dev/config/server-options.html
       },
     },
   }

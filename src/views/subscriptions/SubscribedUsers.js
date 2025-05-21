@@ -24,7 +24,7 @@ import {
 } from "@coreui/react"
 import CIcon from "@coreui/icons-react"
 import { cilViewColumn, cilSearch } from "@coreui/icons"
-import "../Users/Usermanagement.css" // ensure this contains sticky header styles
+import "../Users/Usermanagement.css" 
 
 const SubscriptionUsersManagement = () => {
   const [subscriptionUsers, setSubscriptionUsers] = useState([])
@@ -33,7 +33,6 @@ const SubscriptionUsersManagement = () => {
   const [viewSubscription, setViewSubscription] = useState(null)
   const [showViewModal, setShowViewModal] = useState(false)
 
-  // Pagination & Search
   const [page, setPage] = useState(1)
   const [limit] = useState(10)
   const [search, setSearch] = useState("")

@@ -48,9 +48,6 @@ const routes = [
   {path: '/allFeedbacks', name: 'All Feedbacks', element: allFeedbacks},
   {path: '/voucherUsers', name: 'Voucher Users', element: voucherUsers},
 
-
-  // { path: '/JobsManagement', name: 'JobsManagement', element: JobsManagement },
-
 ]
 
 export default routes

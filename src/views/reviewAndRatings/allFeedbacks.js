@@ -7,11 +7,6 @@ import {
   CCard,
   CCardHeader,
   CCardBody,
-  CModal,
-  CModalHeader,
-  CModalTitle,
-  CModalBody,
-  CModalFooter,
 } from '@coreui/react';
 
 const AllFeedbacks = () => {

@@ -33,7 +33,6 @@ const PaymentManagement = () => {
   const [viewPayment, setViewPayment] = useState(null);
   const [showViewModal, setShowViewModal] = useState(false);
 
-  // Pagination & Search
   const [page, setPage] = useState(1);
   const [limit] = useState(10);
   const [search, setSearch] = useState("");
@@ -187,7 +186,6 @@ const PaymentManagement = () => {
                 </CTableBody>
               </CTable>
 
-              {/* Pagination Controls */}
               <div className="d-flex justify-content-between align-items-center mt-3">
                 <CButton
                   color="secondary"
@@ -212,7 +210,6 @@ const PaymentManagement = () => {
         </CCardBody>
       </CCard>
 
-      {/* View Details Modal */}
       <CModal
         visible={showViewModal}
         onClose={() => setShowViewModal(false)}

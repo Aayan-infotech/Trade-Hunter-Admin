@@ -57,7 +57,6 @@ const ProviderRatings = () => {
   const handleSearchChange = (e) => setSearch(e.target.value);
   const handleRatingChange = (e) => {
     const value = e.target.value;
-    // allow only numbers between 0 and 5 (and decimals)
     if (value === '' || /^\d*(\.\d*)?$/.test(value)) {
       setAvgRating(value);
     }

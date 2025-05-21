@@ -28,7 +28,6 @@ import {
   cilPencil,
   cilViewColumn,
   cilSearch,
-  cilStar, // ← added
 } from '@coreui/icons'
 import '../Users/Usermanagement.css'
 
@@ -317,7 +316,6 @@ const JobsManagement = () => {
         </CCardBody>
       </CCard>
 
-      {/* View Job Modal */}
       <CModal scrollable visible={showViewModal} onClose={() => setShowViewModal(false)}>
         <CModalHeader className="service-card-header">
           <CModalTitle>Job Details</CModalTitle>
@@ -428,7 +426,6 @@ const JobsManagement = () => {
         </CModalFooter>
       </CModal>
 
-      {/* Edit Job Modal */}
       <CModal scrollable visible={showEditModal} onClose={() => setShowEditModal(false)}>
         <CModalHeader className="service-card-header">
           <CModalTitle>Edit Job</CModalTitle>

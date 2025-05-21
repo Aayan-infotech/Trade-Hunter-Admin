@@ -71,7 +71,6 @@ const FollowUp = () => {
     markAllAsRead();
     fetchContacts();
 
-    // ✅ Real-time listener
     socket.on("newContact", (newContact) => {
       toast.success(`New Contact from ${newContact.name}`, {
         position: "top-right",
@@ -109,7 +108,7 @@ const FollowUp = () => {
 
   return (
     <CContainer className="jobs-container">
-      <ToastContainer /> {/* ✅ Toast Container */}
+      <ToastContainer />
       <CCard>
         <CCardHeader className="service-card-header">
           <h4>Follow Ups</h4>

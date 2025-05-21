@@ -24,7 +24,6 @@ import CIcon from '@coreui/icons-react'
 import { cilSearch, cilEnvelopeOpen, cilTrash, cilViewColumn } from '@coreui/icons'
 import '../Users/Usermanagement.css'
 
-// Format date utility
 const formatDate = (dateStr) => {
   if (!dateStr) return 'N/A'
   const date = new Date(dateStr)
@@ -48,7 +47,6 @@ const GuestUsers = () => {
   const [notifications, setNotifications] = useState([])
   const [totalCount, setTotalCount] = useState(0)
 
-  // 👇 Get token from localStorage and set headers
   const token = localStorage.getItem('token')
   const authHeaders = {
     headers: {
@@ -265,7 +263,6 @@ const GuestUsers = () => {
         </CCardBody>
       </CCard>
 
-      {/* View User Modal */}
       <CModal
         scrollable
         visible={showViewModal}
@@ -309,7 +306,6 @@ const GuestUsers = () => {
         </CModalFooter>
       </CModal>
 
-      {/* Notification Modal */}
       <CModal
         scrollable
         visible={showNotifModal}

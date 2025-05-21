@@ -1,6 +1,4 @@
-/* Updated Usermanagement.css with Enhanced Dark Mode Support */
 
-/* Light mode defaults */
 :root {
   --background-color: #ffffff;
   --primary-text-color: #333333;
@@ -41,7 +39,6 @@ body {
   color: var(--primary-text-color);
 }
 
-/* Style for the card */
 .card-header {
   background-color: var(--card-header-bg);
   font-size: 1.5rem;
@@ -50,7 +47,6 @@ body {
   text-align: center;
 }
 
-/* Table styles */
 .table {
   margin: 1rem 0;
   border-collapse: collapse;
@@ -63,7 +59,7 @@ body {
   border: 1px solid var(--table-border-color);
   padding: 0.75rem;
   text-align: center;
-  background-color: var(--container-bg); /* Ensure table cells follow theme */
+  background-color: var(--container-bg); 
 }
 
 .table th {
@@ -71,13 +67,11 @@ body {
   font-weight: bold;
 }
 
-/* Button styles */
 .table .btn {
   font-size: 0.875rem;
   padding: 0.375rem 0.75rem;
 }
 
-/* Container styles */
 .container {
   padding: 2rem;
   background-color: var(--container-bg);
@@ -85,7 +79,6 @@ body {
   box-shadow: 0 0 10px var(--shadow-color);
 }
 
-/* Center the modal in the viewport */
 .c-modal {
   max-width: 39%;
   max-height: 88%;
@@ -102,7 +95,6 @@ body {
   padding-bottom: 20px;
 }
 
-/* Center the modal header and add a background color */
 .c-modal-header {
   background-color: var(--modal-header-bg);
   color: #fff;
@@ -114,7 +106,6 @@ body {
   border-top-right-radius: 8px;
 }
 
-/* Modal body with padding for content */
 .c-modal-body {
   padding: 20px;
   font-size: 1rem;
@@ -123,7 +114,6 @@ body {
   overflow-y: auto;
 }
 
-/* Footer with action buttons aligned to the right */
 .c-modal-footer {
   padding: 10px 20px;
   border-bottom-left-radius: 8px;
@@ -162,7 +152,6 @@ body {
   background-color: #5a6268;
 }
 
-/* Form label styles */
 .c-form-label {
   font-size: 1rem;
   font-weight: bold;
@@ -170,7 +159,6 @@ body {
   margin-bottom: 8px;
 }
 
-/* Form input and checkboxes */
 .c-form-input,
 .c-form-check {
   width: 100%;
@@ -187,7 +175,6 @@ body {
   outline: none;
 }
 
-/* Text area styling */
 .c-form-textarea {
   width: 100%;
   padding: 10px;
@@ -198,7 +185,6 @@ body {
   resize: vertical;
 }
 
-/* File preview styling */
 .file-preview-container {
   display: flex;
   flex-wrap: wrap;
@@ -224,7 +210,6 @@ body {
   text-decoration: underline;
 }
 
-/* Modal text styling */
 .modal-text {
   margin-bottom: 10px;
   font-size: 1rem;
@@ -235,7 +220,6 @@ body {
   color: var(--modal-header-bg);
 }
 
-/* Global button styling */
 button {
   padding: 10px 15px;
   border-radius: 5px;
@@ -252,7 +236,6 @@ button:hover {
   background-color: var(--btn-primary-hover-bg);
 }
 
-/* Responsive modal adjustments */
 @media (max-width: 768px) {
   .c-modal {
     width: 90%;
@@ -270,7 +253,6 @@ button:hover {
   }
 }
 
-/* Compact table styling */
 .ctable {
   font-size: 0.875rem;
   border-collapse: collapse;
@@ -295,7 +277,6 @@ button:hover {
   border-bottom: 1px solid var(--table-border-color);
 }
 
-/* Action buttons in table */
 .ctable .btn {
   font-size: 0.75rem;
   padding: 0.25rem 0.5rem;
@@ -308,12 +289,10 @@ button:hover {
   transition: background-color 0.3s ease;
 }
 
-/* Hover effect on table rows */
 .ctable tr:hover {
   background-color: #f1f1f1;
 }
 
-/* Additional global settings for consistency */
 .custom-modal .modal-content {
   background-color: var(--container-bg);
 }
@@ -322,7 +301,6 @@ button:hover {
   background-color: #9dc6f0;
 }
 
-/* Dashboard styles */
 .dashboard-container {
   min-height: 100vh;
   padding: 2rem;
@@ -366,14 +344,12 @@ button:hover {
   background-color: #f1f1f1;
 }
 
-/* Jobs container */
 .jobs-container {
   padding: 20px;
   background-color: var(--background-color);
   color: var(--primary-text-color);
 }
 
-/* Custom card header */
 .card-header-custom {
   background-color: #0b4786;
   color: #ddd;
@@ -383,7 +359,6 @@ button:hover {
   align-items: center;
 }
 
-/* Search container */
 .search-container {
   display: flex;
   gap: 10px;
@@ -398,14 +373,12 @@ button:hover {
   border-radius: 4px;
 }
 
-/* Custom card body */
 .card-body-custom {
   background-color: var(--container-bg);
   color: var(--primary-text-color);
   padding: 15px;
 }
 
-/* Jobs table */
 .jobs-table {
   font-size: 0.9rem;
 }
@@ -414,7 +387,6 @@ button:hover {
   background-color: #f2f2f2;
 }
 
-/* Actions column */
 .actions-cell {
   display: flex;
   gap: 10px;
@@ -429,7 +401,6 @@ button:hover {
   transform: scale(1.1);
 }
 
-/* Custom modal styles */
 .custom-modal .modal-header-custom {
   background-color: #0056b3;
   color: #ddd;
@@ -452,17 +423,14 @@ button:hover {
   border-radius: 4px;
 }
 
-/* Error text */
 .error-text {
   color: #d9534f;
 }
 
-/* Pagination item */
 .pagination-item {
   cursor: pointer;
 }
 
-/* Hunter section styles */
 .hunter-container {
   padding: 20px;
   background-color: var(--background-color);
@@ -509,20 +477,17 @@ button:hover {
   border-radius: 4px;
 }
 
-/* Hunter card body */
 .hunter-card-body {
   background-color: var(--container-bg);
   padding: 15px;
 }
 
-/* Loading text */
 .loading-text {
   text-align: center;
   padding: 20px;
   font-size: 1.2rem;
 }
 
-/* Hunter table */
 .hunter-table-container {
   max-height: 400px;
   overflow-y: auto;
@@ -536,7 +501,6 @@ button:hover {
   background-color: #f2f2f2;
 }
 
-/* Hunter actions */
 .hunter-actions-cell {
   display: flex;
   gap: 10px;
@@ -553,7 +517,6 @@ button:hover {
   transform: scale(1.1);
 }
 
-/* Hunter pagination */
 .hunter-pagination {
   display: flex;
   justify-content: center;
@@ -570,7 +533,6 @@ button:hover {
   font-weight: bold;
 }
 
-/* Hunter modal */
 .hunter-modal .modal-header,
 .hunter-modal .modal-header .modal-title {
   background-color: #004085;
@@ -593,13 +555,11 @@ button:hover {
   border-radius: 4px;
 }
 
-/* Hunter modal inputs */
 .hunter-modal-input,
 .hunter-modal-select {
   margin-bottom: 10px;
 }
 
-/* Hunter view modal */
 .hunter-view-content {
   font-size: 0.95rem;
 }
@@ -613,7 +573,6 @@ button:hover {
   border-radius: 5px;
 }
 
-/* Notification modal styles */
 .hunter-notif-section {
   margin-bottom: 10px;
 }
@@ -679,21 +638,18 @@ button:hover {
   transform: scale(1.1);
 }
 
-/* Jobs Hunter Page */
 .jobs-hunter-wrapper {
   background-color: var(--background-color);
   min-height: 100vh;
   padding-top: 20px;
 }
 
-/* Jobs Hunter Container */
 .jobs-hunter-container {
   max-width: 1200px;
   margin: 0 auto;
   padding: 0 15px;
 }
 
-/* Page Header */
 .page-header .card-header {
   background-color: var(--btn-primary-bg);
   color: #fff;
@@ -701,7 +657,6 @@ button:hover {
   padding: 20px;
 }
 
-/* Job Card */
 .job-card {
   border-radius: 8px;
   overflow: hidden;
@@ -728,8 +683,6 @@ button:hover {
 .row > .col-md-6 {
   padding: 5px 0;
 }
-
-/* Service Management Styles */
 .service-container {
   padding: 20px;
   background-color: var(--background-color);
@@ -791,7 +744,6 @@ button:hover {
   transform: scale(1.1);
 }
 
-/* Service Modals */
 .service-modal .modal-header {
   background-color: #004085;
   color: #fff;
@@ -822,7 +774,6 @@ button:hover {
   padding: 5px;
 }
 
-/* Analytics */
 .analytics-container {
   padding: 20px;
 }
@@ -898,7 +849,6 @@ button:hover {
   border-top: 1px solid #eee;
 }
 
-/* Voucher Styles */
 .voucher-container {
   min-height: 100vh;
   background: linear-gradient(135deg, var(--background-color), #d0d1da);
@@ -995,7 +945,6 @@ button:hover {
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
-/* NavContacts.css */
 .unreadBadge {
   margin-left: 80px;
   background: linear-gradient(45deg, #ff6b6b, #f06595);
@@ -1021,7 +970,6 @@ button:hover {
   }
 }
 
-/* Scrollable list for sent notifications */
 .notification-list {
   max-height: 300px;
   overflow-y: auto;
@@ -1035,7 +983,6 @@ button:hover {
   border-radius: 3px;
 }
 
-/* Wrap the sent-notifications grid */
 .ccard {
   transition: transform 0.15s ease-in-out;
 }
@@ -1043,11 +990,9 @@ button:hover {
   transform: translateY(-4px);
 }
 
-/* Slight background for the notification area */
 .service-card-header + .ccard {
   background-color: #fafafa;
 }
-/* Make the table header stick to the top of the scrollable body */
 .sticky-header {
   position: sticky;
   top: 0;

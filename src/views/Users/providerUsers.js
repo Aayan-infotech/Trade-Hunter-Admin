@@ -285,7 +285,6 @@ const Provider = () => {
       .then(async () => {
         console.log('Message sent:', message)
         setNewChatMessage('')
-        // send notification API
         try {
           await axios.post(
             'http://18.209.91.97:7787/api/pushNotification/adminNotification',
