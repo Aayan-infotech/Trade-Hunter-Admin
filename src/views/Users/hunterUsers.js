@@ -196,7 +196,7 @@ const [totalCount, setTotalCount] = useState(0)
     }
     try {
       await axios.post(
-        `http://18.209.91.97:7787/api/pushNotification/sendAdminNotification/${notifUser._id}`,
+        `http://18.209.91.97:7787/api/pushNotification/send-notification/${notifUser._id}`,
         { title: notifTitle, body: notifBody },
         authHeaders
       )
