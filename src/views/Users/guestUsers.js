@@ -13,7 +13,6 @@ import {
   CTableDataCell,
   CButton,
   CFormInput,
-  CFormSelect,
   CModal,
   CModalHeader,
   CModalTitle,
@@ -42,8 +41,8 @@ const GuestUsers = () => {
 
   const [notifUser, setNotifUser] = useState(null)
   const [showNotifModal, setShowNotifModal] = useState(false)
-  const [notifText, setNotifText] = useState('')
-  const [notifType, setNotifType] = useState('alert')
+  const [notifBody, setNotifBody] = useState('')
+  const [notifTitle, setNotifTitle] = useState('')
   const [notifications, setNotifications] = useState([])
   const [totalCount, setTotalCount] = useState(0)
 
@@ -96,6 +95,8 @@ const GuestUsers = () => {
 
   const handleNotification = (user) => {
     setNotifUser(user)
+    setNotifTitle('')
+    setNotifBody('')
     setShowNotifModal(true)
     fetchNotifications(user._id)
   }
@@ -103,7 +104,7 @@ const GuestUsers = () => {
   const fetchNotifications = async (userId) => {
     try {
       const response = await axios.get(
-        `http://18.209.91.97:7787/api/notification/getAll/provider/${userId}`,
+        `http://18.209.91.97:7787/api/pushNotification/getAdminNotification/${userId}`,
         authHeaders,
       )
       setNotifications(response.data.data || [])
@@ -113,18 +114,19 @@ const GuestUsers = () => {
   }
 
   const handleSendNotification = async () => {
-    if (!notifText.trim()) {
-      alert('Please enter notification text.')
+    if (!notifBody.trim()) {
+      alert('Please enter notification body.')
       return
     }
     try {
       await axios.post(
-        `http://18.209.91.97:7787/api/notification/send/provider/${notifUser._id}`,
-        { type: notifType, text: notifText },
+        `http://18.209.91.97:7787/api/pushNotification/sendAdminNotification/${notifUser._id}`,
+        { title: notifTitle, body: notifBody },
         authHeaders,
       )
       alert('Notification sent successfully!')
-      setNotifText('')
+      setNotifBody('')
+      setNotifTitle('')
       fetchNotifications(notifUser._id)
     } catch (error) {
       console.error('Error sending notification:', error)
@@ -133,7 +135,7 @@ const GuestUsers = () => {
   }
 
   const handleDeleteNotification = async (notifId) => {
-    if (!notifUser || !notifUser._id) {
+    if (!notifUser?._id) {
       alert('Notification user not defined')
       return
     }
@@ -315,55 +317,64 @@ const GuestUsers = () => {
         <CModalHeader className="modal-header-custom">
           <CModalTitle>Send Notification</CModalTitle>
         </CModalHeader>
-        <CModalBody className="modal-body-custom">
-          {notifUser && (
-            <>
-              <div className="mb-3">
-                <label>
-                  <strong>Notification Type</strong>
-                </label>
-                <CFormSelect value={notifType} onChange={(e) => setNotifType(e.target.value)}>
-                  <option value="alert">Alert</option>
-                  <option value="reminder">Reminder</option>
-                  <option value="promotion">Promotion</option>
-                </CFormSelect>
-              </div>
-              <div className="mb-3">
-                <label>
-                  <strong>Notification Text</strong>
-                </label>
-                <CFormInput
-                  type="text"
-                  placeholder="Enter notification text"
-                  value={notifText}
-                  onChange={(e) => setNotifText(e.target.value)}
-                />
-              </div>
-              <hr />
-              <h5>Sent Notifications</h5>
-              {notifications.length === 0 ? (
-                <p>No notifications sent yet.</p>
-              ) : (
-                notifications.map((notif) => (
-                  <div
-                    key={notif._id}
-                    className="d-flex justify-content-between align-items-center border p-2 my-1"
-                  >
-                    <div>
-                      <strong>{notif.type.toUpperCase()}</strong>: {notif.text}
-                    </div>
-                    <span
-                      onClick={() => handleDeleteNotification(notif._id)}
-                      style={{ cursor: 'pointer', color: 'red', fontSize: '1.3rem' }}
-                    >
-                      <CIcon icon={cilTrash} />
-                    </span>
+      <CModalBody className="hunter-modal-body">
+              {notifUser && (
+                <>
+                  <div className="hunter-notif-section mb-3">
+                    <label className="hunter-notif-label">
+                      <strong>Notification Title</strong>
+                    </label>
+                    <CFormInput
+                      type="text"
+                      placeholder="Enter notification title"
+                      value={notifTitle}
+                      onChange={(e) => setNotifTitle(e.target.value)}
+                      className="hunter-notif-input"
+                      title="Enter Notification Title"
+                    />
                   </div>
-                ))
+                  <div className="hunter-notif-section mb-3">
+                    <label className="hunter-notif-label">
+                      <strong>Notification Body</strong>
+                    </label>
+                    <CFormInput
+                      type="text"
+                      placeholder="Enter notification body"
+                      value={notifBody}
+                      onChange={(e) => setNotifBody(e.target.value)}
+                      className="hunter-notif-input"
+                      title="Enter Notification Body"
+                    />
+                  </div>
+                  <div className="hunter-notif-send text-center mb-3" title="Send Notification">
+                    <span onClick={handleSendNotification} className="hunter-notif-send-icon">
+                      <CIcon icon={cilEnvelopeOpen} size="lg" />
+                    </span>
+                    <p className="hunter-notif-send-text">Send</p>
+                  </div>
+                  <hr />
+                  <h5 className="hunter-notif-header">Sent Notifications</h5>
+                  {notifications.length === 0 ? (
+                    <p>No notifications sent yet.</p>
+                  ) : (
+                    notifications.map((notif) => (
+                      <div key={notif._id} className="hunter-notif-item">
+                        <div className="hunter-notif-text">
+                          <strong>{notif.title.toUpperCase()}</strong>: {notif.body}
+                        </div>
+                        <span
+                          onClick={() => handleDeleteNotification(notif._id)}
+                          className="hunter-notif-delete"
+                          title="Delete Notification"
+                        >
+                          <CIcon icon={cilTrash} size="lg" />
+                        </span>
+                      </div>
+                    ))
+                  )}
+                </>
               )}
-            </>
-          )}
-        </CModalBody>
+            </CModalBody>
         <CModalFooter className="modal-footer-custom">
           <CButton color="secondary" onClick={() => setShowNotifModal(false)}>
             Close
