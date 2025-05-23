@@ -23,12 +23,7 @@ import {
   CBadge,
 } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
-import {
-  cilTrash,
-  cilPencil,
-  cilViewColumn,
-  cilSearch,
-} from '@coreui/icons'
+import { cilTrash, cilPencil, cilViewColumn, cilSearch } from '@coreui/icons'
 import '../Users/Usermanagement.css'
 
 const formatDate = (dateObj) => {
@@ -144,8 +139,6 @@ const JobsManagement = () => {
     setShowEditModal(true)
   }
 
-
-
   const handleSaveEditJob = async () => {
     try {
       const updatedJob = {
@@ -240,7 +233,9 @@ const JobsManagement = () => {
                       <CTableDataCell>{job.provider?.businessName}</CTableDataCell>
                       <CTableDataCell>{job.jobLocation?.jobAddressLine}</CTableDataCell>
                       <CTableDataCell>{formatDate(job.createdAt)}</CTableDataCell>
-                      <CTableDataCell>{formatDate(job.updatedAt)}</CTableDataCell>
+                      <CTableDataCell>
+                        {job.completionDate ? formatDate(job.completionDate) : 'Not Completed'}
+                      </CTableDataCell>
                       <CTableDataCell>
                         {Array.isArray(job.businessType)
                           ? job.businessType.join(', ')
@@ -373,6 +368,10 @@ const JobsManagement = () => {
               </p>
               <p>
                 <strong>job Date:</strong> {formatDate(viewJob.date)}
+              </p>
+              <p>
+                <strong>Completion Date:</strong>{' '}
+                {viewJob.completionDate ? formatDate(viewJob.completionDate) : 'Not Completed'}
               </p>
               <p>
                 <strong>Deleted By - Name:</strong> {viewJob.deleteBy?.name}
