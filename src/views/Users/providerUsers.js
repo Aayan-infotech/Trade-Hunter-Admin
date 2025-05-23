@@ -229,47 +229,29 @@ const Provider = () => {
     }
   }
 
-  const handleChat = (user) => {
-    console.log('Chat initiated with:', user)
+    const handleChat = (user) => {
     setChatUser(user)
     setIsChatModalOpen(true)
   }
-
   useEffect(() => {
-    if (chatUser) {
-      const chatChannelId = generateChatId(chatUser._id)
-      const chatMessagesRef = ref(realtimeDb, `chatsAdmin/${chatChannelId}/messages`)
-      console.log(
-        'Subscribing to Firebase chat messages at:',
-        `chatsAdmin/${chatChannelId}/messages`,
-      )
-
-      const unsubscribe = onValue(chatMessagesRef, (snapshot) => {
-        const data = snapshot.val()
-        if (data) {
-          const messagesArray = Object.values(data).sort((a, b) => a.timeStamp - b.timeStamp)
-          console.log('Received messages:', messagesArray)
-          setChatMessages(messagesArray)
-        } else {
-          console.log('No messages found at this channel.')
-          setChatMessages([])
-        }
-      })
-
-      return () => {
-        console.log('Unsubscribing from Firebase chat messages.')
-        unsubscribe()
+    if (!chatUser) return
+    const chatChannelId = generateChatId(chatUser._id)
+    const chatMessagesRef = ref(realtimeDb, `chatsAdmin/${chatChannelId}/messages`)
+    const unsubscribe = onValue(chatMessagesRef, (snapshot) => {
+      const data = snapshot.val()
+      if (data) {
+        const messagesArray = Object.values(data).sort((a, b) => a.timeStamp - b.timeStamp)
+        setChatMessages(messagesArray)
+      } else {
+        setChatMessages([])
       }
-    }
+    })
+    return unsubscribe
   }, [chatUser])
 
   const handleSendChatMessage = () => {
-    if (!newChatMessage.trim()) return
-    if (!chatUser?._id) {
-      console.error('Chat user is not defined.')
-      return
-    }
-
+    const text = newChatMessage.trim()
+    if (!text || !chatUser?._id) return
     const chatChannelId = generateChatId(chatUser._id)
     const chatRef = ref(realtimeDb, `chatsAdmin/${chatChannelId}/messages`)
     const message = {
@@ -277,31 +259,26 @@ const Provider = () => {
       receiverId: chatUser._id,
       receiverName: chatUser.contactName,
       type: 'provider',
-      msg: newChatMessage,
+      msg: text,
       timeStamp: Date.now(),
     }
-
     push(chatRef, message)
       .then(async () => {
-        console.log('Message sent:', message)
         setNewChatMessage('')
         try {
           await axios.post(
-            'http://18.209.91.97:7787/api/pushNotification/adminNotification',
-            {
-              title: 'New message from Support',
-              body: `Go to Support to see Messages`,
-              receiverId: chatUser._id,
-            },
+            `http://18.209.91.97:7787/api/pushNotification/sendAdminNotification/${chatUser._id}`,
+            { title: 'You have a new message from Trade Hunters', body: 'You have a new message from Trade Hunters go to support to view ' },
             authHeaders,
           )
-          console.log('Admin notification sent')
+          console.log('Provider notified via pushNotification API')
         } catch (err) {
-          console.error('Failed to send admin notification', err)
+          console.error('Failed to send provider notification', err)
         }
       })
-      .catch((error) => console.error('Error sending message:', error))
+      .catch((error) => console.error('Error sending chat message:', error))
   }
+
 
   return (
     <CContainer className="hunter-container">
@@ -469,9 +446,9 @@ const Provider = () => {
         <CModalBody className="hunter-modal-body" style={{ maxHeight: '60vh', overflowY: 'auto' }}>
           <CFormInput
             type="text"
-            name="contactName"
+            name="Business Name"
             label="Name"
-            value={editUser?.contactName || ''}
+            value={editUser?.businessName || ''}
             onChange={handleChange}
             className="hunter-modal-input"
           />
