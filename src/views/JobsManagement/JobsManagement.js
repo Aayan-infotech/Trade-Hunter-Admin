@@ -372,6 +372,9 @@ const JobsManagement = () => {
                 <strong>JobPosted Date:</strong> {formatDate(viewJob.createdAt)}
               </p>
               <p>
+                <strong>job Date:</strong> {formatDate(viewJob.date)}
+              </p>
+              <p>
                 <strong>Deleted By - Name:</strong> {viewJob.deleteBy?.name}
               </p>
               <p>
