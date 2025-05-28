@@ -87,7 +87,7 @@ const JobsHuunter = () => {
         <CRow className="g-4">
           {jobData.map((job) => {
             const providerInfo = job.provider
-              ? `${job.provider.contactName || "N/A"}, ${job.provider.email || "N/A"}`
+              ? `${job.provider.businesName || "N/A"}, ${job.provider.email || "N/A"}`
               : "N/A";
 
             const businessTypeStr = Array.isArray(job.businessType)

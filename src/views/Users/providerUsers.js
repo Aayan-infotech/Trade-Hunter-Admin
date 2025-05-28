@@ -257,7 +257,7 @@ const Provider = () => {
     const message = {
       senderId: currentUser,
       receiverId: chatUser._id,
-      receiverName: chatUser.contactName,
+      receiverName: chatUser.businessName,
       type: 'provider',
       msg: text,
       timeStamp: Date.now(),
@@ -569,7 +569,7 @@ const Provider = () => {
                 </div>
               )}
               <p>
-                <strong>Name:</strong> {viewUser.contactName}
+                <strong>Name:</strong> {viewUser.businessName}
               </p>
               <p>
                 <strong>Email:</strong> {viewUser.email}
@@ -725,7 +725,7 @@ const Provider = () => {
         className="hunter-modal"
       >
         <CModalHeader onClose={() => setIsChatModalOpen(false)}>
-          <CModalTitle>Chat with {chatUser?.contactName}</CModalTitle>
+          <CModalTitle>Chat with {chatUser?.businessName}</CModalTitle>
         </CModalHeader>
         <div style={{ display: 'flex', flexDirection: 'column', height: '400px' }}>
           <div style={{ flex: 1, overflowY: 'auto', padding: '20px' }}>
