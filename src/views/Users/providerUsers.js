@@ -685,7 +685,7 @@ const Provider = () => {
                 <p className="hunter-notif-send-text">Send</p>
               </div>
               <hr />
-              <h5 className="hunter-notif-header">Sent Notifications</h5>
+              <h5 className="hunter-notif-header">Notifications</h5>
               {notifications.length === 0 ? (
                 <p>No notifications sent yet.</p>
               ) : (
