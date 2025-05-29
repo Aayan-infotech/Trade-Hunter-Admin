@@ -81,6 +81,11 @@ const _nav = [
         name: "Revenue Insights",
         to: '/payments',
       },
+      {
+        component: CNavItem,
+        name: "Users Per Plan",
+        to: '/usersCount',
+      },
     ],
   },
   {

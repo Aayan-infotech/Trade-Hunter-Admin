@@ -177,7 +177,7 @@ const AnalyticsReports = () => {
       completionCount: provider.jobCompleteCount,
       responseTime: provider.responseTime || "2 hrs",
       avgRating: provider.avgRating,
-      name: provider.name || provider.contactName,
+      name: provider.name || provider.businessName,
     });
 
     axios
@@ -420,7 +420,7 @@ const AnalyticsReports = () => {
                 onClick={() => handleProviderClick(provider)}
               >
                 <div>
-                  <strong>{provider.contactName}</strong>
+                  <strong>{provider.businessName}</strong>
                   <br />
                   <span>{provider.email}</span>
                 </div>
@@ -433,7 +433,7 @@ const AnalyticsReports = () => {
             <CCard className="mt-3 provider-stats-card">
               <CCardHeader className="service-card-header">
                 Provider Stats:{" "}
-                {selectedProvider.name || selectedProvider.contactName}
+                {selectedProvider.name || selectedProvider.businessName}
               </CCardHeader>
               <CCardBody style={{ height: "200px" }}>
                 {providerStatsChartData && providerStatsChartOptions && (

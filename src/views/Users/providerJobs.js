@@ -127,7 +127,7 @@ const ProviderAssignedJobs = () => {
                     </div>
                     <div className="mb-3">
                       <CCardTitle className="small text-muted">Assigned By</CCardTitle>
-                      <CCardText>{job.user ? job.user.name || job.user.contactName : "N/A"}</CCardText>
+                      <CCardText>{job.user ? job.user.name || job.user.businessName : "N/A"}</CCardText>
                     </div>
                     <div>
                       <CCardTitle className="small text-muted">User Email</CCardTitle>

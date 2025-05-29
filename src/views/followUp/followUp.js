@@ -124,6 +124,7 @@ const FollowUp = () => {
 
                   <CTableRow>
                     <CTableHeaderCell>Name</CTableHeaderCell>
+                    <CTableHeaderCell>UserType</CTableHeaderCell>
                     <CTableHeaderCell>Email</CTableHeaderCell>
                     <CTableHeaderCell>Message</CTableHeaderCell>
                     <CTableHeaderCell>Date</CTableHeaderCell>
@@ -135,6 +136,7 @@ const FollowUp = () => {
                     contacts.map((contact) => (
                       <CTableRow key={contact._id}>
                         <CTableDataCell>{contact.name}</CTableDataCell>
+                        <CTableDataCell>{contact.userType}</CTableDataCell>
                         <CTableDataCell>{contact.email}</CTableDataCell>
                         <CTableDataCell>{contact.message}</CTableDataCell>
                         <CTableDataCell>{formatDate(contact.createdAt)}</CTableDataCell>

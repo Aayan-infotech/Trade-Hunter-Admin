@@ -141,8 +141,8 @@ const VoucherUsers = () => {
                   {voucherUsers.length > 0 ? (
                     voucherUsers.map((v) => (
                       <CTableRow key={v._id}>
-                        <CTableDataCell>{v.userId?.businessName || "N/A"}</CTableDataCell>
-                        <CTableDataCell>{v.userId?.email || "N/A"}</CTableDataCell>
+                        <CTableDataCell>{v.userId?.businessName || "User Deleted"}</CTableDataCell>
+                        <CTableDataCell>{v.userId?.email || "User Deleted"}</CTableDataCell>
                         <CTableDataCell>{v.code}</CTableDataCell>
                         <CTableDataCell>{formatDateToAEST(v.startDate)}</CTableDataCell>
                         <CTableDataCell>{formatDateToAEST(v.endDate)}</CTableDataCell>

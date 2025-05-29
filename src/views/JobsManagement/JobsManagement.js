@@ -78,7 +78,7 @@ const JobsManagement = () => {
       let response
       if (jobStatusFilter !== 'All') {
         response = await axios.get(
-          `http://18.209.91.97:7787/api/jobs/filter?status=${jobStatusFilter}&page=${page}&limit=10`,
+          `http://18.209.91.97:7787/api/jobs/?status=${jobStatusFilter}&page=${page}&limit=10`,
           commonConfig,
         )
       } else {

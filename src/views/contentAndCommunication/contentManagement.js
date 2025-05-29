@@ -21,7 +21,7 @@ const ContentAndCommunicationManagement = () => {
   const [activeModule, setActiveModule] = useState('Static Content');
   const [activeSection, setActiveSection] = useState('About Us');
   const [contentData, setContentData] = useState({
-    "About Us": "", "Terms & Conditions": "", "Privacy Policy": "Guide"
+    "About Us": "", "Terms & Conditions": "", "Privacy Policy": "", "Guide": ""
   });
 
   const [notificationRecipient, setNotificationRecipient] = useState('');
@@ -29,6 +29,7 @@ const ContentAndCommunicationManagement = () => {
   const [notificationMessage, setNotificationMessage] = useState('');
   const [allNotifications, setAllNotifications] = useState([]);
   const [error, setError] = useState(null);
+  const [filterType, setFilterType] = useState('all');
 
   const commonConfig = {
     headers: {
@@ -153,6 +154,10 @@ const ContentAndCommunicationManagement = () => {
     { name: "Guide", icon: faInfoCircle, color: "info" },
   ];
 
+  const filteredNotifications = filterType === 'all'
+    ? allNotifications
+    : allNotifications.filter(n => n.userType === filterType);
+
   return (
     <CContainer fluid className="mt-4">
       <CHeader className="service-card-header">
@@ -253,12 +258,33 @@ const ContentAndCommunicationManagement = () => {
               Send Notification
             </CButton>
 
+            {/* Filter Buttons Below Send */}
+            <div className="mt-3">
+              <CButton
+                size="sm"
+                color={filterType === 'all' ? 'light' : 'secondary'}
+                onClick={() => setFilterType('all')}
+                className="me-2"
+              >All</CButton>
+              <CButton
+                size="sm"
+                color={filterType === 'hunter' ? 'primary' : 'secondary'}
+                onClick={() => setFilterType('hunter')}
+                className="me-2"
+              >Hunters</CButton>
+              <CButton
+                size="sm"
+                color={filterType === 'provider' ? 'success' : 'secondary'}
+                onClick={() => setFilterType('provider')}
+              >Providers</CButton>
+            </div>
+
             <div className="mt-5">
               <h5 className="mb-3">Sent Notifications</h5>
               <CRow xs={{ cols: 1, md: 2, lg: 3 }} className="g-3">
-                {allNotifications.length === 0
-                  ? <p className="text-muted">No notifications sent yet.</p>
-                  : allNotifications.map((n) => (
+                {filteredNotifications.length === 0
+                  ? <p className="text-muted">No notifications found.</p>
+                  : filteredNotifications.map((n) => (
                     <CCol key={n._id}>
                       <CCard className="h-100 shadow-sm">
                         <CCardHeader className="service-card-header d-flex justify-content-between align-items-center">
@@ -276,8 +302,8 @@ const ContentAndCommunicationManagement = () => {
                           />
                         </CCardHeader>
                         <CCardBody>
-                          <h6>{n.title}</h6>
-                          <p className="mb-2">{n.body}</p>
+                          <h6>{n.title || n.subject}</h6>
+                          <p className="mb-2">{n.body || n.message}</p>
                           <small className="text-muted">
                             {formatDateToAEST(n.createdAt)}
                           </small>

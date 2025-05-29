@@ -22,6 +22,7 @@ const blogsManagement = React.lazy(() => import('./views/blogsManagement/blogsMa
 const ratingsManagement = React.lazy(() => import('./views/reviewAndRatings/ratings.js'))
 const allFeedbacks = React.lazy(() => import('./views/reviewAndRatings/allFeedbacks.js'))
 const voucherUsers = React.lazy(() => import('./views/subscriptions/VoucherUsers.js'))
+const usersCount = React.lazy(() => import('./views/subscriptions/SubcriptionCount.js'))
 
 
 
@@ -47,6 +48,7 @@ const routes = [
   { path: '/ratingsManagement', name: 'Ratings Management', element: ratingsManagement },
   {path: '/allFeedbacks', name: 'All Feedbacks', element: allFeedbacks},
   {path: '/voucherUsers', name: 'Voucher Users', element: voucherUsers},
+  {path: '/usersCount', name: 'Users Count', element: usersCount}
 
 ]
 

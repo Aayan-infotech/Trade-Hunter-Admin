@@ -257,7 +257,7 @@ const Provider = () => {
     const message = {
       senderId: currentUser,
       receiverId: chatUser._id,
-      receiverName: chatUser.contactName,
+      receiverName: chatUser.businessName,
       type: 'provider',
       msg: text,
       timeStamp: Date.now(),
@@ -401,7 +401,7 @@ const Provider = () => {
                         <span
                           onClick={() => handleAssignedJobs(user._id)}
                           className="hunter-action-icon"
-                          title="delete user"
+                          title="Assigned jobs"
                         >
                           <CIcon icon={cilBriefcase} size="lg" />
                         </span>
@@ -569,7 +569,7 @@ const Provider = () => {
                 </div>
               )}
               <p>
-                <strong>Name:</strong> {viewUser.contactName}
+                <strong>Name:</strong> {viewUser.businessName}
               </p>
               <p>
                 <strong>Email:</strong> {viewUser.email}
@@ -685,7 +685,7 @@ const Provider = () => {
                 <p className="hunter-notif-send-text">Send</p>
               </div>
               <hr />
-              <h5 className="hunter-notif-header">Sent Notifications</h5>
+              <h5 className="hunter-notif-header">Notifications</h5>
               {notifications.length === 0 ? (
                 <p>No notifications sent yet.</p>
               ) : (
@@ -725,7 +725,7 @@ const Provider = () => {
         className="hunter-modal"
       >
         <CModalHeader onClose={() => setIsChatModalOpen(false)}>
-          <CModalTitle>Chat with {chatUser?.contactName}</CModalTitle>
+          <CModalTitle>Chat with {chatUser?.businessName}</CModalTitle>
         </CModalHeader>
         <div style={{ display: 'flex', flexDirection: 'column', height: '400px' }}>
           <div style={{ flex: 1, overflowY: 'auto', padding: '20px' }}>
