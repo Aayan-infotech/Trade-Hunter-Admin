@@ -474,52 +474,51 @@ const SubscriptionManagement = () => {
 
       {/* View Subscription Modal */}
       <CModal scrollable visible={showViewModal} onClose={() => setShowViewModal(false)}>
-        <CModalHeader className="service-card-header">
-          <CModalTitle>Subscription Details</CModalTitle>
-        </CModalHeader>
-        <CModalBody>
-          {viewSubscription && (
-            <CListGroup>
-              <CListGroupItem>
-                <strong>Plan Name: </strong>
-                {viewSubscription.planName}
-              </CListGroupItem>
-              <CListGroupItem>
-                <strong>Amount: </strong>
-                {viewSubscription.amount}
-              </CListGroupItem>
-              <CListGroupItem>
-                <strong>Validity (days): </strong>
-                {viewSubscription.validity}
-              </CListGroupItem>
-              <CListGroupItem>
-                <strong>Description: </strong>
-                <div dangerouslySetInnerHTML={{ __html: viewSubscription.description }} />
-              </CListGroupItem>
-              <CListGroupItem>
-                <strong>Radius: </strong>
-                {viewSubscription.kmRadius}
-              </CListGroupItem>
-              <CListGroupItem>
-                <strong>Subscription Type: </strong>
-                {viewSubscription.type}
-              </CListGroupItem>
-              {subscriptionTypes.find((t) => t._id === viewSubscription.type)?.type ===
-                'Pay Per Lead' && (
-                <CListGroupItem>
-                  <strong>Lead Count: </strong>
-                  {viewSubscription.leadCount}
-                </CListGroupItem>
-              )}
-            </CListGroup>
-          )}
-        </CModalBody>
-        <CModalFooter>
-          <CButton color="secondary" onClick={() => setShowViewModal(false)}>
-            Close
-          </CButton>
-        </CModalFooter>
-      </CModal>
+  <CModalHeader className="service-card-header">
+    <CModalTitle>Subscription Details</CModalTitle>
+  </CModalHeader>
+  <CModalBody>
+    {viewSubscription && (
+      <CListGroup>
+        <CListGroupItem>
+          <strong>Plan Name: </strong>
+          {viewSubscription.planName}
+        </CListGroupItem>
+        <CListGroupItem>
+          <strong>Amount: </strong>
+          {viewSubscription.amount}
+        </CListGroupItem>
+        <CListGroupItem>
+          <strong>Validity (days): </strong>
+          {viewSubscription.validity}
+        </CListGroupItem>
+        <CListGroupItem>
+          <strong>Description: </strong>
+          <div dangerouslySetInnerHTML={{ __html: viewSubscription.description }} />
+        </CListGroupItem>
+        <CListGroupItem>
+          <strong>Radius: </strong>
+          {viewSubscription.kmRadius}
+        </CListGroupItem>
+        <CListGroupItem>
+          <strong>Subscription Type: </strong>
+          {viewSubscription.type}
+        </CListGroupItem>
+        {/* Always show Lead Count */}
+        <CListGroupItem>
+          <strong>Lead Count: </strong>
+          {viewSubscription.leadCount ?? 'N/A'}
+        </CListGroupItem>
+      </CListGroup>
+    )}
+  </CModalBody>
+  <CModalFooter>
+    <CButton color="secondary" onClick={() => setShowViewModal(false)}>
+      Close
+    </CButton>
+  </CModalFooter>
+</CModal>
+
 
       {/* Add Subscription Type Modal */}
       <CModal scrollable visible={showAddTypeModal} onClose={() => setShowAddTypeModal(false)}>
