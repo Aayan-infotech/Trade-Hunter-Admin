@@ -55,9 +55,7 @@ const SubscriptionUsersManagement = () => {
     setError(null)
     try {
       const res = await axios.get(
-        `http://18.209.91.97:7787/api/SubscriptionNew/subscription-users?page=${page}&limit=${limit}&search=${encodeURIComponent(
-          search,
-        )}`,
+        `http://18.209.91.97:7787/api/SubscriptionNew/subscription-users`,
         commonConfig,
       )
       const data = res.data.data || []

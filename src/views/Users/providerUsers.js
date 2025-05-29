@@ -401,7 +401,7 @@ const Provider = () => {
                         <span
                           onClick={() => handleAssignedJobs(user._id)}
                           className="hunter-action-icon"
-                          title="delete user"
+                          title="Assigned jobs"
                         >
                           <CIcon icon={cilBriefcase} size="lg" />
                         </span>
