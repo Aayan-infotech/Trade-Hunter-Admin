@@ -30,6 +30,14 @@ const Contact = () => {
   const [limit, setLimit] = useState(10)
   const adminId = localStorage.getItem("adminId") || "aayaninfotech@gmail.com"
 
+  // Helper to truncate previews to first 2 words + "..."
+  const truncate = (text) => {
+    const words = text.split(/\s+/)
+    return words.length > 2
+      ? words.slice(0, 2).join(' ') + '...'
+      : text
+  }
+
   // 1) Load recent chats
   useEffect(() => {
     if (!adminId) return
@@ -95,11 +103,10 @@ const Contact = () => {
     }, { onlyOnce: true })
   }
 
-  // 4) Send message + push-notification (every click, always clears input)
+  // 4) Send message + push-notification (always clears input)
   const handleSend = async () => {
     if (!chatId || !text.trim()) return
 
-    // grab the text locally so we can clear immediately
     const messageText = text.trim()
     setText("")
 
@@ -117,12 +124,11 @@ const Contact = () => {
       })
 
       // b) Send admin notification
-      const notifTitle = `New message from Trade Hunters`
+      const notifTitle = `New message from Admin`
       const notifBody  = messageText + "  from Trade Hunters"
       const url = `http://18.209.91.97:7787/api/pushNotification/sendAdminNotification/${receiverId}`
       await axios.post(url, { title: notifTitle, body: notifBody })
       console.log("Notification sent to", receiverId)
-
     } catch (err) {
       console.error("Error sending message or notification:", err)
     }
@@ -180,7 +186,7 @@ const Contact = () => {
                         </span>
                       )}
                       <p className="mb-0 text-muted" style={{ fontSize: '10px' }}>
-                        {chat.lastMessage}
+                        {truncate(chat.lastMessage)}
                       </p>
                     </div>
                     <FaTrash
