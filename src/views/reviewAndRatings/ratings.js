@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react'
+import axios from 'axios'
+import { useNavigate } from 'react-router-dom'
 import {
   CContainer,
   CCard,
@@ -14,62 +14,62 @@ import {
   CTableDataCell,
   CFormInput,
   CButton,
-} from '@coreui/react';
-import CIcon from '@coreui/icons-react';
-import { cilSearch, cilViewColumn } from '@coreui/icons';
+} from '@coreui/react'
+import CIcon from '@coreui/icons-react'
+import { cilSearch, cilViewColumn } from '@coreui/icons'
 
 const ProviderRatings = () => {
-  const [providers, setProviders] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [search, setSearch] = useState('');
-  const [avgRating, setAvgRating] = useState('');
-  const navigate = useNavigate();
+  const [providers, setProviders] = useState([])
+  const [loading, setLoading] = useState(false)
+  const [search, setSearch] = useState('')
+  const [avgRating, setAvgRating] = useState('')
+  const navigate = useNavigate()
 
-  const token = localStorage.getItem('token');
+  const token = localStorage.getItem('token')
   const authHeaders = {
     headers: {
       Authorization: `Bearer ${token}`,
       'Content-Type': 'application/json',
     },
-  };
+  }
 
   const fetchProviders = async () => {
-    setLoading(true);
+    setLoading(true)
     try {
-      const params = new URLSearchParams();
-      if (search) params.append('search', search);
-      if (avgRating !== '') params.append('avgRating', avgRating);
+      const params = new URLSearchParams()
+      if (search) params.append('search', search)
+      if (avgRating !== '') params.append('avgRating', avgRating)
 
-      const url = `http://18.209.91.97:7787/api/rating/getAllProviderRatings?${params.toString()}`;
-      const { data } = await axios.get(url, authHeaders);
-      setProviders(data.data || []);
+      const url = `http://18.209.91.97:7787/api/rating/getAllProviderRatings?${params.toString()}`
+      const { data } = await axios.get(url, authHeaders)
+      setProviders(data.data || [])
     } catch (err) {
-      console.error(err);
+      console.error(err)
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
-  };
+  }
 
   useEffect(() => {
-    fetchProviders();
-  }, [search, avgRating]);
+    fetchProviders()
+  }, [search, avgRating])
 
-  const handleSearchChange = (e) => setSearch(e.target.value);
+  const handleSearchChange = (e) => setSearch(e.target.value)
   const handleRatingChange = (e) => {
-    const value = e.target.value;
+    const value = e.target.value
     if (value === '' || /^\d*(\.\d*)?$/.test(value)) {
-      setAvgRating(value);
+      setAvgRating(value)
     }
-  };
+  }
 
   const handleAction = (provider) => {
-    navigate('/allFeedbacks', { state: { provider } });
-  };
+    navigate('/allFeedbacks', { state: { provider } })
+  }
 
   const renderStars = (rating) => {
-    const fullStars = Math.round(rating);
-    return '★'.repeat(fullStars) + '☆'.repeat(5 - fullStars);
-  };
+    const fullStars = Math.round(rating)
+    return '★'.repeat(fullStars) + '☆'.repeat(5 - fullStars)
+  }
 
   return (
     <CContainer>
@@ -115,7 +115,9 @@ const ProviderRatings = () => {
               <CTableBody>
                 {providers.map((prov, idx) => (
                   <CTableRow key={prov.providerId || prov._id}>
-                    <CTableDataCell>{idx + 1}</CTableDataCell>
+                    {/* reverse index: total – current index */}
+                    <CTableDataCell>{providers.length - idx}</CTableDataCell>
+
                     <CTableDataCell>{prov.businessName}</CTableDataCell>
                     <CTableDataCell>{prov.email}</CTableDataCell>
                     <CTableDataCell>{renderStars(prov.avgRating)}</CTableDataCell>
@@ -132,7 +134,7 @@ const ProviderRatings = () => {
         </CCardBody>
       </CCard>
     </CContainer>
-  );
-};
+  )
+}
 
-export default ProviderRatings;
+export default ProviderRatings
