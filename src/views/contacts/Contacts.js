@@ -95,9 +95,13 @@ const Contact = () => {
     }, { onlyOnce: true })
   }
 
-  // 4) Send message + push-notification
+  // 4) Send message + push-notification (every click, always clears input)
   const handleSend = async () => {
     if (!chatId || !text.trim()) return
+
+    // grab the text locally so we can clear immediately
+    const messageText = text.trim()
+    setText("")
 
     try {
       // a) Write to Firebase
@@ -106,22 +110,19 @@ const Contact = () => {
       await set(newRef, {
         senderId: adminId,
         receiverId,
-        msg: text,
+        msg: messageText,
         timeStamp: Date.now(),
         type: "text",
         read: false,
       })
 
       // b) Send admin notification
-      const notifTitle = `New message from Admin`
-      const notifBody  = text
+      const notifTitle = `New message from Trade Hunters`
+      const notifBody  = messageText
       const url = `http://18.209.91.97:7787/api/pushNotification/sendAdminNotification/${receiverId}`
-      await axios.post(url, {
-        title: notifTitle,
-        body:  notifBody,
-      })
+      await axios.post(url, { title: notifTitle, body: notifBody })
+      console.log("Notification sent to", receiverId)
 
-      setText("")
     } catch (err) {
       console.error("Error sending message or notification:", err)
     }
