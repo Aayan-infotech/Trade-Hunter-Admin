@@ -132,7 +132,7 @@ const [totalCount, setTotalCount] = useState(0)
     if (window.confirm('Are you sure you want to delete this user?')) {
       try {
         await axios.delete(
-          `http://18.209.91.97:7787/api/DeleteAccount/delete/${id}`,
+          `http://18.209.91.97:7787/api/DeleteAccount/hunter/${id}`,
           authHeaders
         )
         fetchUsers()
