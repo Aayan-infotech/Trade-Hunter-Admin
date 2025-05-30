@@ -1,5 +1,9 @@
-import { ref, push, set, onValue, query, orderByChild, limitToLast, remove, update } from "firebase/database";
-import React, { useEffect, useState } from 'react';
+import { 
+  ref, push, set, onValue, query, orderByChild, 
+  limitToLast, remove, update 
+} from "firebase/database"
+import React, { useEffect, useState } from 'react'
+import axios from 'axios'
 import {
   CContainer,
   CCard,
@@ -11,177 +15,179 @@ import {
   CButton,
   CListGroup,
   CListGroupItem,
-} from '@coreui/react';
-import { FaTrash } from 'react-icons/fa';
-import '../Users/Usermanagement.css';
-import { realtimeDb } from "../chat/firestore";
+} from '@coreui/react'
+import { FaTrash } from 'react-icons/fa'
+import '../Users/Usermanagement.css'
+import { realtimeDb } from "../chat/firestore"
 
 const Contact = () => {
-  const [recentChats, setRecentChats] = useState([]);
-  const [selectedChat, setSelectedChat] = useState(null);
-  const [messages, setMessages] = useState([]);
-  const [text, setText] = useState("");
-  const [chatId, setChatId] = useState("");
-  const [receiverId, setReceiverId] = useState("");
-  const [limit, setLimit] = useState(10);
-  const adminId = localStorage.getItem("adminId") || "aayaninfotech@gmail.com";
+  const [recentChats, setRecentChats] = useState([])
+  const [selectedChat, setSelectedChat] = useState(null)
+  const [messages, setMessages] = useState([])
+  const [text, setText] = useState("")
+  const [chatId, setChatId] = useState("")
+  const [receiverId, setReceiverId] = useState("")
+  const [limit, setLimit] = useState(10)
+  const adminId = localStorage.getItem("adminId") || "aayaninfotech@gmail.com"
 
+  // 1) Load recent chats
   useEffect(() => {
-    if (!adminId) return;
-    const chatsRef = ref(realtimeDb, "chatsAdmin");
-    const chatsQuery = query(chatsRef, orderByChild("lastMessageTime"), limitToLast(limit));
+    if (!adminId) return
+    const chatsRef = ref(realtimeDb, "chatsAdmin")
+    const chatsQuery = query(
+      chatsRef,
+      orderByChild("lastMessageTime"),
+      limitToLast(limit),
+    )
     const unsubscribe = onValue(chatsQuery, (snapshot) => {
-      const data = snapshot.val();
-      if (data) {
-        const chatsArray = [];
-        Object.entries(data).forEach(([channelId, channelData]) => {
-          if (channelId.includes(adminId)) {
-            const messagesObj = channelData.messages || {};
-            const messagesArray = Object.values(messagesObj);
-            messagesArray.sort((a, b) => a.timeStamp - b.timeStamp);
-            const unreadCount = messagesArray.filter(
-              msg => msg.senderId !== adminId && (msg.read === false || msg.read === undefined)
-            ).length;
-            const lastMessage = messagesArray.length
-              ? messagesArray[messagesArray.length - 1].msg
-              : "";
-            const lastMessageTime = messagesArray.length
-              ? messagesArray[messagesArray.length - 1].timeStamp
-              : 0;
-            const firstMessage = Object.values(messagesObj)[0];
-            chatsArray.push({
-              id: channelId,
-              name: firstMessage ? (firstMessage.name || firstMessage.receiverName) : "Unknown",
-              type: firstMessage ? (firstMessage.type || firstMessage.userType) : "Unknown",
-              lastMessage,
-              lastMessageTime,
-              unreadCount,
-              isRead: unreadCount === 0,
-            });
+      const data = snapshot.val() || {}
+      const chatsArray = Object.entries(data)
+        .filter(([channelId]) => channelId.includes(adminId))
+        .map(([channelId, channelData]) => {
+          const msgs = channelData.messages || {}
+          const arr = Object.values(msgs).sort((a, b) => a.timeStamp - b.timeStamp)
+          const last = arr[arr.length - 1] || {}
+          const first = arr[0] || {}
+          const unreadCount = arr.filter(m => m.senderId !== adminId && !m.read).length
+          return {
+            id: channelId,
+            name: first.name || first.receiverName || "Unknown",
+            type: first.type || first.userType || "Unknown",
+            lastMessage: last.msg || "",
+            lastMessageTime: last.timeStamp || 0,
+            unreadCount,
           }
-        });
-        chatsArray.sort((a, b) => b.lastMessageTime - a.lastMessageTime);
-        setRecentChats(chatsArray);
-      } else {
-        setRecentChats([]);
-      }
-    });
-    return () => unsubscribe();
-  }, [adminId, limit]);
+        })
+      chatsArray.sort((a, b) => b.lastMessageTime - a.lastMessageTime)
+      setRecentChats(chatsArray)
+    })
+    return () => unsubscribe()
+  }, [adminId, limit])
 
+  // 2) Load messages when a chat is selected
   useEffect(() => {
-    if (!chatId) return;
-    const chatMessagesRef = ref(realtimeDb, `chatsAdmin/${chatId}/messages`);
-    const unsubscribe = onValue(chatMessagesRef, (snapshot) => {
-      const data = snapshot.val();
-      if (data) {
-        const messagesArray = Object.values(data).sort((a, b) => a.timeStamp - b.timeStamp);
-        setMessages(messagesArray);
-      } else {
-        setMessages([]);
-      }
-    });
-    return () => unsubscribe();
-  }, [chatId]);
+    if (!chatId) return
+    const msgsRef = ref(realtimeDb, `chatsAdmin/${chatId}/messages`)
+    const unsubscribe = onValue(msgsRef, snap => {
+      const data = snap.val() || {}
+      const arr = Object.values(data).sort((a, b) => a.timeStamp - b.timeStamp)
+      setMessages(arr)
+    })
+    return () => unsubscribe()
+  }, [chatId])
 
+  // 3) Open chat & mark unread as read
   const openChatPanel = (chat) => {
-    setSelectedChat(chat);
-    setChatId(chat.id);
-    const participants = chat.id.split('_chat_');
-    const otherId = participants.find((id) => id !== adminId);
-    setReceiverId(otherId);
-    const chatMessagesRef = ref(realtimeDb, `chatsAdmin/${chat.id}/messages`);
-    onValue(chatMessagesRef, (snapshot) => {
-      snapshot.forEach(childSnapshot => {
-        const msg = childSnapshot.val();
-        if (msg.senderId !== adminId && (msg.read === false || msg.read === undefined)) {
-          update(childSnapshot.ref, { read: true });
-        }
-      });
-    }, { onlyOnce: true });
-  };
+    setSelectedChat(chat)
+    setChatId(chat.id)
+    const [a, b] = chat.id.split('_chat_')
+    const other = a === adminId ? b : a
+    setReceiverId(other)
 
+    const msgsRef = ref(realtimeDb, `chatsAdmin/${chat.id}/messages`)
+    onValue(msgsRef, snap => {
+      snap.forEach(child => {
+        const m = child.val()
+        if (m.senderId !== adminId && !m.read) {
+          update(child.ref, { read: true })
+        }
+      })
+    }, { onlyOnce: true })
+  }
+
+  // 4) Send message + push-notification
   const handleSend = async () => {
-    if (text.trim() === "" || !chatId) return;
+    if (!chatId || !text.trim()) return
+
     try {
-      const chatMessagesRef = ref(realtimeDb, `chatsAdmin/${chatId}/messages`);
-      const newMessageRef = push(chatMessagesRef);
-      await set(newMessageRef, {
+      // a) Write to Firebase
+      const msgsRef = ref(realtimeDb, `chatsAdmin/${chatId}/messages`)
+      const newRef = push(msgsRef)
+      await set(newRef, {
         senderId: adminId,
-        receiverId: receiverId,
+        receiverId,
         msg: text,
         timeStamp: Date.now(),
         type: "text",
-        read: false, 
-      });
-      setText("");
-    } catch (err) {
-      console.log("Error sending message:", err);
-    }
-  };
+        read: false,
+      })
 
-  const handleDeleteChat = async (chatIdToDelete, e) => {
-    e.stopPropagation();
-    const confirmed = window.confirm("Are you sure you want to delete this entire chat?");
-    if (confirmed) {
-      try {
-        await remove(ref(realtimeDb, `chatsAdmin/${chatIdToDelete}`));
-        window.alert("Chat deleted successfully!");
-      } catch (error) {
-        console.error("Error deleting chat:", error);
-        window.alert("Error deleting chat. Please try again.");
-      }
+      // b) Send admin notification
+      const notifTitle = `New message from Admin`
+      const notifBody  = text
+      const url = `http://18.209.91.97:7787/api/pushNotification/sendAdminNotification/${receiverId}`
+      await axios.post(url, {
+        title: notifTitle,
+        body:  notifBody,
+      })
+
+      setText("")
+    } catch (err) {
+      console.error("Error sending message or notification:", err)
     }
-  };
+  }
+
+  // 5) Delete a chat
+  const handleDeleteChat = async (id, e) => {
+    e.stopPropagation()
+    if (!window.confirm("Are you sure you want to delete this chat?")) return
+    try {
+      await remove(ref(realtimeDb, `chatsAdmin/${id}`))
+      if (id === chatId) {
+        setSelectedChat(null)
+        setChatId("")
+        setMessages([])
+      }
+      window.alert("Chat deleted successfully!")
+    } catch (err) {
+      console.error("Error deleting chat:", err)
+      window.alert("Failed to delete chat.")
+    }
+  }
 
   return (
-    <CContainer fluid className="contact-module-container" style={{ padding: '20px' }}>
+    <CContainer fluid style={{ padding: '20px' }}>
       <CRow>
+        {/* Recent Chats List */}
         <CCol md={3} style={{ borderRight: '1px solid var(--table-border-color)', maxHeight: '80vh', overflowY: 'auto' }}>
           <CCard className="recent-chats-card">
             <CCardHeader className="service-card-header">Recent Chats</CCardHeader>
             <CCardBody>
               <CListGroup>
-                {recentChats.length > 0 ? (
-                  recentChats.map(chat => {
-                    const itemBg = chat.unreadCount > 0 ? 'var(--unread-bg)' : 'var(--container-bg)';
-                    return (
-                      <CListGroupItem
-                        key={chat.id}
-                        className="d-flex justify-content-between align-items-center"
-                        style={{ cursor: 'pointer', backgroundColor: itemBg, borderColor: 'var(--table-border-color)' }}
-                        onClick={() => openChatPanel(chat)}
-                      >
-                        <div>
-                          <div style={{ fontSize: 'small', width: '100%' }}>
-                            <span style={{ fontWeight: 'bold' }}>{chat.name}</span> <code>({chat.type})</code>
-                            {chat.unreadCount > 0 && (
-                              <span style={{
-                                backgroundColor: '#d9534f',
-                                color: '#fff',
-                                borderRadius: '50%',
-                                padding: '2px 6px',
-                                marginLeft: '8px',
-                                fontSize: '10px',
-                              }}>
-                                {chat.unreadCount}
-                              </span>
-                            )}
-                          </div>
-                          <p className="mb-0 text-muted" style={{ fontSize: '10px' }}>{chat.lastMessage}</p>
-                        </div>
-                        <span 
-                          onClick={(e) => handleDeleteChat(chat.id, e)} 
-                          style={{ cursor: 'pointer', color: 'var(--primary-text-color)' }}
-                        >
-                          <FaTrash />
+                {recentChats.length ? recentChats.map(chat => (
+                  <CListGroupItem
+                    key={chat.id}
+                    className="d-flex justify-content-between align-items-center"
+                    style={{
+                      cursor: 'pointer',
+                      backgroundColor: chat.unreadCount ? 'var(--unread-bg)' : 'var(--container-bg)'
+                    }}
+                    onClick={() => openChatPanel(chat)}
+                  >
+                    <div>
+                      <strong>{chat.name}</strong> <small>({chat.type})</small>
+                      {chat.unreadCount > 0 && (
+                        <span style={{
+                          backgroundColor: '#d9534f',
+                          color: '#fff',
+                          borderRadius: '50%',
+                          padding: '2px 6px',
+                          marginLeft: '8px',
+                          fontSize: '10px',
+                        }}>
+                          {chat.unreadCount}
                         </span>
-                      </CListGroupItem>
-                    );
-                  })
-                ) : (
-                  <p>No chats available.</p>
-                )}
+                      )}
+                      <p className="mb-0 text-muted" style={{ fontSize: '10px' }}>
+                        {chat.lastMessage}
+                      </p>
+                    </div>
+                    <FaTrash
+                      style={{ cursor: 'pointer', color: 'var(--primary-text-color)' }}
+                      onClick={(e) => handleDeleteChat(chat.id, e)}
+                    />
+                  </CListGroupItem>
+                )) : <p>No chats available.</p>}
               </CListGroup>
               {recentChats.length === limit && (
                 <div className="text-center mt-3">
@@ -194,6 +200,7 @@ const Contact = () => {
           </CCard>
         </CCol>
 
+        {/* Chat Panel */}
         <CCol md={9}>
           <CCard
             className="chat-panel-card"
@@ -210,22 +217,14 @@ const Contact = () => {
               backgroundColor: 'var(--container-bg)',
             }}
           >
-            <CCardHeader 
-              style={{ 
-                backgroundColor: 'var(--table-header-bg)', 
-                fontWeight: 'bold', 
-                borderBottom: '1px solid var(--table-border-color)' 
-              }}
-            >
+            <CCardHeader style={{ backgroundColor: 'var(--table-header-bg)', fontWeight: 'bold', borderBottom: '1px solid var(--table-border-color)' }}>
               {selectedChat ? `Chat with ${selectedChat.name} (${selectedChat.type})` : 'Chat Panel'}
             </CCardHeader>
             <CCardBody style={{ flex: 1, overflowY: 'auto', padding: '20px', paddingBottom: '70px', backgroundColor: 'var(--container-bg)', color: 'var(--primary-text-color)' }}>
-              {messages.length === 0 ? (
-                <p className="text-center">No messages yet.</p>
-              ) : (
-                messages.map((msg, index) => (
+              {messages.length ? (
+                messages.map((msg, idx) => (
                   <div
-                    key={index}
+                    key={idx}
                     style={{
                       textAlign: msg.senderId === adminId ? 'right' : 'left',
                       marginBottom: '10px',
@@ -244,19 +243,19 @@ const Contact = () => {
                     </span>
                   </div>
                 ))
+              ) : (
+                <p className="text-center">No messages yet.</p>
               )}
             </CCardBody>
-            <div
-              style={{
-                position: 'absolute',
-                bottom: 0,
-                left: 0,
-                right: 0,
-                padding: '10px 20px',
-                background: 'var(--container-bg)',
-                borderTop: '1px solid var(--table-border-color)',
-              }}
-            >
+            <div style={{
+              position: 'absolute',
+              bottom: 0,
+              left: 0,
+              right: 0,
+              padding: '10px 20px',
+              background: 'var(--container-bg)',
+              borderTop: '1px solid var(--table-border-color)',
+            }}>
               <CRow className="align-items-center">
                 <CCol md={10}>
                   <CFormInput
@@ -275,11 +274,7 @@ const Contact = () => {
                   />
                 </CCol>
                 <CCol md={2}>
-                  <CButton 
-                    color="primary" 
-                    onClick={handleSend} 
-                    style={{ borderRadius: '25px', padding: '10px 15px' }}
-                  >
+                  <CButton color="primary" onClick={handleSend} style={{ borderRadius: '25px', padding: '10px 15px' }}>
                     Send
                   </CButton>
                 </CCol>
@@ -289,7 +284,7 @@ const Contact = () => {
         </CCol>
       </CRow>
     </CContainer>
-  );
-};
+  )
+}
 
-export default Contact;
+export default Contact
