@@ -177,7 +177,7 @@ const GuestUsers = () => {
   const handleDeleteUser = async (userId) => {
     if (window.confirm('Are you sure you want to delete this guest user?')) {
       try {
-        await axios.delete(`http://18.209.91.97:7787/api/Prvdr/delete/${userId}`, authHeaders)
+        await axios.delete(`http://18.209.91.97:7787/api/DeleteAccount/provider/${userId}`, authHeaders)
         alert('User deleted successfully.')
         fetchGuestUsers()
       } catch (error) {
