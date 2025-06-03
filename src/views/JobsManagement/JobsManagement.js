@@ -189,6 +189,7 @@ const JobsManagement = () => {
             >
               <option value="All">Job Status</option>
               <option value="Pending">Pending</option>
+              <option value="Quoted">Quoted</option>
               <option value="Assigned">Assigned</option>
               <option value="Completed">Completed</option>
               <option value="Deleted">Deleted</option>
