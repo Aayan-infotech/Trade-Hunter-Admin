@@ -144,7 +144,7 @@ const GuestUsers = () => {
     try {
       await axios.post(
         `http://18.209.91.97:7787/api/pushNotification/sendAdminNotification/${notifUser._id}`,
-        { title: notifTitle, body: notifBody },
+        { title: notifTitle, body: notifBody + ' - From Trade Hunters Admin Team' },
         authHeaders,
       )
       alert('Notification sent successfully!')
@@ -228,7 +228,7 @@ const GuestUsers = () => {
             `http://18.209.91.97:7787/api/pushNotification/sendAdminNotification/${chatUser._id}`,
             {
               title: 'You have a new message from Trade Hunters',
-              body: 'You have a new message from Trade Hunters go to support to view ',
+              body: 'You have a new message from Trade Hunters go to support to view From Trade Hunters Support Team ',
             },
             authHeaders,
           )
