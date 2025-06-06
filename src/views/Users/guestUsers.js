@@ -22,7 +22,13 @@ import {
   CCol,
 } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
-import { cilSearch, cilEnvelopeOpen, cilTrash, cilViewColumn ,cilCommentBubble} from '@coreui/icons'
+import {
+  cilSearch,
+  cilEnvelopeOpen,
+  cilTrash,
+  cilViewColumn,
+  cilCommentBubble,
+} from '@coreui/icons'
 import '../Users/Usermanagement.css'
 import { useNavigate } from 'react-router-dom'
 
@@ -144,7 +150,12 @@ const GuestUsers = () => {
     try {
       await axios.post(
         `http://18.209.91.97:7787/api/pushNotification/sendAdminNotification/${notifUser._id}`,
-        { title: notifTitle, body: "You have Recieved a Notification from Trade Hunters Admin Team"   + '--' + notifBody },
+        {
+          title: notifTitle,
+          body:
+            'You have Recieved a Notification from Trade Hunters Admin Team -- ' +
+            notifBody,
+        },
         authHeaders,
       )
       alert('Notification sent successfully!')
@@ -177,7 +188,10 @@ const GuestUsers = () => {
   const handleDeleteUser = async (userId) => {
     if (window.confirm('Are you sure you want to delete this guest user?')) {
       try {
-        await axios.delete(`http://18.209.91.97:7787/api/DeleteAccount/provider/${userId}`, authHeaders)
+        await axios.delete(
+          `http://18.209.91.97:7787/api/DeleteAccount/provider/${userId}`,
+          authHeaders,
+        )
         alert('User deleted successfully.')
         fetchGuestUsers()
       } catch (error) {
@@ -191,6 +205,7 @@ const GuestUsers = () => {
     setChatUser(user)
     setIsChatModalOpen(true)
   }
+
   useEffect(() => {
     if (!chatUser) return
     const chatChannelId = generateChatId(chatUser._id)
@@ -198,7 +213,9 @@ const GuestUsers = () => {
     const unsubscribe = onValue(chatMessagesRef, (snapshot) => {
       const data = snapshot.val()
       if (data) {
-        const messagesArray = Object.values(data).sort((a, b) => a.timeStamp - b.timeStamp)
+        const messagesArray = Object.values(data).sort(
+          (a, b) => a.timeStamp - b.timeStamp,
+        )
         setChatMessages(messagesArray)
       } else {
         setChatMessages([])
@@ -210,8 +227,10 @@ const GuestUsers = () => {
   const handleSendChatMessage = () => {
     const text = newChatMessage.trim()
     if (!text || !chatUser?._id) return
+
     const chatChannelId = generateChatId(chatUser._id)
     const chatRef = ref(realtimeDb, `chatsAdmin/${chatChannelId}/messages`)
+
     const message = {
       senderId: currentUser,
       receiverId: chatUser._id,
@@ -220,21 +239,42 @@ const GuestUsers = () => {
       msg: text,
       timeStamp: Date.now(),
     }
+
+    // 1. Push the message into Firebase
     push(chatRef, message)
       .then(async () => {
         setNewChatMessage('')
+
+        // 2. Send a push notification to the provider
         try {
           await axios.post(
             `http://18.209.91.97:7787/api/pushNotification/sendAdminNotification/${chatUser._id}`,
             {
               title: 'You have a new message from Trade Hunters',
-              body: `You have Recieved a new Message from Trade Hunters Support -- Plaese go to Support section to view`,
+              body:
+                'You have Recieved a new Message from Trade Hunters Support -- Please go to Support section to view',
             },
             authHeaders,
           )
           console.log('Provider notified via pushNotification API')
         } catch (err) {
           console.error('Failed to send provider notification', err)
+        }
+
+        // 3. **NEW**: Send the same chat message as an email via sendSupportEmail
+        try {
+          await axios.post(
+            'http://18.209.91.97:7787/api/hunter/sendSupportEmail',
+            {
+              name: chatUser.businessName,   // provider name
+              email: chatUser.email,        // provider email
+              message: text,                // chat message text
+            },
+            authHeaders,
+          )
+          console.log('Support email sent successfully')
+        } catch (emailErr) {
+          console.error('Failed to send support email', emailErr)
         }
       })
       .catch((error) => console.error('Error sending chat message:', error))
@@ -245,7 +285,10 @@ const GuestUsers = () => {
       <CCard className="hunter-card">
         <CCardHeader className="hunter-card-header">
           <h4>Guest Users</h4>
-          <div className="hunter-search-container" style={{ gap: '10px', flexWrap: 'wrap' }}>
+          <div
+            className="hunter-search-container"
+            style={{ gap: '10px', flexWrap: 'wrap' }}
+          >
             <CFormInput
               type="text"
               placeholder="Search by Business Name, Email or Address"
@@ -253,7 +296,11 @@ const GuestUsers = () => {
               onChange={handleSearchChange}
               className="guest-search-input"
             />
-            <CButton color="primary" onClick={fetchGuestUsers} className="hunter-search-button">
+            <CButton
+              color="primary"
+              onClick={fetchGuestUsers}
+              className="hunter-search-button"
+            >
               <CIcon icon={cilSearch} /> Search
             </CButton>
           </div>
@@ -276,16 +323,26 @@ const GuestUsers = () => {
               <CTableBody>
                 {users.map((user, index) => (
                   <CTableRow key={user._id}>
-                    <CTableDataCell>{totalCount - (index + (page - 1) * 10)}</CTableDataCell>
+                    <CTableDataCell>
+                      {totalCount - (index + (page - 1) * 10)}
+                    </CTableDataCell>
                     <CTableDataCell>{formatDate(user.insDate)}</CTableDataCell>
                     <CTableDataCell className="text-left">
                       {user.businessName || 'N/A'}
                     </CTableDataCell>
-                    <CTableDataCell className="text-left">{user.email}</CTableDataCell>
-                    <CTableDataCell className="text-left">{user.phoneNo}</CTableDataCell>
+                    <CTableDataCell className="text-left">
+                      {user.email}
+                    </CTableDataCell>
+                    <CTableDataCell className="text-left">
+                      {user.phoneNo}
+                    </CTableDataCell>
                     <CTableDataCell
                       className="text-left"
-                      style={{ display: 'flex', gap: '10px', alignItems: 'center' }}
+                      style={{
+                        display: 'flex',
+                        gap: '10px',
+                        alignItems: 'center',
+                      }}
                     >
                       <CIcon
                         className="action-icon view-icon"
@@ -347,6 +404,7 @@ const GuestUsers = () => {
         </CCardBody>
       </CCard>
 
+      {/* View User Modal */}
       <CModal
         scrollable
         visible={showViewModal}
@@ -369,10 +427,12 @@ const GuestUsers = () => {
                 <strong>Contact No:</strong> {viewUser.phoneNo}
               </p>
               <p>
-                <strong>Address:</strong> {viewUser?.address?.addressLine || 'N/A'}
+                <strong>Address:</strong>{' '}
+                {viewUser?.address?.addressLine || 'N/A'}
               </p>
               <p>
-                <strong>Email Verified:</strong> {viewUser.emailVerified === 1 ? 'Yes' : 'No'}
+                <strong>Email Verified:</strong>{' '}
+                {viewUser.emailVerified === 1 ? 'Yes' : 'No'}
               </p>
               <p>
                 <strong>Business Name:</strong> {viewUser.businessName}
@@ -384,12 +444,16 @@ const GuestUsers = () => {
           )}
         </CModalBody>
         <CModalFooter className="modal-footer-custom">
-          <CButton color="secondary" onClick={() => setShowViewModal(false)}>
+          <CButton
+            color="secondary"
+            onClick={() => setShowViewModal(false)}
+          >
             Close
           </CButton>
         </CModalFooter>
       </CModal>
 
+      {/* Notification Modal */}
       <CModal
         scrollable
         visible={showNotifModal}
@@ -428,8 +492,14 @@ const GuestUsers = () => {
                   title="Enter Notification Body"
                 />
               </div>
-              <div className="hunter-notif-send text-center mb-3" title="Send Notification">
-                <span onClick={handleSendNotification} className="hunter-notif-send-icon">
+              <div
+                className="hunter-notif-send text-center mb-3"
+                title="Send Notification"
+              >
+                <span
+                  onClick={handleSendNotification}
+                  className="hunter-notif-send-icon"
+                >
                   <CIcon icon={cilEnvelopeOpen} size="lg" />
                 </span>
                 <p className="hunter-notif-send-text">Send</p>
@@ -458,7 +528,10 @@ const GuestUsers = () => {
           )}
         </CModalBody>
         <CModalFooter className="modal-footer-custom">
-          <CButton color="secondary" onClick={() => setShowNotifModal(false)}>
+          <CButton
+            color="secondary"
+            onClick={() => setShowNotifModal(false)}
+          >
             Close
           </CButton>
           <CButton color="primary" onClick={handleSendNotification}>
@@ -466,6 +539,8 @@ const GuestUsers = () => {
           </CButton>
         </CModalFooter>
       </CModal>
+
+      {/* Chat Modal */}
       <CModal
         visible={isChatModalOpen}
         onClose={() => setIsChatModalOpen(false)}
@@ -490,7 +565,8 @@ const GuestUsers = () => {
                 >
                   <span
                     style={{
-                      backgroundColor: msg.senderId === currentUser ? '#007bff' : '#f1f1f1',
+                      backgroundColor:
+                        msg.senderId === currentUser ? '#007bff' : '#f1f1f1',
                       color: msg.senderId === currentUser ? '#fff' : '#333',
                       padding: '10px 15px',
                       borderRadius: '20px',
@@ -505,7 +581,9 @@ const GuestUsers = () => {
               ))
             )}
           </div>
-          <div style={{ padding: '10px', borderTop: '1px solid #ddd', background: '#fff' }}>
+          <div
+            style={{ padding: '10px', borderTop: '1px solid #ddd', background: '#fff' }}
+          >
             <CRow className="align-items-center">
               <CCol md={10}>
                 <CFormInput

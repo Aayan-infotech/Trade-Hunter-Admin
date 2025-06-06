@@ -65,7 +65,7 @@ const Hunter = () => {
   const [chatMessages, setChatMessages] = useState([])
   const [newChatMessage, setNewChatMessage] = useState('')
   const [hasMoreData, setHasMoreData] = useState(true)
-const [totalCount, setTotalCount] = useState(0)
+  const [totalCount, setTotalCount] = useState(0)
 
   const token = localStorage.getItem('token')
   console.log('🛡️ token:', token)
@@ -270,12 +270,14 @@ const [totalCount, setTotalCount] = useState(0)
     push(chatRef, message)
       .then(async () => {
         setNewChatMessage('')
+
+        // 1. Send push notification to the hunter
         try {
           await axios.post(
             'http://18.209.91.97:7787/api/pushNotification/adminNotification',
             {
               title: 'New message from Support',
-              body: `You have Recieved a new Message from Trade Hunters Support -- Plaese go to Support section to view`,
+              body: `You have Recieved a new Message from Trade Hunters Support -- Please go to Support section to view`,
               receiverId: chatUser._id,
             },
             authHeaders
@@ -283,6 +285,22 @@ const [totalCount, setTotalCount] = useState(0)
           console.log('Admin notification sent')
         } catch (err) {
           console.error('Failed to send admin notification', err)
+        }
+
+        // 2. **NEW**: Send the same chat text as an email
+        try {
+          await axios.post(
+            'http://18.209.91.97:7787/api/hunter/sendSupportEmail',
+            {
+              name: chatUser.name,        // hunter’s name
+              email: chatUser.email,      // hunter’s email
+              message: newChatMessage,    // chat message
+            },
+            authHeaders
+          )
+          console.log('Support email sent successfully')  // Debug success
+        } catch (emailErr) {
+          console.error('Failed to send support email', emailErr)
         }
       })
       .catch((error) => console.error('Error sending message:', error))
@@ -349,7 +367,9 @@ const [totalCount, setTotalCount] = useState(0)
                 <CTableBody>
                   {users.map((user, index) => (
                     <CTableRow key={user._id}>
-                      <CTableDataCell>  {totalCount - (index + (page - 1) * 10)}</CTableDataCell>
+                      <CTableDataCell>  
+                        {totalCount - (index + (page - 1) * 10)}
+                      </CTableDataCell>
                       <CTableDataCell>{formatDate(user.insDate)}</CTableDataCell>
                       <CTableDataCell>{user.name}</CTableDataCell>
                       <CTableDataCell>{user.email}</CTableDataCell>

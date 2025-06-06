@@ -79,6 +79,7 @@ const Provider = () => {
   const currentUser = localStorage.getItem('adminId')
   const navigate = useNavigate()
 
+  // Navigate to the “Assigned Jobs” page for a given provider
   const handleAssignedJobs = (providerId) => {
     navigate('/ProviderAssignedJobs', { state: { providerId } })
   }
@@ -131,7 +132,10 @@ const Provider = () => {
   const handleDelete = async (id) => {
     if (window.confirm('Are you sure you want to delete this user?')) {
       try {
-        await axios.delete(`http://18.209.91.97:7787/api/DeleteAccount/provider/${id}`, authHeaders)
+        await axios.delete(
+          `http://18.209.91.97:7787/api/DeleteAccount/provider/${id}`,
+          authHeaders,
+        )
         fetchUsers()
       } catch (error) {
         console.error('Error deleting user:', error)
@@ -165,7 +169,11 @@ const Provider = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target
-    if (name === 'emailVerified' || name === 'documentStatus' || name === 'subscriptionStatus') {
+    if (
+      name === 'emailVerified' ||
+      name === 'documentStatus' ||
+      name === 'subscriptionStatus'
+    ) {
       setEditUser((prev) => ({ ...prev, [name]: value === 'true' }))
     } else {
       setEditUser((prev) => ({ ...prev, [name]: value }))
@@ -198,7 +206,13 @@ const Provider = () => {
     try {
       await axios.post(
         `http://18.209.91.97:7787/api/pushNotification/sendAdminNotification/${notifUser._id}`,
-        { title: notifTitle, body: "You have Recieved a Notification from Trade Hunters Admin Team"   + '--' + notifBody },
+        {
+          title: notifTitle,
+          body:
+            'You have Recieved a Notification from Trade Hunters Admin Team' +
+            '--' +
+            notifBody,
+        },
         authHeaders,
       )
       setNotifTitle('')
@@ -229,18 +243,24 @@ const Provider = () => {
     }
   }
 
-    const handleChat = (user) => {
+  const handleChat = (user) => {
     setChatUser(user)
     setIsChatModalOpen(true)
   }
+
   useEffect(() => {
     if (!chatUser) return
     const chatChannelId = generateChatId(chatUser._id)
-    const chatMessagesRef = ref(realtimeDb, `chatsAdmin/${chatChannelId}/messages`)
+    const chatMessagesRef = ref(
+      realtimeDb,
+      `chatsAdmin/${chatChannelId}/messages`,
+    )
     const unsubscribe = onValue(chatMessagesRef, (snapshot) => {
       const data = snapshot.val()
       if (data) {
-        const messagesArray = Object.values(data).sort((a, b) => a.timeStamp - b.timeStamp)
+        const messagesArray = Object.values(data).sort(
+          (a, b) => a.timeStamp - b.timeStamp,
+        )
         setChatMessages(messagesArray)
       } else {
         setChatMessages([])
@@ -253,7 +273,10 @@ const Provider = () => {
     const text = newChatMessage.trim()
     if (!text || !chatUser?._id) return
     const chatChannelId = generateChatId(chatUser._id)
-    const chatRef = ref(realtimeDb, `chatsAdmin/${chatChannelId}/messages`)
+    const chatRef = ref(
+      realtimeDb,
+      `chatsAdmin/${chatChannelId}/messages`,
+    )
     const message = {
       senderId: currentUser,
       receiverId: chatUser._id,
@@ -265,20 +288,41 @@ const Provider = () => {
     push(chatRef, message)
       .then(async () => {
         setNewChatMessage('')
+
+        // 1. Send push notification to the provider
         try {
           await axios.post(
             `http://18.209.91.97:7787/api/pushNotification/sendAdminNotification/${chatUser._id}`,
-            { title: 'You have a new message from Trade Hunters', body: `You have Recieved a new Message from Trade Hunters Support -- Plaese go to Support section to view` },
+            {
+              title: 'You have a new message from Trade Hunters',
+              body:
+                'You have Recieved a new Message from Trade Hunters Support -- Please go to Support section to view',
+            },
             authHeaders,
           )
           console.log('Provider notified via pushNotification API')
         } catch (err) {
           console.error('Failed to send provider notification', err)
         }
+
+        // 2. **NEW**: Send the same chat text as an email
+        try {
+          await axios.post(
+            'http://18.209.91.97:7787/api/hunter/sendSupportEmail',
+            {
+              name: chatUser.businessName, // provider’s name
+              email: chatUser.email, // provider’s email
+              message: text, // chat message
+            },
+            authHeaders,
+          )
+          console.log('Support email sent successfully')
+        } catch (emailErr) {
+          console.error('Failed to send support email', emailErr)
+        }
       })
       .catch((error) => console.error('Error sending chat message:', error))
   }
-
 
   return (
     <CContainer className="hunter-container">
@@ -293,7 +337,11 @@ const Provider = () => {
               onChange={handleSearch}
               className="hunter-search-input"
             />
-            <CButton color="primary" onClick={fetchUsers} className="hunter-search-button">
+            <CButton
+              color="primary"
+              onClick={fetchUsers}
+              className="hunter-search-button"
+            >
               <CIcon icon={cilSearch} /> Search
             </CButton>
             <CFormSelect
@@ -318,7 +366,6 @@ const Provider = () => {
             <div className="hunter-table-container">
               <CTable hover responsive className="hunter-table">
                 <CTableHead className="sticky-header">
-
                   <CTableRow>
                     <CTableHeaderCell>Sr. No</CTableHeaderCell>
                     <CTableHeaderCell>Joining Date</CTableHeaderCell>
@@ -336,7 +383,9 @@ const Provider = () => {
                 <CTableBody>
                   {users.map((user, index) => (
                     <CTableRow key={user._id}>
-                      <CTableDataCell>{totalCount - (index + (page - 1) * 10)}</CTableDataCell>
+                      <CTableDataCell>
+                        {totalCount - (index + (page - 1) * 10)}
+                      </CTableDataCell>
                       <CTableDataCell>{formatDate(user.insDate)}</CTableDataCell>
                       <CTableDataCell>{user.businessName}</CTableDataCell>
                       <CTableDataCell>{user.email}</CTableDataCell>
@@ -347,8 +396,8 @@ const Provider = () => {
                             user.userStatus === 'Active'
                               ? 'success'
                               : user.userStatus === 'Suspended'
-                                ? 'danger'
-                                : 'warning'
+                              ? 'danger'
+                              : 'warning'
                           }
                         >
                           {user.userStatus}
@@ -434,6 +483,7 @@ const Provider = () => {
         </CCardBody>
       </CCard>
 
+      {/* Edit User Modal */}
       <CModal
         scrollable
         visible={isEditModalOpen}
@@ -443,7 +493,10 @@ const Provider = () => {
         <CModalHeader className="hunter-modal-header">
           <CModalTitle>Edit User</CModalTitle>
         </CModalHeader>
-        <CModalBody className="hunter-modal-body" style={{ maxHeight: '60vh', overflowY: 'auto' }}>
+        <CModalBody
+          className="hunter-modal-body"
+          style={{ maxHeight: '60vh', overflowY: 'auto' }}
+        >
           <CFormInput
             type="text"
             name="Business Name"
@@ -551,6 +604,7 @@ const Provider = () => {
         </CModalFooter>
       </CModal>
 
+      {/* View User Modal */}
       <CModal
         scrollable
         visible={isViewModalOpen}
@@ -560,12 +614,19 @@ const Provider = () => {
         <CModalHeader className="hunter-modal-header">
           <CModalTitle>View User</CModalTitle>
         </CModalHeader>
-        <CModalBody className="hunter-modal-body" style={{ maxHeight: '60vh', overflowY: 'auto' }}>
+        <CModalBody
+          className="hunter-modal-body"
+          style={{ maxHeight: '60vh', overflowY: 'auto' }}
+        >
           {viewUser && (
             <div className="hunter-view-content">
               {viewUser.images && (
                 <div className="hunter-view-image">
-                  <img src={viewUser.images} alt="User" className="hunter-user-image" />
+                  <img
+                    src={viewUser.images}
+                    alt="User"
+                    className="hunter-user-image"
+                  />
                 </div>
               )}
               <p>
@@ -640,6 +701,7 @@ const Provider = () => {
         </CModalFooter>
       </CModal>
 
+      {/* Notification Modal */}
       <CModal
         scrollable
         visible={isNotifModalOpen}
@@ -718,6 +780,8 @@ const Provider = () => {
           </CButton>
         </CModalFooter>
       </CModal>
+
+      {/* Chat Modal */}
       <CModal
         visible={isChatModalOpen}
         onClose={() => setIsChatModalOpen(false)}
