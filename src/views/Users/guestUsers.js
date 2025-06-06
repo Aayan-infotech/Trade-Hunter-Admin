@@ -144,7 +144,7 @@ const GuestUsers = () => {
     try {
       await axios.post(
         `http://18.209.91.97:7787/api/pushNotification/sendAdminNotification/${notifUser._id}`,
-        { title: notifTitle, body: notifBody +  `-- From Trade Hunters Admin Team` },
+        { title: notifTitle, body: "You have Recieved a Notification from Trade Hunters Admin Team"   + '--' + notifBody },
         authHeaders,
       )
       alert('Notification sent successfully!')
