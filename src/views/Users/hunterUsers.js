@@ -275,7 +275,7 @@ const [totalCount, setTotalCount] = useState(0)
             'http://18.209.91.97:7787/api/pushNotification/adminNotification',
             {
               title: 'New message from Support',
-              body: `New message from Trade Hunters go to Support to see the message -- From Trade Hunters Support Team`,
+              body: `You have Recieved a new Message from Trade Hunters Support -- Plaese go to Support section to view`,
               receiverId: chatUser._id,
             },
             authHeaders

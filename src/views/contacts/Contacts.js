@@ -125,7 +125,7 @@ const Contact = () => {
 
       // b) Send admin notification
       const notifTitle = `New message from Admin`
-      const notifBody  = messageText + ` -- from Trade Hunters Admin Team`
+      const notifBody  = "You have Recieved a Notification from Trade Hunters Admin Team"   + '--' + messageText 
       const url = `http://18.209.91.97:7787/api/pushNotification/sendAdminNotification/${receiverId}`
       await axios.post(url, { title: notifTitle, body: notifBody })
       console.log("Notification sent to", receiverId)

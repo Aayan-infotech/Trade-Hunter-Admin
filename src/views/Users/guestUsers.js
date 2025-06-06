@@ -228,7 +228,7 @@ const GuestUsers = () => {
             `http://18.209.91.97:7787/api/pushNotification/sendAdminNotification/${chatUser._id}`,
             {
               title: 'You have a new message from Trade Hunters',
-              body: `You have a new message from Trade Hunters go to support to view -- From Trade Hunters Support Team `,
+              body: `You have Recieved a new Message from Trade Hunters Support -- Plaese go to Support section to view`,
             },
             authHeaders,
           )
