@@ -153,7 +153,7 @@ const GuestUsers = () => {
         {
           title: notifTitle,
           body:
-            'You have Recieved a Notification from Trade Hunters Admin Team -- ' +
+            'You have Recieved a Notification from Admin at Trade Hunters -- ' +
             notifBody,
         },
         authHeaders,

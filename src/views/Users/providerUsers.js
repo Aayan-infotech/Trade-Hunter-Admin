@@ -209,7 +209,7 @@ const Provider = () => {
         {
           title: notifTitle,
           body:
-            'You have Recieved a Notification from Trade Hunters Admin Team' +
+            'You have Recieved a Notification from Admin At Trade Hunters' +
             '--' +
             notifBody,
         },
