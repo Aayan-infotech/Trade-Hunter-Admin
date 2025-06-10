@@ -215,6 +215,12 @@ const Provider = () => {
         },
         authHeaders,
       )
+      await axios.post(`http://18.209.91.97:7787/api/hunter/sendSupportEmail`, {
+        name: notifUser.name,
+        email: notifUser.email,
+        message: `You have received a notification from Admin at Trade Hunters: ${notifBody}`,
+
+      }, authHeaders)
       setNotifTitle('')
       setNotifBody('')
       fetchNotifications(notifUser._id)
@@ -396,8 +402,8 @@ const Provider = () => {
                             user.userStatus === 'Active'
                               ? 'success'
                               : user.userStatus === 'Suspended'
-                              ? 'danger'
-                              : 'warning'
+                                ? 'danger'
+                                : 'warning'
                           }
                         >
                           {user.userStatus}

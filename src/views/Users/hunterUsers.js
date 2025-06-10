@@ -197,9 +197,15 @@ const Hunter = () => {
     try {
       await axios.post(
         `http://18.209.91.97:7787/api/pushNotification/sendAdminNotification/${notifUser._id}`,
-        { title: notifTitle, body:"You have Recieved a Notification From Admin At Trade Hunters"   + '--' + notifBody },
+        { title: notifTitle, body: "You have Recieved a Notification From Admin At Trade Hunters" + '--' + notifBody },
         authHeaders
       )
+      await axios.post(`http://18.209.91.97:7787/api/hunter/sendSupportEmail`, {
+        name: notifUser.name,
+        email: notifUser.email,
+        message: `You have received a notification from Admin at Trade Hunters: ${notifBody}`,
+
+      }, authHeaders)
       setNotifTitle('')
       setNotifBody('')
       fetchNotifications(notifUser._id)
@@ -266,7 +272,7 @@ const Hunter = () => {
       msg: newChatMessage,
       timeStamp: Date.now(),
     }
-  
+
     push(chatRef, message)
       .then(async () => {
         setNewChatMessage('')
@@ -367,7 +373,7 @@ const Hunter = () => {
                 <CTableBody>
                   {users.map((user, index) => (
                     <CTableRow key={user._id}>
-                      <CTableDataCell>  
+                      <CTableDataCell>
                         {totalCount - (index + (page - 1) * 10)}
                       </CTableDataCell>
                       <CTableDataCell>{formatDate(user.insDate)}</CTableDataCell>
