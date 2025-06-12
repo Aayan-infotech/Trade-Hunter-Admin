@@ -283,7 +283,7 @@ const Hunter = () => {
             'http://18.209.91.97:7787/api/pushNotification/adminNotification',
             {
               title: 'New message from Support',
-              body: `You have Recieved a new Message from Trade Hunters Support -- Please go to Support section to view`,
+              body: `You have Recieved a new Message from Trade Hunters Support`,
               receiverId: chatUser._id,
             },
             authHeaders
