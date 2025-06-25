@@ -46,7 +46,7 @@ export default defineConfig(() => {
       extensions: ['.mjs', '.js', '.ts', '.jsx', '.tsx', '.json', '.scss'],
     },
     server: {
-      port: 8080,
+      port: 5173,
       proxy: {
       },
     },

@@ -61,13 +61,13 @@ const Dashboard = () => {
         }
 
         const results = await Promise.allSettled([
-          axios.get('http://18.209.91.97:7787/api/count/totalUsers', commonConfig),
-          axios.get('http://18.209.91.97:7787/api/jobs/getCount', commonConfig),
-          axios.get('http://18.209.91.97:7787/api/eway/totalRevenue', {
+          axios.get('https://api.tradehunters.com.au/api/count/totalUsers', commonConfig),
+          axios.get('https://api.tradehunters.com.au/api/jobs/getCount', commonConfig),
+          axios.get('https://api.tradehunters.com.au/api/eway/totalRevenue', {
             ...commonConfig,
             params: { month: revenueMonth, financialYear: financialYear },
           }),
-          axios.get('http://18.209.91.97:7787/api/jobs/getRecentJobs', commonConfig),
+          axios.get('https://api.tradehunters.com.au/api/jobs/getRecentJobs', commonConfig),
         ])
 
         if (results[0].status === 'fulfilled') {

@@ -10,10 +10,10 @@ import CIcon from '@coreui/icons-react'
 import { cilTrash, cilPencil } from '@coreui/icons'
 import '../Users/Usermanagement.css'
 
-const API_CREATE = "http://18.209.91.97:7787/api/voucher/create"
-const API_GET = "http://18.209.91.97:7787/api/voucher"
-const API_DELETE = "http://18.209.91.97:7787/api/voucher"
-const API_UPDATE = "http://18.209.91.97:7787/api/voucher/update"
+const API_CREATE = "https://api.tradehunters.com.au/api/voucher/create"
+const API_GET = "https://api.tradehunters.com.au/api/voucher"
+const API_DELETE = "https://api.tradehunters.com.au/api/voucher"
+const API_UPDATE = "https://api.tradehunters.com.au/api/voucher/update"
 
 const CreateVoucher = () => {
   const [code, setCode] = useState('')
