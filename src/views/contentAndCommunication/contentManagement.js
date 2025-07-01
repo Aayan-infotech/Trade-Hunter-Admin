@@ -55,7 +55,7 @@ const ContentAndCommunicationManagement = () => {
       setError(null);
       const endpoint = sectionMapping[section];
       const res = await axios.get(
-        `https://api.tradehunters.com.au/api/StaticContent/${endpoint}`, commonConfig
+        `http://18.209.91.97:7777/api/StaticContent/${endpoint}`, commonConfig
       );
       setContentData(prev => ({ ...prev, [section]: res.data.content }));
     } catch (err) {
@@ -69,7 +69,7 @@ const ContentAndCommunicationManagement = () => {
       setError(null);
       const endpoint = sectionMapping[activeSection];
       await axios.post(
-        'https://api.tradehunters.com.au/api/StaticContent',
+        'http://18.209.91.97:7777/api/StaticContent',
         { section: endpoint, content: contentData[activeSection] },
         commonConfig
       );
@@ -84,7 +84,7 @@ const ContentAndCommunicationManagement = () => {
     try {
       setError(null);
       const res = await axios.get(
-        'https://api.tradehunters.com.au/api/massNotification/getAll',
+        'http://18.209.91.97:7777/api/massNotification/getAll',
         commonConfig
       );
       setAllNotifications(res.data);
@@ -103,7 +103,7 @@ const ContentAndCommunicationManagement = () => {
         message: "You have Recieved a Notification from Admin at Trade Hunters"   + '--' + notificationMessage,
       };
       await axios.post(
-        'https://api.tradehunters.com.au/api/massNotification/',
+        'http://18.209.91.97:7777/api/massNotification/',
         payload,
         commonConfig
       );
@@ -124,7 +124,7 @@ const ContentAndCommunicationManagement = () => {
 
     try {
       await axios.delete(
-        `https://api.tradehunters.com.au/api/massNotification/delete/${id}`,
+        `http://18.209.91.97:7777/api/massNotification/delete/${id}`,
         commonConfig
       );
       setAllNotifications(prev => prev.filter(n => n._id !== id));
