@@ -54,7 +54,7 @@ const VoucherUsers = () => {
 
     try {
       const response = await axios.get(
-        `http://18.209.91.97:7787/api/provider/getVoucherUsers?page=${page}&limit=${limit}&search=${encodeURIComponent(
+        `http://18.209.91.97:7777/api/provider/getVoucherUsers?page=${page}&limit=${limit}&search=${encodeURIComponent(
           search
         )}`,
         commonConfig

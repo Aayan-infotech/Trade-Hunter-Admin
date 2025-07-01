@@ -72,7 +72,7 @@ const SubscriptionManagement = () => {
     setLoading(true)
     try {
       const res = await axios.get(
-        'http://18.209.91.97:7787/api/SubscriptionNew/subscription-plans',
+        'http://18.209.91.97:7777/api/SubscriptionNew/subscription-plans',
         commonConfig,
       )
       setSubscriptions(res.data.data || [])
@@ -86,7 +86,7 @@ const SubscriptionManagement = () => {
   const fetchSubscriptionTypes = async () => {
     try {
       const res = await axios.get(
-        'http://18.209.91.97:7787/api/SubscriptionNew/subscription-type',
+        'http://18.209.91.97:7777/api/SubscriptionNew/subscription-type',
         commonConfig,
       )
       setSubscriptionTypes(res.data.data || res.data)
@@ -116,7 +116,7 @@ const SubscriptionManagement = () => {
     }
     try {
       await axios.post(
-        'http://18.209.91.97:7787/api/SubscriptionNew/subscription-plan',
+        'http://18.209.91.97:7777/api/SubscriptionNew/subscription-plan',
         payload,
         commonConfig,
       )
@@ -162,7 +162,7 @@ const SubscriptionManagement = () => {
     }
     try {
       await axios.put(
-        `http://18.209.91.97:7787/api/SubscriptionNew/subscription-plan/${editSubscription._id}`,
+        `http://18.209.91.97:7777/api/SubscriptionNew/subscription-plan/${editSubscription._id}`,
         payload,
         commonConfig,
       )
@@ -179,7 +179,7 @@ const SubscriptionManagement = () => {
     if (window.confirm('Delete Subscription?')) {
       try {
         await axios.delete(
-          `http://18.209.91.97:7787/api/SubscriptionNew/subscription-plan/${id}`,
+          `http://18.209.91.97:7777/api/SubscriptionNew/subscription-plan/${id}`,
           commonConfig,
         )
         fetchSubscriptions()
@@ -197,7 +197,7 @@ const SubscriptionManagement = () => {
   const handleAddSubscriptionType = async () => {
     try {
       await axios.post(
-        'http://18.209.91.97:7787/api/SubscriptionNew/subscription-type',
+        'http://18.209.91.97:7777/api/SubscriptionNew/subscription-type',
         { type: newSubscriptionType },
         commonConfig,
       )
@@ -213,7 +213,7 @@ const SubscriptionManagement = () => {
     if (window.confirm('Are you sure you want to delete this subscription type?')) {
       try {
         await axios.delete(
-          `http://18.209.91.97:7787/api/SubscriptionNew/subscription-type/${id}`,
+          `http://18.209.91.97:7777/api/SubscriptionNew/subscription-type/${id}`,
           commonConfig,
         )
         fetchSubscriptionTypes()

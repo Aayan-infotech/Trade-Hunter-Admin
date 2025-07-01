@@ -9,7 +9,7 @@ const FollowUpNavItem = () => {
 
   const fetchUnreadCount = async () => {
     try {
-      const res = await axios.get('http://18.209.91.97:7787/api/contact/isReadCount')
+      const res = await axios.get('http://18.209.91.97:7777/api/contact/isReadCount')
       setCount(res.data.isReadCount || 0)
     } catch (err) {
       console.error('Failed to fetch unread count', err)
