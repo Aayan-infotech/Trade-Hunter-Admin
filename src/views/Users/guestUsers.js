@@ -87,7 +87,7 @@ const GuestUsers = () => {
     setLoading(true)
     try {
       const response = await axios.get(
-        `http://18.209.91.97:7777/api/Prvdr/GuestMode/?page=${page}&limit=10&search=${search}`,
+        `http://18.209.91.97:7787/api/Prvdr/GuestMode/?page=${page}&limit=10&search=${search}`,
         authHeaders,
       )
       const fetchedUsers = response.data.data || []
@@ -133,7 +133,7 @@ const GuestUsers = () => {
   const fetchNotifications = async (userId) => {
     try {
       const response = await axios.get(
-        `http://18.209.91.97:7777/api/pushNotification/getAdminNotification/${userId}`,
+        `http://18.209.91.97:7787/api/pushNotification/getAdminNotification/${userId}`,
         authHeaders,
       )
       setNotifications(response.data.data || [])
@@ -149,7 +149,7 @@ const GuestUsers = () => {
     }
     try {
       await axios.post(
-        `http://18.209.91.97:7777/api/pushNotification/sendAdminNotification/${notifUser._id}`,
+        `http://18.209.91.97:7787/api/pushNotification/sendAdminNotification/${notifUser._id}`,
         {
           title: notifTitle,
           body:
@@ -158,7 +158,7 @@ const GuestUsers = () => {
         },
         authHeaders,
       )
-      await axios.post(`http://18.209.91.97:7777/api/hunter/sendSupportEmail`, {
+      await axios.post(`http://18.209.91.97:7787/api/hunter/sendSupportEmail`, {
         name: notifUser.businessName,
         email: notifUser.email,
         message: `You have received a notification from Admin at Trade Hunters: ${notifBody}`,
@@ -179,7 +179,7 @@ const GuestUsers = () => {
       alert('Notification user not defined')
       return
     }
-    const deleteUrl = `http://18.209.91.97:7777/api/pushNotification/deleteNotification/${notifId}`
+    const deleteUrl = `http://18.209.91.97:7787/api/pushNotification/deleteNotification/${notifId}`
     if (window.confirm('Are you sure you want to delete this notification?')) {
       try {
         await axios.delete(deleteUrl, authHeaders)
@@ -195,7 +195,7 @@ const GuestUsers = () => {
     if (window.confirm('Are you sure you want to delete this guest user?')) {
       try {
         await axios.delete(
-          `http://18.209.91.97:7777/api/DeleteAccount/provider/${userId}`,
+          `http://18.209.91.97:7787/api/DeleteAccount/provider/${userId}`,
           authHeaders,
         )
         alert('User deleted successfully.')
@@ -254,7 +254,7 @@ const GuestUsers = () => {
         // 2. Send a push notification to the provider
         try {
           await axios.post(
-            `http://18.209.91.97:7777/api/pushNotification/sendAdminNotification/${chatUser._id}`,
+            `http://18.209.91.97:7787/api/pushNotification/sendAdminNotification/${chatUser._id}`,
             {
               title: 'You have a new message from Trade Hunters',
               body:
@@ -270,7 +270,7 @@ const GuestUsers = () => {
         // 3. **NEW**: Send the same chat message as an email via sendSupportEmail
         try {
           await axios.post(
-            'http://18.209.91.97:7777/api/hunter/sendSupportEmail',
+            'http://18.209.91.97:7787/api/hunter/sendSupportEmail',
             {
               name: chatUser.businessName,   // provider name
               email: chatUser.email,        // provider email

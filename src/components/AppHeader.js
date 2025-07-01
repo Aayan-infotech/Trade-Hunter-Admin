@@ -32,7 +32,7 @@ import io from 'socket.io-client'
 import { AppBreadcrumb } from './index'
 import { AppHeaderDropdown } from './header/index'
 
-const socket = io('http://18.209.91.97:7777')
+const socket = io('http://18.209.91.97:7787')
 
 const AppHeader = () => {
   const headerRef = useRef()
@@ -61,7 +61,7 @@ const AppHeader = () => {
     setLoading(true)
     setError(null)
     try {
-      const response = await axios.get('http://18.209.91.97:7777/api/contact/getAll', commonConfig)
+      const response = await axios.get('http://18.209.91.97:7787/api/contact/getAll', commonConfig)
       const fetchedContacts = response.data.contacts || []
       const sortedContacts = fetchedContacts.sort(
         (a, b) => new Date(b.createdAt) - new Date(a.createdAt),

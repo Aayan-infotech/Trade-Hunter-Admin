@@ -36,7 +36,7 @@ const SubscriptionUsersByPlan = () => {
     setError(null);
     try {
       const response = await axios.get(
-        "http://18.209.91.97:7777/api/SubscriptionNew/usersByPlan",
+        "http://18.209.91.97:7787/api/SubscriptionNew/usersByPlan",
         commonConfig
       );
       const { data = [] } = response.data;

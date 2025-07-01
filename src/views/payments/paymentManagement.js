@@ -55,7 +55,7 @@ const PaymentManagement = () => {
     setError(null);
     try {
       const res = await axios.get(
-        `http://18.209.91.97:7777/api/eway/getAllTransactions?page=${page}&limit=${limit}&search=${encodeURIComponent(
+        `http://18.209.91.97:7787/api/eway/getAllTransactions?page=${page}&limit=${limit}&search=${encodeURIComponent(
           search
         )}`,
         commonConfig
