@@ -14,6 +14,8 @@ const SubscriptionManagement =React.lazy(() => import('./views/subscriptions/Sub
 const contentManagement = React.lazy(() => import('./views/contentAndCommunication/contentManagement.js'))
 const JobsHunter = React.lazy(() => import('./views/Users/JobsHunter.js'))
 const GuestUsers = React.lazy(() => import('./views/Users/guestUsers.js'))
+
+
 const followUp = React.lazy(() => import('./views/followUp/followUp.js'))
 const providerAssignedJobs = React.lazy(() => import('./views/Users/providerJobs.js'))
 const SubscriptionVouchers = React.lazy(() => import('./views/subscriptions/SubscriptionVouchers.js'))
