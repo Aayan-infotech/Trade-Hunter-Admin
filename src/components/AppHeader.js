@@ -32,7 +32,12 @@ import io from 'socket.io-client'
 import { AppBreadcrumb } from './index'
 import { AppHeaderDropdown } from './header/index'
 
-const socket = io('https://api.tradehunters.com.au')
+const socket = io("https://api.tradehunters.com.au", {
+  transports: ["websocket"],
+  secure: true,
+  withCredentials: true
+});
+
 
 const AppHeader = () => {
   const headerRef = useRef()

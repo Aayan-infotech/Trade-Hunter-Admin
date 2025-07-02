@@ -19,7 +19,11 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css"; 
 import "../Users/Usermanagement.css";
 
-const socket = io("https://api.tradehunters.com.au");
+const socket = io("https://api.tradehunters.com.au", {
+  transports: ["websocket"],
+  secure: true,
+  withCredentials: true
+});
 
 const formatDate = (dateObj) => {
   if (!dateObj) return "N/A";
