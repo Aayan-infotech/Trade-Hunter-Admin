@@ -32,7 +32,7 @@ import io from 'socket.io-client'
 import { AppBreadcrumb } from './index'
 import { AppHeaderDropdown } from './header/index'
 
-const socket = io('http://18.209.91.97:7777')
+const socket = io('https://api.tradehunters.com.au')
 
 const AppHeader = () => {
   const headerRef = useRef()
