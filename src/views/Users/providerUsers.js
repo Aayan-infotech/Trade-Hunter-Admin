@@ -391,7 +391,7 @@ const Provider = () => {
                         {totalCount - (index + (page - 1) * 10)}
                       </CTableDataCell>
                       <CTableDataCell>{formatDate(user.insDate)}</CTableDataCell>
-                      <CTableDataCell>{user.businessName}</CTableDataCell>
+                      <CTableDataCell style={{minWidth: "100px"}}>{user.businessName}</CTableDataCell>
                       <CTableDataCell>{user.email}</CTableDataCell>
                       <CTableDataCell>{user.phoneNo}</CTableDataCell>
                       <CTableDataCell>
