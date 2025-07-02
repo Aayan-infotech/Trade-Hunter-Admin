@@ -55,7 +55,7 @@ const SubscriptionUsersManagement = () => {
     setError(null)
     try {
       const res = await axios.get(
-        `https://api.tradehunters.com.au/api/SubscriptionNew/subscription-users`,
+        `http://18.209.91.97:7777/api/SubscriptionNew/subscription-users`,
         {
           ...commonConfig,
           params: { search, page, limit },
