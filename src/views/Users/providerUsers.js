@@ -379,8 +379,6 @@ const Provider = () => {
                     <CTableHeaderCell>Email</CTableHeaderCell>
                     <CTableHeaderCell>Contact</CTableHeaderCell>
                     <CTableHeaderCell>User Status</CTableHeaderCell>
-                    <CTableHeaderCell>Admin Verified</CTableHeaderCell>
-                    <CTableHeaderCell>Document Status</CTableHeaderCell>
                     <CTableHeaderCell>Account Status</CTableHeaderCell>
                     <CTableHeaderCell>Subscription Status</CTableHeaderCell>
                     <CTableHeaderCell>Actions</CTableHeaderCell>
@@ -408,10 +406,6 @@ const Provider = () => {
                         >
                           {user.userStatus}
                         </CBadge>
-                      </CTableDataCell>
-                      <CTableDataCell>{user.adminVerified}</CTableDataCell>
-                      <CTableDataCell>
-                        {user.documentStatus ? 'Approved' : 'Pending'}
                       </CTableDataCell>
                       <CTableDataCell>{user.accountStatus}</CTableDataCell>
                       <CTableDataCell>
