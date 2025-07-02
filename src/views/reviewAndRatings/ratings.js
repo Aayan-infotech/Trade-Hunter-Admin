@@ -40,7 +40,7 @@ const ProviderRatings = () => {
       if (search) params.append('search', search)
       if (avgRating !== '') params.append('avgRating', avgRating)
 
-      const url = `http://18.209.91.97:7777/api/rating/getAllProviderRatings?${params.toString()}`
+      const url = `https://api.tradehunters.com.au/api/rating/getAllProviderRatings?${params.toString()}`
       const { data } = await axios.get(url, authHeaders)
       setProviders(data.data || [])
     } catch (err) {

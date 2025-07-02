@@ -99,7 +99,7 @@ const Provider = () => {
     try {
       setLoading(true)
       const response = await axios.get(
-        `http://18.209.91.97:7777/api/Prvdr?page=${page}&limit=10&search=${search}&userStatus=${statusFilter}`,
+        `https://api.tradehunters.com.au/api/Prvdr?page=${page}&limit=10&search=${search}&userStatus=${statusFilter}`,
         authHeaders,
       )
       const fetchedProviders = response.data.data || []
@@ -133,7 +133,7 @@ const Provider = () => {
     if (window.confirm('Are you sure you want to delete this user?')) {
       try {
         await axios.delete(
-          `http://18.209.91.97:7777/api/DeleteAccount/provider/${id}`,
+          `https://api.tradehunters.com.au/api/DeleteAccount/provider/${id}`,
           authHeaders,
         )
         fetchUsers()
@@ -156,7 +156,7 @@ const Provider = () => {
   const handleSaveEdit = async () => {
     try {
       await axios.put(
-        `http://18.209.91.97:7777/api/provider/updateById/${editUser._id}`,
+        `https://api.tradehunters.com.au/api/provider/updateById/${editUser._id}`,
         editUser,
         authHeaders,
       )
@@ -189,7 +189,7 @@ const Provider = () => {
   const fetchNotifications = async (userId) => {
     try {
       const response = await axios.get(
-        `http://18.209.91.97:7777/api/pushNotification/getAdminNotification/${userId}`,
+        `https://api.tradehunters.com.au/api/pushNotification/getAdminNotification/${userId}`,
         authHeaders,
       )
       setNotifications(response.data.data || [])
@@ -205,7 +205,7 @@ const Provider = () => {
     }
     try {
       await axios.post(
-        `http://18.209.91.97:7777/api/pushNotification/sendAdminNotification/${notifUser._id}`,
+        `https://api.tradehunters.com.au/api/pushNotification/sendAdminNotification/${notifUser._id}`,
         {
           title: notifTitle,
           body:
@@ -215,7 +215,7 @@ const Provider = () => {
         },
         authHeaders,
       )
-      await axios.post(`http://18.209.91.97:7777/api/hunter/sendSupportEmail`, {
+      await axios.post(`https://api.tradehunters.com.au/api/hunter/sendSupportEmail`, {
         name: notifUser.businessName,
         email: notifUser.email,
         message: `You have received a notification from Admin at Trade Hunters: ${notifBody}`,
@@ -237,7 +237,7 @@ const Provider = () => {
       return
     }
 
-    const deleteUrl = `http://18.209.91.97:7777/api/pushNotification/deleteNotification/${notifId}`
+    const deleteUrl = `https://api.tradehunters.com.au/api/pushNotification/deleteNotification/${notifId}`
     if (window.confirm('Are you sure you want to delete this notification?')) {
       try {
         await axios.delete(deleteUrl, authHeaders)
@@ -298,7 +298,7 @@ const Provider = () => {
         // 1. Send push notification to the provider
         try {
           await axios.post(
-            `http://18.209.91.97:7777/api/pushNotification/sendAdminNotification/${chatUser._id}`,
+            `https://api.tradehunters.com.au/api/pushNotification/sendAdminNotification/${chatUser._id}`,
             {
               title: 'You have a new message from Trade Hunters',
               body:
@@ -314,7 +314,7 @@ const Provider = () => {
         // 2. **NEW**: Send the same chat text as an email
         try {
           await axios.post(
-            'http://18.209.91.97:7777/api/hunter/sendSupportEmail',
+            'https://api.tradehunters.com.au/api/hunter/sendSupportEmail',
             {
               name: chatUser.businessName, // provider’s name
               email: chatUser.email, // provider’s email

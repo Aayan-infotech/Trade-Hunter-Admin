@@ -44,7 +44,7 @@ const FollowUp = () => {
     setError(null);
     try {
       const response = await axios.get(
-        "http://18.209.91.97:7777/api/contact/getAll",
+        "https://api.tradehunters.com.au/api/contact/getAll",
         commonConfig
       );
       const fetchedContacts = response.data.contacts || [];
@@ -63,7 +63,7 @@ const FollowUp = () => {
   useEffect(() => {
     const markAllAsRead = async () => {
       try {
-        await axios.put('http://18.209.91.97:7777/api/contact/markAllRead');
+        await axios.put('https://api.tradehunters.com.au/api/contact/markAllRead');
       } catch (err) {
         console.error('Failed to mark all as read', err);
       }
@@ -92,7 +92,7 @@ const FollowUp = () => {
     if (window.confirm("Are you sure you want to delete this contact?")) {
       try {
         await axios.delete(
-          `http://18.209.91.97:7777/api/contact/delete/${id}`,
+          `https://api.tradehunters.com.au/api/contact/delete/${id}`,
           commonConfig
         );
         alert("Contact deleted successfully.");

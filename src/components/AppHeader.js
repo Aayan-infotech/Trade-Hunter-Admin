@@ -61,7 +61,7 @@ const AppHeader = () => {
     setLoading(true)
     setError(null)
     try {
-      const response = await axios.get('http://18.209.91.97:7777/api/contact/getAll', commonConfig)
+      const response = await axios.get('https://api.tradehunters.com.au/api/contact/getAll', commonConfig)
       const fetchedContacts = response.data.contacts || []
       const sortedContacts = fetchedContacts.sort(
         (a, b) => new Date(b.createdAt) - new Date(a.createdAt),

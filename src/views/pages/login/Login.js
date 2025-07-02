@@ -27,7 +27,7 @@ const Login = () => {
     setError('')
 
     try {
-      const response = await fetch('http://18.209.91.97:7777/api/authAdmin/login', {
+      const response = await fetch('https://api.tradehunters.com.au/api/authAdmin/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password }),

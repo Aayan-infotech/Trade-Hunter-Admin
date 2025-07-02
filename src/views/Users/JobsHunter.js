@@ -30,7 +30,7 @@ const JobsHuunter = () => {
     const fetchJobData = async () => {
       try {
         const response = await axios.get(
-          `http://18.209.91.97:7777/api/users/jobposts/${state._id}`,authHeaders
+          `https://api.tradehunters.com.au/api/users/jobposts/${state._id}`,authHeaders
         );
         setJobData(response.data?.data || []);
       } catch (error) {
@@ -52,7 +52,7 @@ const JobsHuunter = () => {
     if (!confirmDelete) return;
     setDeleting(true);
     try {
-      await axios.delete(`http://18.209.91.97:7777/api/jobs/${jobId}`,authHeaders);
+      await axios.delete(`https://api.tradehunters.com.au/api/jobs/${jobId}`,authHeaders);
       setJobData((prevJobs) => prevJobs.filter((job) => job._id !== jobId));
       alert("Job deleted successfully!");
     } catch (error) {
