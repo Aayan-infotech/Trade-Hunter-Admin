@@ -302,7 +302,7 @@ const Provider = () => {
             {
               title: 'You have a new message from Trade Hunters',
               body:
-                'You have Recieved a new Message from Trade Hunters Support ',
+                'Message from Trade Hunters Support Team Please go to support section to respond.',
             },
             authHeaders,
           )

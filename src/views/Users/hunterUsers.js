@@ -283,7 +283,7 @@ const Hunter = () => {
             'https://api.tradehunters.com.au/api/pushNotification/adminNotification',
             {
               title: 'New message from Support',
-              body: `You have Recieved a new Message from Trade Hunters Support`,
+              body: `Message from Trade Hunters Support Team Please go to support section to respond.`,
               receiverId: chatUser._id,
             },
             authHeaders
