@@ -58,7 +58,6 @@ const AppHeader = () => {
   }, [colorMode])
 
   const fetchContacts = async () => {
-    setLoading(true)
     setError(null)
     try {
       const response = await axios.get('http://18.209.91.97:7777/api/contact/getAll', commonConfig)
@@ -70,9 +69,7 @@ const AppHeader = () => {
     } catch (err) {
       console.error('Error fetching contacts:', err)
       setError('Failed to load contacts. Please try again.')
-    } finally {
-      setLoading(false)
-    }
+    } 
   }
 
   useEffect(() => {
