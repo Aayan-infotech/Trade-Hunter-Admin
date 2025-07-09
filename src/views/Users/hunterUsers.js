@@ -197,13 +197,13 @@ const Hunter = () => {
     try {
       await axios.post(
         `http://18.209.91.97:7777/api/pushNotification/sendAdminNotification/${notifUser._id}`,
-        { title: notifTitle, body: "You have Recieved a Notification From Admin At Trade Hunters" + '--' + notifBody },
+        { title: notifTitle, body: "You have Recieved a Notification From Trade Hunters Admin Team" + '--' + notifBody },
         authHeaders
       )
       await axios.post(`http://18.209.91.97:7777/api/hunter/sendSupportEmail`, {
         name: notifUser.name,
         email: notifUser.email,
-        message: `You have received a notification from Admin at Trade Hunters: ${notifBody}`,
+        message: `You have received a notification from Trade Hunters Admin Team: ${notifBody}`,
 
       }, authHeaders)
       setNotifTitle('')

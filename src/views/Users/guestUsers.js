@@ -153,7 +153,7 @@ const GuestUsers = () => {
         {
           title: notifTitle,
           body:
-            'You have Recieved a Notification from Admin at Trade Hunters -- ' +
+            'You have Recieved a Notification from Trade Hunters Admin Team -- ' +
             notifBody,
         },
         authHeaders,
@@ -161,7 +161,7 @@ const GuestUsers = () => {
       await axios.post(`http://18.209.91.97:7777/api/hunter/sendSupportEmail`, {
         name: notifUser.businessName,
         email: notifUser.email,
-        message: `You have received a notification from Admin at Trade Hunters: ${notifBody}`,
+        message: `You have received a notification from Trade Hunters  Admin Team: ${notifBody}`,
 
       }, authHeaders)
       alert('Notification sent successfully!')

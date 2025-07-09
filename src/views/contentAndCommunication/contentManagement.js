@@ -100,7 +100,7 @@ const ContentAndCommunicationManagement = () => {
       const payload = {
         userType: notificationRecipient,
         subject: notificationSubject,
-        message: "You have Recieved a Notification from Admin at Trade Hunters"   + '--' + notificationMessage,
+        message: "You have Recieved a Notification from Trade Hunters Admin Team"   + '--' + notificationMessage,
       };
       await axios.post(
         'http://18.209.91.97:7777/api/massNotification/',
