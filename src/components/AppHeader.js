@@ -32,12 +32,7 @@ import io from 'socket.io-client'
 import { AppBreadcrumb } from './index'
 import { AppHeaderDropdown } from './header/index'
 
-const socket = io("https://api.tradehunters.com.au", {
-  transports: ["websocket"],
-  secure: true,
-  withCredentials: true
-});
-
+const socket = io('http://18.209.91.97:7777')
 
 const AppHeader = () => {
   const headerRef = useRef()
@@ -63,10 +58,9 @@ const AppHeader = () => {
   }, [colorMode])
 
   const fetchContacts = async () => {
-    setLoading(true)
     setError(null)
     try {
-      const response = await axios.get('https://api.tradehunters.com.au/api/contact/getAll', commonConfig)
+      const response = await axios.get('http://18.209.91.97:7777/api/contact/getAll', commonConfig)
       const fetchedContacts = response.data.contacts || []
       const sortedContacts = fetchedContacts.sort(
         (a, b) => new Date(b.createdAt) - new Date(a.createdAt),
@@ -75,9 +69,7 @@ const AppHeader = () => {
     } catch (err) {
       console.error('Error fetching contacts:', err)
       setError('Failed to load contacts. Please try again.')
-    } finally {
-      setLoading(false)
-    }
+    } 
   }
 
   useEffect(() => {
