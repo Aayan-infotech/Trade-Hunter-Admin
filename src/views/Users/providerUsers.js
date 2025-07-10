@@ -209,7 +209,7 @@ const Provider = () => {
         {
           title: notifTitle,
           body:
-            'You have received a notification from  Trade Hunters Admin Team' +
+            'Notification from  Trade Hunters Admin Team' +
             '--' +
             notifBody,
         },
@@ -218,7 +218,7 @@ const Provider = () => {
       await axios.post(`https://api.tradehunters.com.au/api/hunter/sendSupportEmail`, {
         name: notifUser.businessName,
         email: notifUser.email,
-        message: `You have received a notification from  Trade Hunters Admin Team: ${notifBody}`,
+        message: `Notification from  Trade Hunters Admin Team: ${notifBody}`,
 
       }, authHeaders)
       setNotifTitle('')

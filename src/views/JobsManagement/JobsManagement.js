@@ -78,12 +78,12 @@ const JobsManagement = () => {
       let response
       if (jobStatusFilter !== 'All') {
         response = await axios.get(
-          `https://api.tradehunters.com.au/api/jobs/?status=${jobStatusFilter}&page=${page}&limit=10`,
+          `https://api.tradehunters.com.au/api/jobs/jobPostAdmin?status=${jobStatusFilter}&page=${page}&limit=10`,
           commonConfig,
         )
       } else {
         response = await axios.get(
-          `https://api.tradehunters.com.au/api/jobs/?page=${page}&limit=10&search=${search}`,
+          `https://api.tradehunters.com.au/api/jobs/jobPostAdmin?page=${page}&limit=10&search=${search}`,
           commonConfig,
         )
       }
